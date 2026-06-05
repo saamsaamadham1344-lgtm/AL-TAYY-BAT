@@ -2,186 +2,75 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>نظام الطيبات الذكي</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  * { font-family: 'Cairo', sans-serif; box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: radial-gradient(circle at 50% -30%, #2a1e0a 0%, #0a0704 55%, #000 100%);
-    color: #fff;
-    min-height: 100vh;
-    padding-bottom: 130px;
-  }
-  .container { max-width: 520px; margin: 0 auto; padding: 0 18px; }
-  .top-row { display: flex; justify-content: space-between; align-items: center; padding-top: 22px; }
-  .circle-btn {
-    width: 48px; height: 48px; border-radius: 50%;
-    background: linear-gradient(135deg, #2a1e0a, #14100a);
-    border: 1px solid rgba(212,162,74,0.4);
-    display: flex; align-items: center; justify-content: center;
-    color: #f7e28b; font-size: 22px; cursor: pointer;
-  }
-  .header { text-align: center; margin-top: 10px; }
-  .header h1 {
-    font-size: 38px; font-weight: 900; letter-spacing: 1px;
-    background: linear-gradient(110deg, #b8862a, #f9e7a1 50%, #b8862a);
-    background-size: 200% 100%;
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    animation: shine 4s linear infinite;
-  }
-  @keyframes shine { from{background-position:200% 0;} to{background-position:-200% 0;} }
-  .header .sub { color: #d9c088; font-size: 18px; margin-top: 6px; }
-  .welcome { margin-top: 14px; color: #f7e28b; font-size: 14px; text-align: center; }
-  .welcome .line { display:inline-block; width:80px; height:1px; vertical-align:middle; background:linear-gradient(to right, transparent, rgba(247,226,139,0.5), transparent); margin: 0 10px;}
-  .page { display: none; }
-  .page.active { display: block; animation: fadeIn .5s ease; }
-  @keyframes fadeIn { from{opacity:0; transform: translateY(10px);} to{opacity:1; transform: translateY(0);} }
-  .cards { margin-top: 30px; display: flex; flex-direction: column; gap: 18px; }
-  .card {
-    padding: 22px; display: flex; align-items: center; gap: 14px;
-    background: #0f0a04;
-    border: 1.5px solid rgba(212,162,74,0.5);
-    border-radius: 28px;
-  }
-  .gold-text {
-    background: linear-gradient(135deg, #f9e7a1, #d4a24a 40%, #b8862a);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  .card-body { flex: 1; text-align: right; }
-  .card-body h2 { font-size: 28px; font-weight: 900; }
-  .card-body p { color: #d9c088; font-size: 14px; margin-top: 8px; line-height: 1.6; }
-  .gold-btn {
-    background: linear-gradient(135deg, #f9e7a1, #d4a24a, #b8862a);
-    color: #1a1208; font-weight: 800;
-    padding: 12px 26px; border-radius: 999px; border: none; cursor: pointer;
-    font-size: 15px; display: inline-flex; align-items: center; gap: 8px; margin-top: 14px;
-  }
-  .icon-visual {
-    width: 100px; height: 100px; flex-shrink: 0; border-radius: 24px;
-    background: linear-gradient(135deg, #f9e7a1, #b8862a);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .section-title { text-align: center; margin-top: 28px; }
-  .section-title h2 { font-size: 38px; font-weight: 900; margin-top: 10px;
-    background: linear-gradient(135deg, #f9e7a1, #d4a24a 40%, #b8862a);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  .section-title p { color: #d9c088; font-size: 14px; margin-top: 6px; }
-  .book-grid { margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .book-card { text-decoration: none; display: block; cursor: pointer; }
-  .book-cover {
-    width: 100%; aspect-ratio: 3/4;
-    background-size: cover; background-position: center; background-color: #1a1208;
-    border: 2px solid #b8862a;
-    border-radius: 22px 22px 0 0;
-    position: relative; overflow: hidden;
-  }
-  .book-cover::before {
-    content: ''; position: absolute; top: 10px; left: 10px; right: 10px; height: 2px;
-    background: linear-gradient(to right, transparent, #d4a24a, transparent);
-  }
-  .book-cover::after {
-    content: ''; position: absolute; bottom: 10px; left: 10px; right: 10px; height: 2px;
-    background: linear-gradient(to right, transparent, #d4a24a, transparent);
-  }
-  .book-card-body {
-    background: #0f0a04; border: 1.5px solid rgba(212,162,74,0.5);
-    border-top: none; border-radius: 0 0 22px 22px;
-    padding: 14px 10px 18px; text-align: center;
-  }
-  .book-card-body .t { color: #f7e28b; font-size: 15px; font-weight: 800; }
-  .book-card-body .d { color: #a69466; font-size: 12px; margin-top: 4px; }
-  .open-btn {
-    background: linear-gradient(135deg, #f9e7a1, #d4a24a, #b8862a);
-    color: #1a1208; padding: 9px 18px; border-radius: 999px;
-    font-size: 12px; font-weight: 800; margin-top: 12px; border: none; cursor: pointer;
-  }
-  .bottom-nav-wrap {
-    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-    padding: 0 18px 18px 18px;
-    background: linear-gradient(to top, #000 70%, transparent);
-  }
-  .bottom-nav {
-    max-width: 520px; margin: 0 auto;
-    background: #0f0a04;
-    border: 1px solid rgba(212,162,74,0.5);
-    border-radius: 999px;
-    padding: 10px;
-    display: flex; justify-content: space-around;
-  }
-  .nav-btn {
-    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
-    padding: 6px; border: none; background: transparent; cursor: pointer; color: #a69466;
-  }
-  .nav-btn .ico {
-    width: 46px; height: 46px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(135deg, #1a1208, #0a0704);
-    border: 1px solid rgba(212,162,74,0.3);
-    font-size: 20px;
-    transition: all .25s;
-  }
-  .nav-btn .lbl { font-size: 12px; font-weight: 600; }
-  .nav-btn.active .ico {
-    background: linear-gradient(135deg, #f9e7a1, #b8862a);
-    color: #1a1208; border-color: #b8862a;
-  }
-  .nav-btn.active .lbl { color: #f7e28b; font-weight: 800; }
+  *{font-family:'Cairo',sans-serif;box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(circle at 50% -30%,#2a1e0a 0%,#0a0704 55%,#000 100%);color:#fff;min-height:100vh;padding-bottom:130px}
+  .container{max-width:520px;margin:0 auto;padding:0 18px}
+  .top-row{display:flex;justify-content:space-between;align-items:center;padding-top:22px}
+  .circle-btn{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#2a1e0a,#14100a);border:1px solid rgba(212,162,74,.4);display:flex;align-items:center;justify-content:center;color:#f7e28b;font-size:22px}
+  .header{text-align:center;margin-top:10px}
+  .header h1{font-size:38px;font-weight:900;letter-spacing:1px;background:linear-gradient(110deg,#b8862a,#f9e7a1 50%,#b8862a);background-size:200% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shine 4s linear infinite}
+  @keyframes shine{from{background-position:200% 0}to{background-position:-200% 0}}
+  .header .sub{color:#d9c088;font-size:18px;margin-top:6px}
+  .welcome{margin-top:14px;color:#f7e28b;font-size:14px;text-align:center}
+  .page{display:none}.page.active{display:block;animation:fadeIn .5s ease}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .cards{margin-top:30px;display:flex;flex-direction:column;gap:18px}
+  .card{padding:22px;display:flex;align-items:center;gap:14px;background:#0f0a04;border:1.5px solid rgba(212,162,74,.5);border-radius:28px}
+  .gold-text{background:linear-gradient(135deg,#f9e7a1,#d4a24a 40%,#b8862a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .card-body{flex:1;text-align:right}
+  .card-body h2{font-size:28px;font-weight:900}
+  .card-body p{color:#d9c088;font-size:14px;margin-top:8px;line-height:1.6}
+  .gold-btn{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;font-weight:800;padding:12px 26px;border-radius:999px;border:none;cursor:pointer;font-size:15px;margin-top:14px}
+  .icon-visual{width:100px;height:100px;border-radius:24px;background:linear-gradient(135deg,#f9e7a1,#b8862a);display:flex;align-items:center;justify-content:center}
+  .section-title{text-align:center;margin-top:28px}
+  .section-title h2{font-size:38px;font-weight:900;margin-top:10px;background:linear-gradient(135deg,#f9e7a1,#d4a24a 40%,#b8862a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .section-title p{color:#d9c088;font-size:14px;margin-top:6px}
+  .book-grid{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .book-card{text-decoration:none;display:block;cursor:pointer}
+  .book-cover{width:100%;aspect-ratio:3/4;background-size:cover;background-position:center top;background-color:#1a1208;border:2px solid #b8862a;border-radius:22px 22px 0 0;position:relative;overflow:hidden}
+  .book-cover::before{content:'';position:absolute;top:10px;left:10px;right:10px;height:2px;background:linear-gradient(to right,transparent,#d4a24a,transparent)}
+  .book-cover::after{content:'';position:absolute;bottom:10px;left:10px;right:10px;height:2px;background:linear-gradient(to right,transparent,#d4a24a,transparent)}
+  .book-card-body{background:#0f0a04;border:1.5px solid rgba(212,162,74,.5);border-top:none;border-radius:0 0 22px 22px;padding:14px 10px 18px;text-align:center}
+  .book-card-body .t{color:#f7e28b;font-size:15px;font-weight:800}
+  .book-card-body .d{color:#a69466;font-size:12px;margin-top:4px}
+  .open-btn{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;padding:9px 18px;border-radius:999px;font-size:12px;font-weight:800;margin-top:12px;border:none;cursor:pointer}
+  .bottom-nav-wrap{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:0 18px 18px 18px;background:linear-gradient(to top,#000 70%,transparent)}
+  .bottom-nav{max-width:520px;margin:0 auto;background:#0f0a04;border:1px solid rgba(212,162,74,.5);border-radius:999px;padding:10px;display:flex;justify-content:space-around}
+  .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px;border:none;background:transparent;cursor:pointer;color:#a69466}
+  .nav-btn .ico{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a1208,#0a0704);border:1px solid rgba(212,162,74,.3);font-size:20px}
+  .nav-btn .lbl{font-size:12px;font-weight:600}
+  .nav-btn.active .ico{background:linear-gradient(135deg,#f9e7a1,#b8862a);color:#1a1208;border-color:#b8862a}
+  .nav-btn.active .lbl{color:#f7e28b;font-weight:800}
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="top-row">
-    <div class="circle-btn">🔔</div>
-    <svg width="56" height="56" viewBox="0 0 64 64"><path d="M32 58 C32 42, 44 20, 58 14 C52 28, 38 48, 22 56 Z" fill="#d4a24a"/><path d="M32 58 C32 44, 22 22, 8 16 C14 30, 28 50, 42 58 Z" fill="#b8862a"/></svg>
-    <div class="circle-btn">👤</div>
-  </div>
-  <div class="header">
-    <h1>نظام الطيبات الذكي</h1>
-    <div class="sub">بناء نظام ذكي</div>
-    <div class="welcome"><span class="line"></span>✦ أهلاً وسهلاً ✦<span class="line"></span></div>
-  </div>
+  <div class="top-row"><div class="circle-btn">🔔</div><svg width="56" height="56" viewBox="0 0 64 64"><path d="M32 58 C32 42, 44 20, 58 14 C52 28, 38 48, 22 56 Z" fill="#d4a24a"/><path d="M32 58 C32 44, 22 22, 8 16 C14 30, 28 50, 42 58 Z" fill="#b8862a"/></svg><div class="circle-btn">👤</div></div>
+  <div class="header"><h1>نظام الطيبات الذكي</h1><div class="sub">بناء نظام ذكي</div><div class="welcome">✦ أهلاً وسهلاً ✦</div></div>
 
   <main id="page-home" class="page active">
     <div class="cards">
-      <section class="card">
-        <div class="card-body">
-          <h2 class="gold-text">الفيديوهات</h2>
-          <p>شاهد أحدث الفيديوهات في مكان واحد</p>
-          <button class="gold-btn" onclick="switchPage('videos')">مشاهدة ▶</button>
-        </div>
-        <div class="icon-visual"><svg width="36" height="36" viewBox="0 0 24 24" fill="#1a1208"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
-      </section>
-      <section class="card">
-        <div class="card-body">
-          <h2 class="gold-text">الكتب</h2>
-          <p>اقرأ أفضل الكتب وملفات PDF</p>
-          <button class="gold-btn" onclick="switchPage('books')">استعراض 📖</button>
-        </div>
-        <div class="icon-visual"><svg width="40" height="40" viewBox="0 0 64 64"><path d="M32 58 C32 42, 44 20, 58 14 C52 28, 38 48, 22 56 Z" fill="#1a1208"/></svg></div>
-      </section>
+      <section class="card"><div class="card-body"><h2 class="gold-text">الفيديوهات</h2><p>شاهد أحدث الفيديوهات في مكان واحد</p><button class="gold-btn" onclick="switchPage('videos')">مشاهدة ▶</button></div><div class="icon-visual"><svg width="36" height="36" viewBox="0 0 24 24" fill="#1a1208"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></section>
+      <section class="card"><div class="card-body"><h2 class="gold-text">الكتب</h2><p>اقرأ أفضل الكتب وملفات PDF</p><button class="gold-btn" onclick="switchPage('books')">استعراض 📖</button></div><div class="icon-visual"><svg width="40" height="40" viewBox="0 0 64 64"><path d="M32 58 C32 42, 44 20, 58 14 C52 28, 38 48, 22 56 Z" fill="#1a1208"/></svg></div></section>
     </div>
   </main>
 
-  <main id="page-videos" class="page">
-    <div class="section-title"><h2>الفيديوهات</h2><p>قريباً إن شاء الله</p><button class="gold-btn" style="margin-top:20px" onclick="switchPage('home')">← الرئيسية</button></div>
-  </main>
+  <main id="page-videos" class="page"><div class="section-title"><h2>الفيديوهات</h2><p>قريباً إن شاء الله</p><button class="gold-btn" style="margin-top:20px" onclick="switchPage('home')">← الرئيسية</button></div></main>
 
   <main id="page-books" class="page">
-    <div class="section-title">
-      <h2>الكتب</h2>
-      <p>انقر على الكتاب للفتح</p>
-      <button class="gold-btn" style="margin-top:12px;padding:8px 16px;font-size:12px;background:transparent;border:1.5px solid #d4a24a;color:#f7e28b" onclick="switchPage('home')">← الرئيسية</button>
-    </div>
+    <div class="section-title"><h2>الكتب</h2><p>انقر على الكتاب للفتح</p><button class="gold-btn" style="margin-top:12px;padding:8px 16px;font-size:12px;background:transparent;border:1.5px solid #d4a24a;color:#f7e28b" onclick="switchPage('home')">← الرئيسية</button></div>
     <div class="book-grid">
-      <a class="book-card" href="https://go.fliplink.me/view/74F73E31-6A9E-4E6C-AB7B-F4041E983FA3" target="_blank">
-        <div class="book-cover" style="background-image: url('kabak1.jpg');"></div>
-        <div class="book-card-body"><div class="t">كتاب الطيبات</div><div class="d">الجزء الأول · صفحات ٣٠-٩٥</div><button class="open-btn">فتح الكتاب 📖</button></div>
+      <a class="book-card" href="kitab-altayyibat-1.pdf" target="_blank" rel="noopener">
+        <div class="book-cover" style="background-image: url('kabak1.jpg')"></div>
+        <div class="book-card-body"><div class="t">كتاب الطيبات</div><div class="d">الجزء الأول · PDF</div><button class="open-btn">فتح الكتاب 📖</button></div>
       </a>
-      <a class="book-card" href="https://go.fliplink.me/view/B25F42CE-30BC-4E22-AC70-24FC958CCB54" target="_blank">
-        <div class="book-cover" style="background-image: url('kapak2.jpg');"></div>
-        <div class="book-card-body"><div class="t">كتاب الطيبات</div><div class="d">الجزء الثاني · صفحات ٣٠-٩٥</div><button class="open-btn">فتح الكتاب 📖</button></div>
+      <a class="book-card" href="kitab-altayyibat-1.pdf" target="_blank" rel="noopener">
+        <div class="book-cover" style="background-image: url('kapak2.jpg')"></div>
+        <div class="book-card-body"><div class="t">كتاب الطيبات</div><div class="d">الجزء الثاني · PDF</div><button class="open-btn">فتح الكتاب 📖</button></div>
       </a>
     </div>
   </main>
