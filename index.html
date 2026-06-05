@@ -46,7 +46,6 @@
   .nav-btn.active .ico{background:linear-gradient(135deg,#f9e7a1,#b8862a);color:#1a1208;border-color:#b8862a}
   .nav-btn.active .lbl{color:#f7e28b;font-weight:800}
 
-  /* PDF OKUYUCU */
   .pdf-viewer{display:none;position:fixed;inset:0;background:#000;z-index:9999;flex-direction:column}
   .pdf-viewer.active{display:flex;animation:fadeIn .3s ease}
   
@@ -128,9 +127,9 @@
     </div>
   </div>
   <div class="pdf-nav">
-    <button class="tb" onclick="goPage(-1)">← السابقة</button>
-    <div class="page-info" id="pageInfo">1 / 1</div>
     <button class="tb" onclick="goPage(1)">التالية →</button>
+    <div class="page-info" id="pageInfo">1 / 1</div>
+    <button class="tb" onclick="goPage(-1)">← السابقة</button>
   </div>
 </div>
 
@@ -150,7 +149,6 @@ let totalPages = 0;
 let rendering = false;
 let searchQuery = '';
 let matches = [];
-let currentMatch = -1;
 
 function switchPage(n,b){
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -170,7 +168,6 @@ async function openPDF(url, title){
   document.getElementById('searchCount').style.display = 'none';
   searchQuery = '';
   matches = [];
-  currentMatch = -1;
   currentPage = 1;
 
   try {
@@ -251,10 +248,7 @@ async function renderPage(num){
   rendering = false;
 }
 
-// Sayfa geçişi - YÖNLER TERSLENDİ
 function goPage(dir){
-  // dir = -1 → السابقة (önceki) → sayfayı azalt
-  // dir = +1 → التالية (sonraki) → sayfayı arttır
   const newPage = currentPage + dir;
   if(newPage >= 1 && newPage <= totalPages){
     document.getElementById('pdfBody').scrollTop = 0;
@@ -280,7 +274,6 @@ async function doSearch(){
   countEl.innerText = '...';
   matches = [];
 
-  // Tüm sayfaları tara
   for(let i = 1; i <= totalPages; i++){
     try {
       const page = await pdfDoc.getPage(i);
@@ -296,21 +289,17 @@ async function doSearch(){
   if(matches.length === 0){
     countEl.innerText = '0';
   } else {
-    // İlk eşleşmeye git
-    currentMatch = 0;
     countEl.innerText = '1/' + matches.length;
     const firstPage = matches[0].page;
     if(firstPage !== currentPage){
       await renderPage(firstPage);
     } else {
-      // Aynı sayfadaysa, fosforla
       document.querySelectorAll('.text-layer span').forEach(span => {
         if(span.textContent.includes(searchQuery)){
           span.classList.add('hl');
         }
       });
     }
-    // İlk eşleşmeye scroll yap
     setTimeout(() => {
       const firstHl = document.querySelector('.text-layer .hl');
       if(firstHl){
