@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>نظام الطيبات الذكي</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
   *{font-family:'Cairo',sans-serif;box-sizing:border-box;margin:0;padding:0}
   body{background:radial-gradient(circle at 50% -30%,#2a1e0a 0%,#0a0704 55%,#000 100%);color:#fff;min-height:100vh;padding-bottom:130px}
@@ -30,8 +31,8 @@
   .section-title h2{font-size:38px;font-weight:900;margin-top:10px;background:linear-gradient(135deg,#f9e7a1,#d4a24a 40%,#b8862a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
   .section-title p{color:#d9c088;font-size:14px;margin-top:6px}
   .book-grid{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  .book-card{text-decoration:none;display:block;cursor:pointer}
-  .book-cover{width:100%;aspect-ratio:3/4;background-size:cover;background-position:center top;background-color:#1a1208;border:2px solid #b8862a;border-radius:22px 22px 0 0;position:relative;overflow:hidden}
+  .book-card{cursor:pointer}
+  .book-cover{width:100%;aspect-ratio:3/4;background-size:cover;background-position:center;background-color:#1a1208;border:2px solid #b8862a;border-radius:22px 22px 0 0;position:relative;overflow:hidden}
   .book-cover::before{content:'';position:absolute;top:10px;left:10px;right:10px;height:2px;background:linear-gradient(to right,transparent,#d4a24a,transparent)}
   .book-cover::after{content:'';position:absolute;bottom:10px;left:10px;right:10px;height:2px;background:linear-gradient(to right,transparent,#d4a24a,transparent)}
   .book-card-body{background:#0f0a04;border:1.5px solid rgba(212,162,74,.5);border-top:none;border-radius:0 0 22px 22px;padding:14px 10px 18px;text-align:center}
@@ -45,6 +46,21 @@
   .nav-btn .lbl{font-size:12px;font-weight:600}
   .nav-btn.active .ico{background:linear-gradient(135deg,#f9e7a1,#b8862a);color:#1a1208;border-color:#b8862a}
   .nav-btn.active .lbl{color:#f7e28b;font-weight:800}
+  .pdf-viewer{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0a0704;z-index:9999;flex-direction:column}
+  .pdf-viewer.active{display:flex;animation:fadeIn .3s ease}
+  .pdf-toolbar{background:linear-gradient(135deg,#1a1208,#0a0704);border-bottom:1.5px solid #d4a24a;padding:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+  .pdf-toolbar input[type=text]{flex:1;min-width:140px;max-width:280px;padding:10px 14px;border-radius:999px;border:1.5px solid #d4a24a;background:#0f0a04;color:#f7e28b;font-family:'Cairo',sans-serif;font-size:14px;text-align:right;direction:rtl}
+  .pdf-toolbar input[type=text]::placeholder{color:#a69466}
+  .pdf-toolbar button{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;border:none;padding:9px 14px;border-radius:999px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;font-size:13px}
+  .pdf-toolbar .close-btn{background:linear-gradient(135deg,#8a0000,#c91414);color:#fff;font-size:16px;width:42px;height:42px;border-radius:50%;padding:0}
+  .pdf-info{color:#d9c088;font-size:13px;font-weight:700;padding:0 8px}
+  .pdf-canvas-wrap{flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;padding:14px;background:#0a0704}
+  .pdf-page-wrap{position:relative;margin-bottom:14px;box-shadow:0 4px 20px rgba(212,162,74,.2);border-radius:6px;overflow:hidden;max-width:100%}
+  .pdf-page-wrap canvas{display:block;max-width:100%;height:auto}
+  .pdf-text-layer{position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden;opacity:.25;line-height:1;pointer-events:none}
+  .pdf-text-layer span{color:transparent;position:absolute;white-space:pre;transform-origin:0% 0%}
+  .pdf-text-layer .highlight{background:#ffeb3b;color:transparent;border-radius:2px;box-shadow:0 0 6px #ffeb3b}
+  .pdf-loading{color:#f7e28b;text-align:center;padding:40px;font-size:16px;font-weight:700}
 </style>
 </head>
 <body>
@@ -64,16 +80,30 @@
   <main id="page-books" class="page">
     <div class="section-title"><h2>الكتب</h2><p>انقر على الكتاب للفتح</p><button class="gold-btn" style="margin-top:12px;padding:8px 16px;font-size:12px;background:transparent;border:1.5px solid #d4a24a;color:#f7e28b" onclick="switchPage('home')">← الرئيسية</button></div>
     <div class="book-grid">
-      <a class="book-card" href="kitab-altayyibat-1.pdf" target="_blank" rel="noopener">
-        <div class="book-cover" style="background-image: url('kabak1.jpg')"></div>
+      <div class="book-card" onclick="openPDF('AL TAYYİBAT (2)-1-95-45-95 (1).pdf','كتاب الطيبات - الجزء الأول')">
+        <div class="book-cover" style="background-image: url('IMG_20260606_013120.jpg')"></div>
         <div class="book-card-body"><div class="t">كتاب الطيبات</div><div class="d">الجزء الأول · PDF</div><button class="open-btn">فتح الكتاب 📖</button></div>
-      </a>
-      <a class="book-card" href="kitab-altayyibat-1.pdf" target="_blank" rel="noopener">
-        <div class="book-cover" style="background-image: url('kapak2.jpg')"></div>
+      </div>
+      <div class="book-card" onclick="openPDF('kitab-altayyibat-1.pdf','كتاب الطيبات - الجزء الثاني')">
+        <div class="book-cover" style="background-image: url('IMG_20260606_013143.jpg')"></div>
         <div class="book-card-body"><div class="t">كتاب الطيبات</div><div class="d">الجزء الثاني · PDF</div><button class="open-btn">فتح الكتاب 📖</button></div>
-      </a>
+      </div>
     </div>
   </main>
+</div>
+
+<div class="pdf-viewer" id="pdfViewer">
+  <div class="pdf-toolbar">
+    <button class="close-btn" onclick="closePDF()">✕</button>
+    <input type="text" id="searchInput" placeholder="🔍 ابحث في الكتاب..." onkeypress="if(event.key==='Enter')searchPDF()">
+    <button onclick="searchPDF()">بحث</button>
+    <button onclick="prevMatch()">▲</button>
+    <button onclick="nextMatch()">▼</button>
+    <div class="pdf-info" id="searchInfo"></div>
+  </div>
+  <div class="pdf-canvas-wrap" id="pdfCanvasWrap">
+    <div class="pdf-loading" id="pdfLoading">⏳ جاري تحميل الكتاب...</div>
+  </div>
 </div>
 
 <div class="bottom-nav-wrap"><nav class="bottom-nav">
@@ -82,6 +112,126 @@
   <button class="nav-btn active" onclick="switchPage('home',this)"><div class="ico">🏠</div><span class="lbl">الرئيسية</span></button>
 </nav></div>
 
-<script>function switchPage(n,b){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});var pg=document.getElementById('page-'+n);if(pg)pg.classList.add('active');document.querySelectorAll('.nav-btn').forEach(function(x){x.classList.remove('active')});if(b)b.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}</script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+let currentPDF = null;
+let allMatches = [];
+let currentMatchIndex = -1;
+
+function switchPage(n,b){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
+  var pg=document.getElementById('page-'+n);
+  if(pg)pg.classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(function(x){x.classList.remove('active')});
+  if(b)b.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'})
+}
+
+async function openPDF(url, title){
+  document.getElementById('pdfViewer').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('pdfCanvasWrap').innerHTML = '<div class="pdf-loading">⏳ جاري تحميل الكتاب...</div>';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchInfo').innerText = '';
+  allMatches = [];
+  currentMatchIndex = -1;
+
+  try {
+    const pdf = await pdfjsLib.getDocument(encodeURI(url)).promise;
+    currentPDF = pdf;
+    const wrap = document.getElementById('pdfCanvasWrap');
+    wrap.innerHTML = '';
+
+    for(let i = 1; i <= pdf.numPages; i++){
+      const page = await pdf.getPage(i);
+      const viewport = page.getViewport({ scale: 1.5 });
+
+      const pageWrap = document.createElement('div');
+      pageWrap.className = 'pdf-page-wrap';
+      pageWrap.dataset.pageNum = i;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      pageWrap.appendChild(canvas);
+
+      const textLayer = document.createElement('div');
+      textLayer.className = 'pdf-text-layer';
+      textLayer.style.width = viewport.width + 'px';
+      textLayer.style.height = viewport.height + 'px';
+      pageWrap.appendChild(textLayer);
+
+      wrap.appendChild(pageWrap);
+
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+
+      const textContent = await page.getTextContent();
+      textContent.items.forEach(item => {
+        const span = document.createElement('span');
+        span.textContent = item.str;
+        const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
+        const fontSize = Math.sqrt(tx[2]*tx[2] + tx[3]*tx[3]);
+        span.style.left = tx[4] + 'px';
+        span.style.top = (tx[5] - fontSize) + 'px';
+        span.style.fontSize = fontSize + 'px';
+        span.style.fontFamily = 'sans-serif';
+        textLayer.appendChild(span);
+      });
+    }
+  } catch(e){
+    document.getElementById('pdfCanvasWrap').innerHTML = '<div class="pdf-loading">⚠️ خطأ في تحميل الكتاب<br><small>'+e.message+'</small></div>';
+  }
+}
+
+function closePDF(){
+  document.getElementById('pdfViewer').classList.remove('active');
+  document.getElementById('pdfCanvasWrap').innerHTML = '';
+  document.body.style.overflow = 'auto';
+  currentPDF = null;
+  allMatches = [];
+}
+
+function searchPDF(){
+  const query = document.getElementById('searchInput').value.trim();
+  if(!query) return;
+  document.querySelectorAll('.pdf-text-layer span').forEach(s => s.classList.remove('highlight'));
+  allMatches = [];
+  document.querySelectorAll('.pdf-text-layer').forEach(layer => {
+    layer.querySelectorAll('span').forEach(span => {
+      if(span.textContent.includes(query)){
+        span.classList.add('highlight');
+        allMatches.push(span);
+      }
+    });
+  });
+  if(allMatches.length > 0){
+    currentMatchIndex = 0;
+    scrollToMatch(0);
+    document.getElementById('searchInfo').innerText = '1 / ' + allMatches.length;
+  } else {
+    document.getElementById('searchInfo').innerText = 'لا توجد نتائج';
+  }
+}
+
+function scrollToMatch(i){
+  if(allMatches[i]){
+    allMatches[i].scrollIntoView({behavior:'smooth', block:'center'});
+    document.getElementById('searchInfo').innerText = (i+1) + ' / ' + allMatches.length;
+  }
+}
+
+function nextMatch(){
+  if(allMatches.length === 0) return;
+  currentMatchIndex = (currentMatchIndex + 1) % allMatches.length;
+  scrollToMatch(currentMatchIndex);
+}
+
+function prevMatch(){
+  if(allMatches.length === 0) return;
+  currentMatchIndex = (currentMatchIndex - 1 + allMatches.length) % allMatches.length;
+  scrollToMatch(currentMatchIndex);
+}
+</script>
 </body>
 </html>
