@@ -50,14 +50,11 @@
   .pdf-viewer{display:none;position:fixed;inset:0;background:#000;z-index:9999;flex-direction:column}
   .pdf-viewer.active{display:flex;animation:fadeIn .3s ease}
   
-  /* ÜST BAR */
   .pdf-topbar{background:linear-gradient(135deg,rgba(26,18,8,.98),rgba(10,7,4,.98));border-bottom:1.5px solid rgba(212,162,74,.4);padding:10px 12px;display:flex;gap:8px;align-items:center;box-shadow:0 4px 24px rgba(0,0,0,.6);z-index:2}
-  .tb{height:40px;border-radius:10px;border:1.5px solid rgba(212,162,74,.35);background:rgba(15,10,4,.9);color:#d4a24a;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;padding:0 12px;font-family:'Cairo',sans-serif}
+  .tb{height:40px;border-radius:10px;border:1.5px solid rgba(212,162,74,.35);background:rgba(15,10,4,.9);color:#d4a24a;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;padding:0 14px;font-family:'Cairo',sans-serif}
   .tb:active{transform:scale(.93);background:linear-gradient(135deg,#f9e7a1,#d4a24a);color:#1a1208}
   .tb-close{background:linear-gradient(135deg,#b91c1c,#7f1d1d);color:#fff;border-color:rgba(185,28,28,.5);width:40px;padding:0;font-size:16px}
-  .tb-icon{width:40px;padding:0;font-size:14px}
   
-  /* ARAMA KUTUSU */
   .search-wrap{flex:1;position:relative;display:flex;align-items:center}
   .search-wrap .s-icon{position:absolute;right:12px;color:#d4a24a;font-size:14px;pointer-events:none;z-index:2}
   .search-wrap input{width:100%;height:40px;padding:0 38px 0 50px;border-radius:10px;border:1.5px solid rgba(212,162,74,.4);background:rgba(15,10,4,.9);color:#f7e28b;font-family:'Cairo',sans-serif;font-size:13px;font-weight:600;text-align:right;direction:rtl;outline:none;transition:all .25s}
@@ -65,7 +62,6 @@
   .search-wrap input::placeholder{color:#a69466;font-weight:500}
   .s-count{position:absolute;left:8px;color:#d4a24a;font-size:11px;font-weight:800;background:rgba(212,162,74,.15);padding:3px 7px;border-radius:6px;min-width:30px;text-align:center}
 
-  /* PDF GÖVDESİ */
   .pdf-body{flex:1;overflow:auto;background:#1a1a1a;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;align-items:center;padding:8px}
   .pdf-page-container{position:relative;margin-bottom:10px;box-shadow:0 4px 20px rgba(0,0,0,.5);border-radius:4px;overflow:hidden;background:#fff;max-width:100%}
   .pdf-page-container canvas{display:block;width:100%;height:auto}
@@ -74,11 +70,9 @@
   .text-layer .hl{background:#ffeb3b;border-radius:2px;box-shadow:0 0 6px #ffeb3b;opacity:1}
   .text-layer .hl-active{background:#ff9800;box-shadow:0 0 10px #ff9800}
 
-  /* ALT BAR */
   .pdf-nav{background:linear-gradient(135deg,rgba(26,18,8,.98),rgba(10,7,4,.98));border-top:1px solid rgba(212,162,74,.3);padding:10px 12px;display:flex;gap:8px;align-items:center;justify-content:center}
   .page-info{color:#f7e28b;font-size:14px;font-weight:800;min-width:80px;text-align:center}
 
-  /* YÜKLENİYOR */
   .pdf-loading{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a0704}
   .spinner{width:50px;height:50px;border:4px solid rgba(212,162,74,.2);border-top-color:#d4a24a;border-radius:50%;animation:spin 1s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
@@ -121,11 +115,10 @@
     <button class="tb tb-close" onclick="closePDF()">✕</button>
     <div class="search-wrap">
       <span class="s-icon">🔍</span>
-      <input type="text" id="searchInput" placeholder="ابحث..." onkeypress="if(event.key==='Enter')doSearch()">
+      <input type="text" id="searchInput" placeholder="ابحث في الكتاب..." onkeypress="if(event.key==='Enter')doSearch()">
       <span class="s-count" id="searchCount" style="display:none"></span>
     </div>
-    <button class="tb tb-icon" onclick="prevMatch()">▲</button>
-    <button class="tb tb-icon" onclick="nextMatch()">▼</button>
+    <button class="tb" onclick="doSearch()">بحث</button>
   </div>
   <div class="pdf-body" id="pdfBody">
     <div class="pdf-loading">
@@ -135,9 +128,9 @@
     </div>
   </div>
   <div class="pdf-nav">
-    <button class="tb" onclick="goPage(-1)">→ السابقة</button>
+    <button class="tb" onclick="goPage(-1)">← السابقة</button>
     <div class="page-info" id="pageInfo">1 / 1</div>
-    <button class="tb" onclick="goPage(1)">التالية ←</button>
+    <button class="tb" onclick="goPage(1)">التالية →</button>
   </div>
 </div>
 
@@ -226,7 +219,6 @@ async function renderPage(num){
       viewport: viewport
     }).promise;
 
-    // Metin katmanı (arama için)
     const textContent = await page.getTextContent();
     const displayViewport = page.getViewport({scale: displayScale});
     
@@ -246,9 +238,12 @@ async function renderPage(num){
     currentPage = num;
     document.getElementById('pageInfo').innerText = num + ' / ' + totalPages;
 
-    // Eğer arama aktifse, bu sayfada da vurgula
     if(searchQuery){
-      highlightInPage(textLayer);
+      textLayer.querySelectorAll('span').forEach(span => {
+        if(span.textContent.includes(searchQuery)){
+          span.classList.add('hl');
+        }
+      });
     }
   } catch(e){
     console.error(e);
@@ -256,24 +251,15 @@ async function renderPage(num){
   rendering = false;
 }
 
+// Sayfa geçişi - YÖNLER TERSLENDİ
 function goPage(dir){
+  // dir = -1 → السابقة (önceki) → sayfayı azalt
+  // dir = +1 → التالية (sonraki) → sayfayı arttır
   const newPage = currentPage + dir;
   if(newPage >= 1 && newPage <= totalPages){
     document.getElementById('pdfBody').scrollTop = 0;
     renderPage(newPage);
   }
-}
-
-function highlightInPage(layer){
-  if(!searchQuery) return;
-  const found = [];
-  layer.querySelectorAll('span').forEach(span => {
-    if(span.textContent.includes(searchQuery)){
-      span.classList.add('hl');
-      found.push(span);
-    }
-  });
-  return found;
 }
 
 async function doSearch(){
@@ -293,16 +279,15 @@ async function doSearch(){
   countEl.style.display = 'block';
   countEl.innerText = '...';
   matches = [];
-  currentMatch = -1;
 
   // Tüm sayfaları tara
   for(let i = 1; i <= totalPages; i++){
     try {
       const page = await pdfDoc.getPage(i);
       const textContent = await page.getTextContent();
-      textContent.items.forEach((item, idx) => {
+      textContent.items.forEach((item) => {
         if(item.str && item.str.includes(searchQuery)){
-          matches.push({page: i, index: idx});
+          matches.push({page: i});
         }
       });
     } catch(e){}
@@ -311,48 +296,29 @@ async function doSearch(){
   if(matches.length === 0){
     countEl.innerText = '0';
   } else {
+    // İlk eşleşmeye git
     currentMatch = 0;
     countEl.innerText = '1/' + matches.length;
-    await goToMatch(0);
-  }
-}
-
-async function goToMatch(i){
-  if(!matches[i]) return;
-  const m = matches[i];
-  if(m.page !== currentPage){
-    await renderPage(m.page);
-  }
-  // Aktif olanı turuncu yap
-  const spans = document.querySelectorAll('.text-layer .hl');
-  spans.forEach(s => s.classList.remove('hl-active'));
-  let count = 0;
-  for(const s of spans){
-    if(s.textContent.includes(searchQuery)){
-      // Bu sayfadaki kaçıncı eşleşme?
-      const pageMatches = matches.filter(x => x.page === currentPage);
-      const indexInPage = pageMatches.indexOf(m);
-      if(count === indexInPage){
-        s.classList.add('hl-active');
-        s.scrollIntoView({behavior:'smooth', block:'center'});
-        break;
-      }
-      count++;
+    const firstPage = matches[0].page;
+    if(firstPage !== currentPage){
+      await renderPage(firstPage);
+    } else {
+      // Aynı sayfadaysa, fosforla
+      document.querySelectorAll('.text-layer span').forEach(span => {
+        if(span.textContent.includes(searchQuery)){
+          span.classList.add('hl');
+        }
+      });
     }
+    // İlk eşleşmeye scroll yap
+    setTimeout(() => {
+      const firstHl = document.querySelector('.text-layer .hl');
+      if(firstHl){
+        firstHl.classList.add('hl-active');
+        firstHl.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+    }, 500);
   }
-  document.getElementById('searchCount').innerText = (i+1) + '/' + matches.length;
-}
-
-function nextMatch(){
-  if(matches.length === 0) return;
-  currentMatch = (currentMatch + 1) % matches.length;
-  goToMatch(currentMatch);
-}
-
-function prevMatch(){
-  if(matches.length === 0) return;
-  currentMatch = (currentMatch - 1 + matches.length) % matches.length;
-  goToMatch(currentMatch);
 }
 
 function closePDF(){
