@@ -28,4 +28,253 @@
   .gold-btn{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;font-weight:800;padding:12px 26px;border-radius:999px;border:none;cursor:pointer;font-size:15px;margin-top:14px}
   .icon-visual{width:100px;height:100px;border-radius:24px;background:linear-gradient(135deg,#f9e7a1,#b8862a);display:flex;align-items:center;justify-content:center}
   .section-title{text-align:center;margin-top:28px}
-  .section-title h2{font-size:38px;font-weight:900;margin-top:10px;background:linear-gradient(135deg,#f9e7a1,#d4a24a 
+  .section-title h2{font-size:38px;font-weight:900;margin-top:10px;background:linear-gradient(135deg,#f9e7a1,#d4a24a 40%,#b8862a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .section-title p{color:#d9c088;font-size:14px;margin-top:6px}
+  .book-grid{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .book-card{cursor:pointer}
+  .book-cover{width:100%;aspect-ratio:3/4;background-size:cover;background-position:center;background-color:#1a1208;border:2px solid #b8862a;border-radius:22px 22px 0 0;position:relative;overflow:hidden}
+  .book-cover::before{content:'';position:absolute;top:10px;left:10px;right:10px;height:2px;background:linear-gradient(to right,transparent,#d4a24a,transparent)}
+  .book-cover::after{content:'';position:absolute;bottom:10px;left:10px;right:10px;height:2px;background:linear-gradient(to right,transparent,#d4a24a,transparent)}
+  .book-card-body{background:#0f0a04;border:1.5px solid rgba(212,162,74,.5);border-top:none;border-radius:0 0 22px 22px;padding:14px 10px 18px;text-align:center}
+  .book-card-body .t{color:#f7e28b;font-size:15px;font-weight:800}
+  .book-card-body .d{color:#a69466;font-size:12px;margin-top:4px}
+  .open-btn{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;padding:9px 18px;border-radius:999px;font-size:12px;font-weight:800;margin-top:12px;border:none;cursor:pointer}
+  .bottom-nav-wrap{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:0 18px 18px 18px;background:linear-gradient(to top,#000 70%,transparent)}
+  .bottom-nav{max-width:520px;margin:0 auto;background:#0f0a04;border:1px solid rgba(212,162,74,.5);border-radius:999px;padding:10px;display:flex;justify-content:space-around}
+  .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px;border:none;background:transparent;cursor:pointer;color:#a69466}
+  .nav-btn .ico{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a1208,#0a0704);border:1px solid rgba(212,162,74,.3);font-size:20px}
+  .nav-btn .lbl{font-size:12px;font-weight:600}
+  .nav-btn.active .ico{background:linear-gradient(135deg,#f9e7a1,#b8862a);color:#1a1208;border-color:#b8862a}
+  .nav-btn.active .lbl{color:#f7e28b;font-weight:800}
+
+  /* ⭐ ŞİK PROFESYONEL PDF OKUYUCU */
+  .pdf-viewer{display:none;position:fixed;inset:0;background:linear-gradient(180deg,#1a1208 0%,#0a0704 100%);z-index:9999;flex-direction:column}
+  .pdf-viewer.active{display:flex;animation:fadeIn .3s ease}
+  
+  /* ŞİK ARAÇ ÇUBUĞU */
+  .pdf-toolbar{background:linear-gradient(135deg,rgba(26,18,8,.95),rgba(10,7,4,.95));backdrop-filter:blur(10px);border-bottom:1px solid rgba(212,162,74,.3);padding:14px 16px;display:flex;gap:10px;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+  
+  .search-box{flex:1;position:relative;display:flex;align-items:center}
+  .search-box .search-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:#d4a24a;font-size:16px;pointer-events:none;z-index:2}
+  .search-box input{width:100%;padding:12px 44px 12px 50px;border-radius:14px;border:1.5px solid rgba(212,162,74,.4);background:rgba(15,10,4,.8);color:#f7e28b;font-family:'Cairo',sans-serif;font-size:14px;font-weight:600;text-align:right;direction:rtl;outline:none;transition:all .3s}
+  .search-box input:focus{border-color:#d4a24a;box-shadow:0 0 0 3px rgba(212,162,74,.2);background:rgba(15,10,4,1)}
+  .search-box input::placeholder{color:#a69466;font-weight:500}
+  .search-count{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#d4a24a;font-size:11px;font-weight:800;background:rgba(212,162,74,.15);padding:4px 8px;border-radius:8px;min-width:36px;text-align:center}
+  
+  .tool-btn{width:42px;height:42px;border-radius:12px;border:1.5px solid rgba(212,162,74,.4);background:linear-gradient(135deg,#1a1208,#0f0a04);color:#d4a24a;font-size:16px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s;flex-shrink:0}
+  .tool-btn:hover,.tool-btn:active{background:linear-gradient(135deg,#f9e7a1,#d4a24a);color:#1a1208;border-color:#d4a24a;transform:scale(1.05)}
+  
+  .close-btn{background:linear-gradient(135deg,#c91414,#8a0000);color:#fff;border-color:#c91414}
+  .close-btn:hover,.close-btn:active{background:linear-gradient(135deg,#ff3030,#c91414);color:#fff}
+  
+  .pdf-canvas-wrap{flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;padding:18px 10px;background:#000;-webkit-overflow-scrolling:touch}
+  .pdf-page-wrap{position:relative;margin-bottom:16px;box-shadow:0 8px 30px rgba(212,162,74,.15),0 2px 8px rgba(0,0,0,.6);border-radius:8px;overflow:hidden;background:#fff;max-width:100%}
+  .pdf-page-wrap canvas{display:block;width:100%;height:auto}
+  .pdf-text-layer{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;opacity:.2;line-height:1;pointer-events:none}
+  .pdf-text-layer span{color:transparent;position:absolute;white-space:pre;transform-origin:0% 0%}
+  .pdf-text-layer .highlight{background:#ffeb3b;color:transparent;border-radius:3px;box-shadow:0 0 8px #ffeb3b;opacity:1}
+  .pdf-text-layer .highlight-current{background:#ff9800;box-shadow:0 0 12px #ff9800}
+  
+  .pdf-loading{color:#f7e28b;text-align:center;padding:60px 20px;font-size:16px;font-weight:700}
+  .pdf-loading .spinner{display:inline-block;width:50px;height:50px;border:4px solid rgba(212,162,74,.2);border-top-color:#d4a24a;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .pdf-loading .progress{margin-top:14px;color:#d4a24a;font-size:14px;font-weight:600}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="top-row"><div class="circle-btn">🔔</div><svg width="56" height="56" viewBox="0 0 64 64"><path d="M32 58 C32 42, 44 20, 58 14 C52 28, 38 48, 22 56 Z" fill="#d4a24a"/><path d="M32 58 C32 44, 22 22, 8 16 C14 30, 28 50, 42 58 Z" fill="#b8862a"/></svg><div class="circle-btn">👤</div></div>
+  <div class="header"><h1>نظام الطيبات الذكي</h1><div class="sub">بناء نظام ذكي</div><div class="welcome">✦ أهلاً وسهلاً ✦</div></div>
+
+  <main id="page-home" class="page active">
+    <div class="cards">
+      <section class="card"><div class="card-body"><h2 class="gold-text">الفيديوهات</h2><p>شاهد أحدث الفيديوهات في مكان واحد</p><button class="gold-btn" onclick="switchPage('videos')">مشاهدة ▶</button></div><div class="icon-visual"><svg width="36" height="36" viewBox="0 0 24 24" fill="#1a1208"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></section>
+      <section class="card"><div class="card-body"><h2 class="gold-text">الكتب</h2><p>اقرأ أفضل الكتب وملفات PDF</p><button class="gold-btn" onclick="switchPage('books')">استعراض 📖</button></div><div class="icon-visual"><svg width="40" height="40" viewBox="0 0 64 64"><path d="M32 58 C32 42, 44 20, 58 14 C52 28, 38 48, 22 56 Z" fill="#1a1208"/></svg></div></section>
+    </div>
+  </main>
+
+  <main id="page-videos" class="page"><div class="section-title"><h2>الفيديوهات</h2><p>قريباً إن شاء الله</p><button class="gold-btn" style="margin-top:20px" onclick="switchPage('home')">← الرئيسية</button></div></main>
+
+  <main id="page-books" class="page">
+    <div class="section-title"><h2>الكتب</h2><p>انقر على الكتاب للفتح</p><button class="gold-btn" style="margin-top:12px;padding:8px 16px;font-size:12px;background:transparent;border:1.5px solid #d4a24a;color:#f7e28b" onclick="switchPage('home')">← الرئيسية</button></div>
+    <div class="book-grid">
+      <div class="book-card" onclick="openPDF('AL TAYYİBAT (2)-1-95-45-95 (1).pdf','كتاب الطيبات - الجزء الأول')">
+        <div class="book-cover" style="background-image: url('IMG_20260606_013120.jpg')"></div>
+        <div class="book-card-body"><div class="t">كتاب الطيبات</div><div class="d">الجزء الأول · PDF</div><button class="open-btn">فتح الكتاب 📖</button></div>
+      </div>
+      <div class="book-card" onclick="openPDF('kitab-altayyibat-1.pdf','كتاب الطيبات - الجزء الثاني')">
+        <div class="book-cover" style="background-image: url('IMG_20260606_013143.jpg')"></div>
+        <div class="book-card-body"><div class="t">كتاب الطيبات</div><div class="d">الجزء الثاني · PDF</div><button class="open-btn">فتح الكتاب 📖</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ⭐ ŞİK PDF OKUYUCU -->
+<div class="pdf-viewer" id="pdfViewer">
+  <div class="pdf-toolbar">
+    <button class="tool-btn close-btn" onclick="closePDF()" title="إغلاق">✕</button>
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="ابحث في الكتاب..." onkeypress="if(event.key==='Enter')searchPDF()">
+      <span class="search-count" id="searchInfo" style="display:none"></span>
+    </div>
+    <button class="tool-btn" onclick="prevMatch()" title="السابق">▲</button>
+    <button class="tool-btn" onclick="nextMatch()" title="التالي">▼</button>
+  </div>
+  <div class="pdf-canvas-wrap" id="pdfCanvasWrap">
+    <div class="pdf-loading"><div class="spinner"></div><div>جاري تحميل الكتاب...</div><div class="progress" id="loadProgress"></div></div>
+  </div>
+</div>
+
+<div class="bottom-nav-wrap"><nav class="bottom-nav">
+  <button class="nav-btn" onclick="switchPage('books',this)"><div class="ico">📖</div><span class="lbl">الكتب</span></button>
+  <button class="nav-btn" onclick="switchPage('videos',this)"><div class="ico">🎬</div><span class="lbl">الفيديوهات</span></button>
+  <button class="nav-btn active" onclick="switchPage('home',this)"><div class="ico">🏠</div><span class="lbl">الرئيسية</span></button>
+</nav></div>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+let currentPDF = null;
+let allMatches = [];
+let currentMatchIndex = -1;
+
+function switchPage(n,b){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
+  var pg=document.getElementById('page-'+n);
+  if(pg)pg.classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(function(x){x.classList.remove('active')});
+  if(b)b.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'})
+}
+
+async function openPDF(url, title){
+  document.getElementById('pdfViewer').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('pdfCanvasWrap').innerHTML = '<div class="pdf-loading"><div class="spinner"></div><div>جاري تحميل الكتاب...</div><div class="progress" id="loadProgress"></div></div>';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchInfo').style.display = 'none';
+  allMatches = [];
+  currentMatchIndex = -1;
+
+  try {
+    const pdf = await pdfjsLib.getDocument(encodeURI(url)).promise;
+    currentPDF = pdf;
+    const wrap = document.getElementById('pdfCanvasWrap');
+    wrap.innerHTML = '';
+    
+    // Sayfa genişliği için cihaz genişliğini kullan
+    const containerWidth = wrap.clientWidth - 20;
+
+    for(let i = 1; i <= pdf.numPages; i++){
+      const page = await pdf.getPage(i);
+      
+      // İlk viewport'u al
+      const baseViewport = page.getViewport({ scale: 1 });
+      
+      // Cihaza göre scale hesapla (max 2x)
+      const scale = Math.min(containerWidth / baseViewport.width, 2) * (window.devicePixelRatio || 1);
+      const viewport = page.getViewport({ scale: scale });
+
+      const pageWrap = document.createElement('div');
+      pageWrap.className = 'pdf-page-wrap';
+      pageWrap.style.width = (viewport.width / (window.devicePixelRatio || 1)) + 'px';
+      pageWrap.style.maxWidth = '100%';
+
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      canvas.style.width = '100%';
+      canvas.style.height = 'auto';
+      pageWrap.appendChild(canvas);
+
+      const textLayer = document.createElement('div');
+      textLayer.className = 'pdf-text-layer';
+      pageWrap.appendChild(textLayer);
+
+      wrap.appendChild(pageWrap);
+
+      const ctx = canvas.getContext('2d');
+      await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+      // Metin katmanı (arama için)
+      const textContent = await page.getTextContent();
+      const displayScale = scale / (window.devicePixelRatio || 1);
+      const textViewport = page.getViewport({ scale: displayScale });
+      
+      textContent.items.forEach(item => {
+        if(!item.str || item.str.trim() === '') return;
+        const span = document.createElement('span');
+        span.textContent = item.str;
+        const tx = pdfjsLib.Util.transform(textViewport.transform, item.transform);
+        const fontSize = Math.sqrt(tx[2]*tx[2] + tx[3]*tx[3]);
+        span.style.left = tx[4] + 'px';
+        span.style.top = (tx[5] - fontSize) + 'px';
+        span.style.fontSize = fontSize + 'px';
+        span.style.fontFamily = 'sans-serif';
+        textLayer.appendChild(span);
+      });
+    }
+  } catch(e){
+    document.getElementById('pdfCanvasWrap').innerHTML = '<div class="pdf-loading"><div style="font-size:40px">⚠️</div><div>خطأ في تحميل الكتاب</div><div class="progress">'+e.message+'</div></div>';
+  }
+}
+
+function closePDF(){
+  document.getElementById('pdfViewer').classList.remove('active');
+  document.getElementById('pdfCanvasWrap').innerHTML = '';
+  document.body.style.overflow = 'auto';
+  currentPDF = null;
+  allMatches = [];
+}
+
+function searchPDF(){
+  const query = document.getElementById('searchInput').value.trim();
+  const info = document.getElementById('searchInfo');
+  if(!query){ info.style.display='none'; return; }
+  
+  document.querySelectorAll('.pdf-text-layer span').forEach(s => {s.classList.remove('highlight'); s.classList.remove('highlight-current')});
+  allMatches = [];
+  
+  document.querySelectorAll('.pdf-text-layer').forEach(layer => {
+    layer.querySelectorAll('span').forEach(span => {
+      if(span.textContent.includes(query)){
+        span.classList.add('highlight');
+        allMatches.push(span);
+      }
+    });
+  });
+  
+  info.style.display = 'block';
+  if(allMatches.length > 0){
+    currentMatchIndex = 0;
+    scrollToMatch(0);
+  } else {
+    info.innerText = '0';
+  }
+}
+
+function scrollToMatch(i){
+  if(allMatches[i]){
+    allMatches.forEach(m => m.classList.remove('highlight-current'));
+    allMatches[i].classList.add('highlight-current');
+    allMatches[i].scrollIntoView({behavior:'smooth', block:'center'});
+    document.getElementById('searchInfo').innerText = (i+1) + '/' + allMatches.length;
+  }
+}
+
+function nextMatch(){
+  if(allMatches.length === 0) return;
+  currentMatchIndex = (currentMatchIndex + 1) % allMatches.length;
+  scrollToMatch(currentMatchIndex);
+}
+
+function prevMatch(){
+  if(allMatches.length === 0) return;
+  currentMatchIndex = (currentMatchIndex - 1 + allMatches.length) % allMatches.length;
+  scrollToMatch(currentMatchIndex);
+}
+</script>
+</body>
+</html>
