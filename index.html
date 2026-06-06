@@ -46,13 +46,7 @@
     .pdf-topbar{background:rgba(26,18,8,.98);border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;justify-content:space-between;padding:8px 12px}
     .tb-close{height:40px;width:40px;border-radius:10px;border:none;background:linear-gradient(135deg,#b91c1c,#7f1d1d);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
     .pdf-title{color:#f7e28b;font-size:16px;font-weight:800;flex:1;text-align:center}
-    .pdf-body{flex:1;overflow:auto;background:#1a1a1a;display:flex;flex-direction:column;align-items:center}
-    .pdf-page-container{position:relative;overflow:hidden}
-    .pdf-page-container canvas{display:block;width:100%;height:auto}
-    .pdf-nav{background:rgba(26,18,8,.98);display:flex;align-items:center;justify-content:center;gap:16px;padding:10px}
-    .nav-arrow{width:50px;height:50px;border-radius:50%;border:1.5px solid rgba(212,162,74,.5);background:rgba(15,10,4,.9);color:#d4a24a;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-    .nav-arrow:active{background:linear-gradient(135deg,#f9e7a1,#d4a24a);color:#1a1208}
-    .page-info{color:#f7e28b;font-size:16px;font-weight:800;min-width:80px;text-align:center}
+    .pdf-frame{flex:1;width:100%;border:none;background:#fff}
     .pdf-loading{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background-color:#0a0704}
     .spinner{width:50px;height:50px;border:4px solid rgba(212,162,74,.2);border-top-color:#d4a24a;border-radius:50%;animation:spin 1s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
@@ -129,19 +123,13 @@
   <div class="pdf-viewer" id="pdfViewer">
     <div class="pdf-topbar">
       <button class="tb-close" onclick="closePDF()">X</button>
-      <div class="pdf-title" id="pdfTitle">الكتاب</div>
+      <div class="pdf-title">الكتاب</div>
     </div>
-    <div class="pdf-body" id="pdfBody">
-      <div class="pdf-loading">
-        <div class="spinner"></div>
-        <div class="load-text">جاري تحميل الكتاب...</div>
-        <div class="load-sub">يرجى الانتظار</div>
-      </div>
-    </div>
-    <div class="pdf-nav">
-      <button class="nav-arrow" onclick="nextPage()">&#9654;</button>
-      <div class="page-info" id="pageInfo">1 / 1</div>
-      <button class="nav-arrow" onclick="prevPage()">&#9664;</button>
+    <iframe id="pdfFrame" class="pdf-frame" style="display:none"></iframe>
+    <div class="pdf-loading" id="pdfLoading">
+      <div class="spinner"></div>
+      <div class="load-text">جاري تحميل الكتاب...</div>
+      <div class="load-sub">يرجى الانتظار</div>
     </div>
   </div>
 
@@ -163,113 +151,41 @@
       if (t) t.classList.add('active');
       window.scrollTo(0, 0);
     }
-  </script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script>
-    var pdfDoc = null;
-    var currentPage = 1;
-    var totalPages = 0;
-    var rendering = false;
-    var pdfReady = false;
-
-    try {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-      pdfReady = true;
-    } catch(e) {
-      pdfReady = false;
-    }
-
-    function openPDF(url) {
-      if (!pdfReady) {
-        alert('PDF yuklenmedi. Sayfayi yenileyin.');
-        return;
-      }
+    function openPDF(filename) {
       document.getElementById('pdfViewer').classList.add('active');
       document.body.style.overflow = 'hidden';
-      document.getElementById('pdfBody').innerHTML = '<div class="pdf-loading"><div class="spinner"></div><div class="load-text">جاري تحميل الكتاب...</div><div class="load-sub">يرجى الانتظار</div></div>';
-      document.getElementById('pageInfo').innerText = '...';
-      currentPage = 1;
-      pdfDoc = null;
-      rendering = false;
 
-      pdfjsLib.getDocument({
-        url: url,
-        cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
-        cMapPacked: true
-      }).promise.then(function(doc) {
-        pdfDoc = doc;
-        totalPages = doc.numPages;
-        renderPage(1);
-      }).catch(function(e) {
-        document.getElementById('pdfBody').innerHTML = '<div class="pdf-loading"><div style="font-size:50px">&#9888;</div><div class="load-text">تعذر تحميل الكتاب</div><div class="load-sub">' + e.message + '</div></div>';
-      });
-    }
+      var frame = document.getElementById('pdfFrame');
+      var loading = document.getElementById('pdfLoading');
 
-    function renderPage(num) {
-      if (rendering || !pdfDoc) return;
-      rendering = true;
+      frame.style.display = 'none';
+      loading.style.display = 'flex';
 
-      pdfDoc.getPage(num).then(function(page) {
-        var body = document.getElementById('pdfBody');
-        var containerWidth = body.clientWidth;
-        if (containerWidth < 100) containerWidth = 300;
-        var baseViewport = page.getViewport({scale: 1});
-        var scale = containerWidth / baseViewport.width;
-        var viewport = page.getViewport({scale: scale * 2});
+      var base = window.location.href.replace('index.html', '');
+      if (base.charAt(base.length - 1) !== '/') base += '/';
+      var fullUrl = base + filename;
 
-        var container = document.createElement('div');
-        container.className = 'pdf-page-container';
-        container.style.width = containerWidth + 'px';
+      var viewerUrl = 'https://docs.google.com/gview?url=' + encodeURIComponent(fullUrl) + '&embedded=true';
 
-        var canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        canvas.style.width = '100%';
-        canvas.style.height = 'auto';
-        container.appendChild(canvas);
+      frame.src = viewerUrl;
 
-        body.innerHTML = '';
-        body.appendChild(container);
+      frame.onload = function() {
+        loading.style.display = 'none';
+        frame.style.display = 'block';
+      };
 
-        page.render({
-          canvasContext: canvas.getContext('2d'),
-          viewport: viewport,
-          intent: 'display'
-        }).promise.then(function() {
-          currentPage = num;
-          document.getElementById('pageInfo').innerText = num + ' / ' + totalPages;
-          rendering = false;
-        }).catch(function() {
-          rendering = false;
-        });
-      }).catch(function() {
-        rendering = false;
-      });
-    }
-
-    function nextPage() {
-      if (currentPage < totalPages) {
-        document.getElementById('pdfBody').scrollTop = 0;
-        renderPage(currentPage + 1);
-      }
-    }
-
-    function prevPage() {
-      if (currentPage > 1) {
-        document.getElementById('pdfBody').scrollTop = 0;
-        renderPage(currentPage - 1);
-      }
+      setTimeout(function() {
+        loading.style.display = 'none';
+        frame.style.display = 'block';
+      }, 5000);
     }
 
     function closePDF() {
       document.getElementById('pdfViewer').classList.remove('active');
-      document.getElementById('pdfBody').innerHTML = '';
+      document.getElementById('pdfFrame').src = '';
+      document.getElementById('pdfFrame').style.display = 'none';
       document.body.style.overflow = 'auto';
-      pdfDoc = null;
-      currentPage = 1;
-      totalPages = 0;
-      rendering = false;
     }
   </script>
 </body>
