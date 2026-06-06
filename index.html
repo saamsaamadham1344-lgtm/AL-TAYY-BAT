@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>نظام الطيبات الذكي</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- TIKTOK RESMİ SCRİPTİ (Hata almamak için şart) -->
+  <script async src="https://www.tiktok.com/embed.js"></script>
   <style>
     *{font-family:'Cairo',sans-serif;box-sizing:border-box;margin:0;padding:0}
     body{background:radial-gradient(circle at 50% -30%,#2a1e0a 0%,#0a0704 55%,#000 100%);color:#fff;min-height:100vh;padding-bottom:140px}
@@ -23,15 +25,16 @@
     .gold-text{background:linear-gradient(135deg,#f9e7a1,#d4a24a 40%,#b8862a);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
     .card-body{flex:1;text-align:right}
     .card-body h2{font-size:28px;font-weight:900}
-    .card-body p{color:#d9c088;font-size:14px;margin-top:8px;line-height:1.6}
     .gold-btn{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;font-weight:800;padding:12px 26px;border:none;border-radius:999px;cursor:pointer;font-size:16px;margin-top:14px}
     .icon-visual{width:100px;height:100px;border-radius:24px;background:linear-gradient(135deg,#f9e7a1,#b8862a);display:flex;align-items:center;justify-content:center;font-size:48px}
-    .book-grid{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-bottom:30px}
-    .book-card{cursor:pointer}
-    .book-cover{width:100%;aspect-ratio:3/4;background-size:cover;background-position:center;background-color:#1a1208;border-radius:14px 14px 0 0;overflow:hidden}
-    .book-card-body{background:#0f0a04;border:1.5px solid rgba(212,162,74,.5);border-top:none;border-radius:0 0 22px 22px;padding:12px;text-align:center}
-    .book-card-body .t{color:#f7e28b;font-size:15px;font-weight:800}
-    .open-btn{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;padding:9px 18px;border-radius:999px;border:none;cursor:pointer;font-size:14px;font-weight:800;margin-top:10px;width:100%}
+    
+    /* VİDEO REELS SİSTEMİ */
+    #reels-page { display:none; position:fixed; top:0; left:0; right:0; bottom:0; z-index:99999; background:#000; overflow-y:scroll; scroll-snap-type:y mandatory; }
+    #reels-page.active { display:block; }
+    .reel-item { width:100%; height:100vh; scroll-snap-align:start; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .reel-close { position:absolute; top:20px; right:20px; z-index:100000; background:rgba(0,0,0,0.7); border:2px solid #d4a24a; color:#fff; padding:10px 20px; border-radius:30px; cursor:pointer; font-weight:bold; }
+
+    /* PDF SİSTEMİ (Orijinal Kodun) */
     .pdf-viewer{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0a0704;z-index:9999;flex-direction:column}
     .pdf-viewer.active{display:flex}
     .pdf-topbar{background:linear-gradient(135deg,rgba(26,18,8,.98),rgba(10,7,4,.98));border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;padding:10px 14px;gap:12px}
@@ -42,25 +45,12 @@
     .pdf-loading{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a0704;z-index:2}
     .spinner{width:50px;height:50px;border:4px solid rgba(212,162,74,.2);border-top-color:#d4a24a;border-radius:50%;animation:spin 1s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
-    .hidden{display:none}
-
-    /* VİDEO REELS */
-    #reels-page { display:none; position:fixed; top:0; left:0; right:0; bottom:0; z-index:99999; background:#000; overflow-y:scroll; scroll-snap-type:y mandatory; }
-    #reels-page.active { display:block; }
-    .reel-item { width:100%; height:100vh; scroll-snap-align:start; display:flex; align-items:center; justify-content:center; }
-    .reel-item iframe { width:100%; height:100%; border:none; }
-    .reel-close { position:absolute; top:20px; right:20px; z-index:100000; background:rgba(0,0,0,0.7); border:2px solid #d4a24a; color:#fff; padding:10px 20px; border-radius:30px; cursor:pointer; font-weight:bold; }
-
-    /* UZUN VİDEOLAR */
-    .long-video-card { width:100%; aspect-ratio:16/9; background:#000; border-radius:15px; overflow:hidden; border:1px solid #d4a24a; margin-bottom:20px; }
-    .long-video-card iframe { width:100%; height:100%; border:none; }
 
     .bottom-nav-wrap{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:0 18px 20px 18px;background:linear-gradient(to top,#000 70%,transparent)}
     .bottom-nav{max-width:560px;margin:0 auto;background:#0f0a04;border:1.5px solid rgba(212,162,74,.5);border-radius:999px;display:flex;overflow:hidden;padding:6px 0}
     .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border:none;background:transparent;cursor:pointer}
     .nav-btn .ico{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:transparent;font-size:22px;color:#a69466}
     .nav-btn.active .ico{background:linear-gradient(135deg,#f9e7a1,#b8862a);color:#1a1208}
-    .nav-btn .lbl{font-size:12px;font-weight:700;color:#a69466}
     .nav-btn.active .lbl{color:#f7e28b}
   </style>
 </head>
@@ -73,37 +63,29 @@
     </div>
     <div class="header">
       <h1>نظام الطيبات الذكي</h1>
+      <div class="sub">بناء نظام ذكي</div>
+      <div class="welcome">أهلا وسهلا</div>
     </div>
 
     <main id="page-home" class="page active">
       <div class="cards">
         <section class="card">
           <div class="card-body">
-            <h2 class="gold-text">مقاطع قصيرة</h2>
+            <h2 class="gold-text">الفيديوهات</h2>
+            <p>شاهد أحدث المقاطع بتنسيق تيك توك</p>
             <button class="gold-btn" onclick="goTo('videos')">مشاهدة</button>
           </div>
           <div class="icon-visual">&#127916;</div>
         </section>
         <section class="card">
           <div class="card-body">
-            <h2 class="gold-text">فيديوهات طويلة</h2>
-            <button class="gold-btn" onclick="goTo('longvideos')">استعراض</button>
-          </div>
-          <div class="icon-visual">&#128250;</div>
-        </section>
-        <section class="card">
-          <div class="card-body">
             <h2 class="gold-text">الكتب</h2>
+            <p>اقرأ أفضل الكتب</p>
             <button class="gold-btn" onclick="goTo('books')">استعراض</button>
           </div>
           <div class="icon-visual">&#128218;</div>
         </section>
       </div>
-    </main>
-
-    <main id="page-longvideos" class="page">
-      <div class="books-top"><button class="gold-btn" onclick="goTo('home')">الرئيسية</button></div>
-      <div id="long-videos-container"></div>
     </main>
 
     <main id="page-books" class="page">
@@ -127,11 +109,13 @@
     </main>
   </div>
 
+  <!-- VİDEO KATMANI -->
   <div id="reels-page">
       <button class="reel-close" onclick="closeReels()">X خروج</button>
       <div id="reels-container"></div>
   </div>
 
+  <!-- PDF VIEWER -->
   <div class="pdf-viewer" id="pdfViewer">
     <div class="pdf-topbar">
       <button class="tb-close" onclick="closePDF()">X</button>
@@ -146,14 +130,14 @@
   <div class="bottom-nav-wrap">
     <nav class="bottom-nav">
       <button class="nav-btn" onclick="goTo('books')"><div class="ico">&#128218;</div></button>
-      <button class="nav-btn" onclick="goTo('longvideos')"><div class="ico">&#128250;</div></button>
       <button class="nav-btn" onclick="goTo('videos')"><div class="ico">&#127916;</div></button>
       <button class="nav-btn active" id="btn-home" onclick="goTo('home')"><div class="ico">&#127968;</div></button>
     </nav>
   </div>
 
   <script>
-    const shortLinks = [
+    // LİNKLERİN BURADA (Tüm vt.tiktok linklerin çalışacaktır)
+    const myLinks = [
       'https://vt.tiktok.com/ZSQYjeUSd/',
       'https://vt.tiktok.com/ZSQY2qUBg/',
       'https://vt.tiktok.com/ZSQY2bdWS/',
@@ -164,26 +148,40 @@
       'https://vt.tiktok.com/ZSQY25hBo/'
     ];
 
-    const longLinks = [];
-
     function goTo(name) {
       if(name === 'videos') { openReels(); return; }
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById('page-' + name).classList.add('active');
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      if(name === 'longvideos') loadLongVideos();
       window.scrollTo(0,0);
     }
 
     function openReels() {
         const container = document.getElementById('reels-container');
         container.innerHTML = '';
-        shortLinks.forEach(link => {
-            let embed = '';
-            if(link.includes('tiktok.com')) embed = `https://www.tiktok.com/embed/v2/${link.split('.com/')[1]}`;
-            else if(link.includes('youtube.com/shorts/')) embed = `https://www.youtube.com/embed/${link.split('shorts/')[1]}`;
-            if(embed) container.innerHTML += `<div class="reel-item"><iframe src="${embed}" allowfullscreen></iframe></div>`;
+        myLinks.forEach(link => {
+            // TikTok'un resmi gömme kodunu oluşturuyoruz
+            const blockquote = document.createElement('blockquote');
+            blockquote.className = 'tiktok-embed';
+            blockquote.cite = link;
+            blockquote.dataset.videoId = ''; // TikTok scripti bunu otomatik doldurur
+            blockquote.style.width = '100%';
+            blockquote.style.height = '100vh';
+            
+            const section = document.createElement('section');
+            section.innerHTML = `<a href="${link}"></a>`;
+            blockquote.appendChild(section);
+
+            const div = document.createElement('div');
+            div.className = 'reel-item';
+            div.appendChild(blockquote);
+            container.appendChild(div);
         });
+        
+        // TikTok scriptini tetikle
+        if (window.tiktok && window.tiktok.embed) {
+            window.tiktok.embed.render();
+        }
+
         document.getElementById('reels-page').classList.add('active');
         document.body.style.overflow = 'hidden';
     }
@@ -203,8 +201,8 @@
       let base = window.location.href.split('index.html')[0];
       if (base.charAt(base.length - 1) !== '/') base += '/';
       
-      // Mavi butonu atlamak için "chrome=true" ve "embedded=true" parametrelerini kullandım
-      frame.src = 'https://docs.google.com/viewer?url=' + encodeURIComponent(base + filename) + '&embedded=true&chrome=true';
+      // Google Viewer'ın butonsuz açılması için en temiz link
+      frame.src = 'https://docs.google.com/gview?url=' + encodeURIComponent(base + filename) + '&embedded=true';
       frame.onload = () => loading.classList.add('hidden');
     }
 
