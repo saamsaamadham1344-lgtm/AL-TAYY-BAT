@@ -60,15 +60,29 @@
     .load-text{color:#f7e28b;margin-top:18px;font-size:15px;font-weight:700}
     .load-sub{color:#a69466;margin-top:6px;font-size:13px}
 
-    /* VİDEO REELS SİSTEMİ - Sadece Eklemeler */
-    #video-feed { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; }
-    .reels-container { width: 100%; height: 100vh; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; background: #000; position: relative; }
-    .reels-container iframe { width: 100%; height: 100%; border: none; }
-    .back-to-home { position: absolute; top: 20px; right: 20px; z-index: 1000; background: rgba(0,0,0,0.6); border: 1px solid #d4a24a; color: #fff; padding: 8px 15px; border-radius: 20px; cursor: pointer; }
+    /* REELS - Video Feed */
+    .video-feed{position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:9998;display:none;flex-direction:column}
+    .video-feed.active{display:flex}
+    .vf-topbar{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;padding:14px;background:linear-gradient(to bottom,rgba(0,0,0,.85),transparent)}
+    .vf-close{height:42px;width:42px;border-radius:12px;border:1.5px solid rgba(185,28,28,.5);background:linear-gradient(135deg,#b91c1c,#7f1d1d);color:#fff;font-size:18px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .vf-title{color:#f7e28b;font-size:16px;font-weight:800;flex:1;text-align:center;margin-right:42px}
+    .vf-scroll{flex:1;overflow-y:scroll;scroll-snap-type:y mandatory;scrollbar-width:none}
+    .vf-scroll::-webkit-scrollbar{display:none}
+    .vf-item{height:100vh;width:100%;scroll-snap-align:start;scroll-snap-stop:always;position:relative;display:flex;align-items:center;justify-content:center;background:#000}
+    .vf-item iframe,.vf-item video{width:100%;height:100%;border:none;background:#000}
+    .vf-card{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;gap:18px;max-width:90%}
+    .vf-card .ico{font-size:80px}
+    .vf-card .ttl{color:#f7e28b;font-size:22px;font-weight:800}
+    .vf-card .desc{color:#d9c088;font-size:14px;line-height:1.6}
+    .vf-card .open-link{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;padding:14px 30px;border-radius:999px;border:none;font-weight:800;font-size:16px;text-decoration:none;display:inline-block;margin-top:10px;cursor:pointer}
+    .vf-badge{position:absolute;top:70px;right:14px;z-index:10;background:rgba(212,162,74,.95);color:#1a1208;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:800}
+    .vf-counter{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#f7e28b;padding:6px 14px;border-radius:999px;font-size:13px;font-weight:700;z-index:10}
+    .vf-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#d9c088;text-align:center;padding:40px}
+    .vf-empty .ic{font-size:60px;margin-bottom:20px}
   </style>
 </head>
 <body>
-  <div class="container" id="main-ui">
+  <div class="container">
     <div class="top-row">
       <div class="circle-btn">&#128100;</div>
       <div class="logo-center">&#127806;</div>
@@ -86,7 +100,7 @@
           <div class="card-body">
             <h2 class="gold-text">الفيديوهات</h2>
             <p>شاهد أحدث الفيديوهات في مكان واحد</p>
-            <button class="gold-btn" onclick="goTo('videos')">مشاهدة</button>
+            <button class="gold-btn" onclick="openVideoFeed()">مشاهدة</button>
           </div>
           <div class="icon-visual">&#127916;</div>
         </section>
@@ -101,7 +115,15 @@
       </div>
     </main>
 
-    <!-- KİTAPLARIN - HİÇ DOKUNMADIM -->
+    <main id="page-videos" class="page">
+      <div style="text-align:center;margin-top:40px">
+        <p style="color:#d9c088;font-size:16px">اضغط لمشاهدة الفيديوهات</p>
+        <button class="gold-btn" onclick="openVideoFeed()">ابدأ المشاهدة</button>
+        <br>
+        <button class="gold-btn" onclick="goTo('home')">الرئيسية</button>
+      </div>
+    </main>
+
     <main id="page-books" class="page">
       <div class="books-top">
         <button class="gold-btn" onclick="goTo('home')">الرئيسية</button>
@@ -127,13 +149,6 @@
     </main>
   </div>
 
-  <!-- VİDEO REELS SAYFASI -->
-  <main id="page-videos" class="page" style="position:fixed; top:0; left:0; right:0; bottom:0; z-index:2000; background:#000;">
-      <button class="back-to-home" onclick="goTo('home')">X خروج</button>
-      <div id="video-feed"></div>
-  </main>
-
-  <!-- PDF VIEWER - HİÇ DOKUNMADIM -->
   <div class="pdf-viewer" id="pdfViewer">
     <div class="pdf-topbar">
       <button class="tb-close" onclick="closePDF()">X</button>
@@ -159,85 +174,189 @@
     </div>
   </div>
 
+  <!-- REELS -->
+  <div class="video-feed" id="videoFeed">
+    <div class="vf-topbar">
+      <button class="vf-close" onclick="closeVideoFeed()">X</button>
+      <div class="vf-title">الفيديوهات</div>
+    </div>
+    <div class="vf-scroll" id="vfScroll"></div>
+  </div>
+
   <div class="bottom-nav-wrap">
     <nav class="bottom-nav">
       <button class="nav-btn" onclick="goTo('books')"><div class="ico">&#128218;</div><span class="lbl">الكتب</span></button>
-      <button class="nav-btn" onclick="goTo('videos')"><div class="ico">&#127916;</div><span class="lbl">الفيديوهات</span></button>
+      <button class="nav-btn" onclick="openVideoFeed()"><div class="ico">&#127916;</div><span class="lbl">الفيديوهات</span></button>
       <button class="nav-btn active" onclick="goTo('home')"><div class="ico">&#127968;</div><span class="lbl">الرئيسية</span></button>
     </nav>
   </div>
 
   <script>
-    // LİNKLERİ BURAYA EKLECEKSİN
-    const myLinks = [
-      'https://www.facebook.com/share/v/18e8tekMkz/',
-      'https://www.facebook.com/share/v/1EJfjJ8Cm9/',
-      'https://www.facebook.com/share/v/1SsuPmyNXC/',
-      'https://www.facebook.com/share/r/1BMCaUPGtm/',
-      'https://www.facebook.com/share/v/1Dqwpw21An/',
-      'https://www.facebook.com/share/v/18in82xiDV/',
-      'https://www.facebook.com/share/v/1ABhX4kSuz/',
-      'https://www.facebook.com/share/v/1Fi7Ru5bC3/'
-    ];
-
     function goTo(name) {
       var pages = document.querySelectorAll('.page');
-      pages.forEach(p => p.classList.remove('active'));
-      
+      for (var i = 0; i < pages.length; i++) {
+        pages[i].classList.remove('active');
+      }
       var t = document.getElementById('page-' + name);
       if (t) t.classList.add('active');
-
-      if(name === 'videos') {
-          loadReels();
-          document.getElementById('main-ui').style.display = 'none';
-          document.querySelector('.bottom-nav-wrap').style.display = 'none';
-      } else {
-          document.getElementById('main-ui').style.display = 'block';
-          document.querySelector('.bottom-nav-wrap').style.display = 'block';
-          window.scrollTo(0, 0);
-      }
+      window.scrollTo(0, 0);
     }
 
-    function loadReels() {
-        const feed = document.getElementById('video-feed');
-        feed.innerHTML = '';
-        myLinks.forEach(link => {
-            let embed = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(link)}&show_text=0`;
-            const div = document.createElement('div');
-            div.className = 'reels-container';
-            div.innerHTML = `<iframe src="${embed}" allowfullscreen allow="autoplay; encrypted-media"></iframe>`;
-            feed.appendChild(div);
-        });
-    }
-
-    // SENİN ORİJİNAL KİTAP KODUN
+    /* ============ PDF AÇMA (Direkt browser - Google viewer kullanmaz) ============ */
     function openPDF(filename, title) {
       document.getElementById('pdfViewer').classList.add('active');
       document.body.style.overflow = 'hidden';
       document.getElementById('pdfTitle').innerText = title || 'الكتاب';
+
       var frame = document.getElementById('pdfFrame');
       var loading = document.getElementById('pdfLoading');
+
       frame.style.opacity = '0';
       loading.classList.remove('hidden');
-      
-      // TAM SENİN KODUNDAKİ GİBİ:
-      var base = window.location.href;
-      if (base.indexOf('index.html') !== -1) {
-        base = base.substring(0, base.lastIndexOf('/') + 1);
-      }
-      if (base.charAt(base.length - 1) !== '/') base += '/';
-      var fullUrl = base + filename;
 
-      frame.src = 'https://docs.google.com/gview?url=' + encodeURIComponent(fullUrl) + '&embedded=true';
+      // PDF'i direkt aç (Google viewer artık çalışmıyor)
+      frame.src = filename;
+
       frame.onload = function() {
         loading.classList.add('hidden');
         frame.style.opacity = '1';
       };
+
+      setTimeout(function() {
+        loading.classList.add('hidden');
+        frame.style.opacity = '1';
+      }, 3000);
     }
 
     function closePDF() {
       document.getElementById('pdfViewer').classList.remove('active');
       document.getElementById('pdfFrame').src = '';
+      document.body.style.overflow = 'auto';
+    }
+
+    /* ============================================================
+       VIDEO LİSTESİ - BURAYA LİNK EKLE
+       Her satıra bir link, tırnak içinde, virgülle
+       Son linkten sonra virgül YOK
+       ============================================================ */
+    var VIDEOS = [
+
+      "https://www.facebook.com/share/v/18e8tekMkz/",
+      "https://www.facebook.com/share/v/1EJfjJ8Cm9/",
+      "https://www.facebook.com/share/v/1SsuPmyNXC/",
+      "https://www.facebook.com/share/r/1BMCaUPGtm/",
+      "https://www.facebook.com/share/v/1Dqwpw21An/",
+      "https://www.facebook.com/share/v/18in82xiDV/",
+      "https://www.facebook.com/share/v/1ABhX4kSuz/",
+      "https://www.facebook.com/share/v/1Fi7Ru5bC3/"
+
+    ];
+    /* ============================================================ */
+
+    function detectPlatform(url) {
+      if (!url) return null;
+      url = url.trim();
+      if (url.indexOf('youtube.com') !== -1 || url.indexOf('youtu.be') !== -1) return 'youtube';
+      if (url.indexOf('tiktok.com') !== -1) return 'tiktok';
+      if (url.indexOf('instagram.com') !== -1) return 'instagram';
+      if (url.indexOf('facebook.com') !== -1 || url.indexOf('fb.watch') !== -1) return 'facebook';
+      return 'other';
+    }
+    function getYouTubeId(url) {
+      var m = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([^&?\/\s]+)/);
+      return m ? m[1] : null;
+    }
+    function getTikTokId(url) {
+      var m = url.match(/\/video\/(\d+)/);
+      return m ? m[1] : null;
+    }
+    function buildEmbedHTML(url) {
+      var p = detectPlatform(url);
+      if (p === 'youtube') {
+        var id = getYouTubeId(url);
+        if (id) return '<iframe src="https://www.youtube.com/embed/' + id + '?rel=0&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+      }
+      if (p === 'tiktok') {
+        var tid = getTikTokId(url);
+        if (tid) return '<iframe src="https://www.tiktok.com/embed/v2/' + tid + '" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+      }
+      if (p === 'instagram') {
+        var clean = url.split('?')[0];
+        if (clean.charAt(clean.length - 1) !== '/') clean += '/';
+        return '<iframe src="' + clean + 'embed" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+      }
+      // Facebook share linkleri iframe'de gösterilemez - buton göster
+      if (p === 'facebook') {
+        return '<div class="vf-card">' +
+                 '<div class="ico">&#127916;</div>' +
+                 '<div class="ttl">فيديو فيسبوك</div>' +
+                 '<div class="desc">اضغط الزر لمشاهدة الفيديو في فيسبوك</div>' +
+                 '<a class="open-link" href="' + url + '" target="_blank" rel="noopener">&#9654; مشاهدة الفيديو</a>' +
+               '</div>';
+      }
+      return '<div class="vf-card"><div class="ico">&#10067;</div><div class="ttl">رابط غير مدعوم</div></div>';
+    }
+
+    var currentIndex = 0;
+    function buildFeed() {
+      var scroll = document.getElementById('vfScroll');
+      scroll.innerHTML = '';
+      if (!VIDEOS || VIDEOS.length === 0) {
+        scroll.innerHTML = '<div class="vf-empty"><div class="ic">&#127916;</div><div>لا توجد فيديوهات بعد</div></div>';
+        return;
+      }
+      for (var i = 0; i < VIDEOS.length; i++) {
+        var item = document.createElement('div');
+        item.className = 'vf-item';
+        item.setAttribute('data-index', i);
+        item.setAttribute('data-url', VIDEOS[i]);
+        var platform = detectPlatform(VIDEOS[i]);
+        var badge = platform ? platform.toUpperCase() : '';
+        item.innerHTML = '<div class="vf-badge">' + badge + '</div>' +
+                         '<div class="vf-counter">' + (i + 1) + ' / ' + VIDEOS.length + '</div>';
+        scroll.appendChild(item);
+      }
+      // İlk yüklemede ilk videoyu hazırla
+      var first = scroll.querySelector('.vf-item');
+      if (first) {
+        var url = first.getAttribute('data-url');
+        var badge = first.querySelector('.vf-badge').outerHTML;
+        var counter = first.querySelector('.vf-counter').outerHTML;
+        first.innerHTML = badge + buildEmbedHTML(url) + counter;
+      }
+      observeFeed();
+    }
+    function observeFeed() {
+      var items = document.querySelectorAll('.vf-item');
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          var el = entry.target;
+          if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+            if (!el.querySelector('iframe') && !el.querySelector('.vf-card')) {
+              var url = el.getAttribute('data-url');
+              var badge = el.querySelector('.vf-badge').outerHTML;
+              var counter = el.querySelector('.vf-counter').outerHTML;
+              el.innerHTML = badge + buildEmbedHTML(url) + counter;
+            }
+          }
+        });
+      }, { threshold: [0, 0.5, 1], root: document.getElementById('vfScroll') });
+      items.forEach(function(it) { observer.observe(it); });
+    }
+    function trackCurrent() {
+      var scroll = document.getElementById('vfScroll');
+      scroll.addEventListener('scroll', function() {
+        currentIndex = Math.round(scroll.scrollTop / window.innerHeight);
+      });
+    }
+    var feedReady = false;
+    function openVideoFeed() {
+      document.getElementById('videoFeed').classList.add('active');
+      document.body.style.overflow = 'hidden';
+      if (!feedReady) { buildFeed(); trackCurrent(); feedReady = true; }
+    }
+    function closeVideoFeed() {
+      document.getElementById('videoFeed').classList.remove('active');
       document.body.style.overflow = 'auto';
     }
   </script>
