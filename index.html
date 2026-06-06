@@ -1,6 +1,3 @@
-**
-
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -366,4 +363,14 @@
 
           statusEl.innerText = '...جاري البحث - صفحة ' + i + ' / ' + totalPages;
         } catch(e){
-          console.error('Erro
+          console.error('Error page ' + i, e);
+        }
+      }
+
+      if(matches.length === 0){
+        countEl.innerText = '0';
+        statusEl.innerText = 'لم يتم العثور على نتائج';
+        setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+      } else {
+        countEl.innerText = '1/' + matches.length;
+        statusEl.innerTex
