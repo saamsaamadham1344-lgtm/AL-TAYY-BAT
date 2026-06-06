@@ -31,7 +31,7 @@
     .section-title p{color:#d9c088;font-size:14px;margin-top:6px}
     .book-grid{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-bottom:30px}
     .book-card{cursor:pointer}
-    .book-cover{width:100%;aspect-ratio:3/4;background-size:cover;background-position:center;background-color:#1a1208;border-radius:14px 14px 0 0;overflow:hidden;position:relative}
+    .book-cover{width:100%;aspect-ratio:3/4;background-size:cover;background-position:center;background-color:#1a1208;border-radius:14px 14px 0 0;overflow:hidden}
     .book-card-body{background:#0f0a04;border:1.5px solid rgba(212,162,74,.5);border-top:none;border-radius:0 0 22px 22px;padding:12px;text-align:center}
     .book-card-body .t{color:#f7e28b;font-size:15px;font-weight:800}
     .book-card-body .d{color:#a69466;font-size:12px;margin-top:4px}
@@ -119,19 +119,19 @@
       </div>
       <div class="book-grid">
         <div class="book-card">
-          <div class="book-cover" style="background-image:url('IMG_20260606_013120.jpg')"></div>
+          <div class="book-cover" style="background-image:url('kapak1.jpg')"></div>
           <div class="book-card-body">
             <div class="t">كتاب الطيبات</div>
             <div class="d">الجزء الأول - PDF</div>
-            <button class="open-btn" onclick="openPDF1()">فتح الكتاب</button>
+            <button class="open-btn" onclick="openPDF('kitap1.pdf')">فتح الكتاب</button>
           </div>
         </div>
         <div class="book-card">
-          <div class="book-cover" style="background-image:url('IMG_20260606_013143.jpg')"></div>
+          <div class="book-cover" style="background-image:url('kapak2.jpg')"></div>
           <div class="book-card-body">
             <div class="t">كتاب الطيبات</div>
             <div class="d">الجزء الثاني - PDF</div>
-            <button class="open-btn" onclick="openPDF2()">فتح الكتاب</button>
+            <button class="open-btn" onclick="openPDF('kitap2.pdf')">فتح الكتاب</button>
           </div>
         </div>
       </div>
@@ -178,10 +178,6 @@
       }
       var t = document.getElementById('page-' + name);
       if (t) t.classList.add('active');
-      var btns = document.querySelectorAll('.nav-btn');
-      for (var j = 0; j < btns.length; j++) {
-        btns[j].classList.remove('active');
-      }
       window.scrollTo(0, 0);
     }
   </script>
@@ -214,20 +210,11 @@
       return t.trim();
     }
 
-    function openPDF1() {
-      openPDF('AL%20TAYYIBAT%20(2)-1-95-45-95%20(1)%20(1).pdf');
-    }
-
-    function openPDF2() {
-      openPDF('kitab-altayyibat-1%20(1).pdf');
-    }
-
     function openPDF(url) {
       if (!pdfReady) {
-        alert('PDF yuklenmedi. Sayfayi yenileyin.');
+        alert('PDF yuklenmedi');
         return;
       }
-
       document.getElementById('pdfViewer').classList.add('active');
       document.body.style.overflow = 'hidden';
       document.getElementById('pdfBody').innerHTML = '<div class="pdf-loading"><div class="spinner"></div><div class="load-text">جاري تحميل الكتاب...</div><div class="load-sub">يرجى الانتظار</div></div>';
@@ -288,17 +275,17 @@
         }).promise.then(function() {
           return page.getTextContent();
         }).then(function(textContent) {
-          var displayViewport = page.getViewport({scale: displayScale});
+          var dv = page.getViewport({scale: displayScale});
           for (var i = 0; i < textContent.items.length; i++) {
             var item = textContent.items[i];
             if (!item.str || item.str.trim() === '') continue;
             var span = document.createElement('span');
             span.textContent = item.str;
-            var tx = pdfjsLib.Util.transform(displayViewport.transform, item.transform);
-            var fontSize = Math.sqrt(tx[2]*tx[2] + tx[3]*tx[3]);
+            var tx = pdfjsLib.Util.transform(dv.transform, item.transform);
+            var fs = Math.sqrt(tx[2]*tx[2] + tx[3]*tx[3]);
             span.style.left = tx[4] + 'px';
-            span.style.top = (tx[5] - fontSize) + 'px';
-            span.style.fontSize = fontSize + 'px';
+            span.style.top = (tx[5] - fs) + 'px';
+            span.style.fontSize = fs + 'px';
             span.style.fontFamily = 'sans-serif';
             textLayer.appendChild(span);
           }
@@ -306,12 +293,8 @@
           document.getElementById('pageInfo').innerText = num + ' / ' + totalPages;
           if (searchQuery) highlightPage();
           rendering = false;
-        }).catch(function(e) {
-          rendering = false;
-        });
-      }).catch(function(e) {
-        rendering = false;
-      });
+        }).catch(function() { rendering = false; });
+      }).catch(function() { rendering = false; });
     }
 
     function highlightPage() {
@@ -383,7 +366,7 @@
           }
           return;
         }
-        if (statusEl) statusEl.innerText = 'جاري البحث - صفحة ' + sp + '/' + totalPages;
+        if (statusEl) statusEl.innerText = 'صفحة ' + sp + '/' + totalPages;
 
         pdfDoc.getPage(sp).then(function(page) {
           return page.getTextContent();
@@ -400,7 +383,7 @@
           }
           if (!found) {
             var nAll = normalizeArabic(allText);
-            if (nAll.indexOf(nq) !== -1 || allText.indexOf(searchQuery) !== -1) found = true;
+            if (nAll.indexOf(nq) !== -1) found = true;
           }
           if (!found) {
             var noSp = allText.replace(/\s/g, '');
@@ -422,4 +405,13 @@
       document.body.style.overflow = 'auto';
       var st = document.getElementById('searchStatus');
       if (st) st.style.display = 'none';
-      p
+      pdfDoc = null;
+      currentPage = 1;
+      totalPages = 0;
+      matches = [];
+      searchQuery = '';
+      rendering = false;
+    }
+  </script>
+</body>
+</html>
