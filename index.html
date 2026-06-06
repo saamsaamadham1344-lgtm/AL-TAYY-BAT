@@ -45,28 +45,22 @@
     .nav-btn.active .lbl{color:#f7e28b;font-weight:800}
     .pdf-viewer{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:9999;flex-direction:column}
     .pdf-viewer.active{display:flex}
-    .pdf-topbar{background:rgba(26,18,8,.98);border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;gap:8px;padding:8px 12px}
+    .pdf-topbar{background:rgba(26,18,8,.98);border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;justify-content:space-between;padding:8px 12px}
     .tb{height:40px;border-radius:10px;border:1.5px solid rgba(212,162,74,.35);background:rgba(15,10,4,.9);color:#d4a24a;font-size:16px;cursor:pointer;padding:0 12px}
     .tb-close{background:linear-gradient(135deg,#b91c1c,#7f1d1d);color:#fff;border-color:rgba(185,28,28,.5);width:40px;padding:0}
-    .search-wrap{flex:1;position:relative;display:flex;align-items:center}
-    .search-wrap input{width:100%;height:40px;padding:0 12px;border-radius:10px;border:1.5px solid rgba(212,162,74,.4);background:rgba(15,10,4,.9);color:#d4a24a;font-size:14px}
-    .search-wrap input::placeholder{color:#a69466;font-weight:500}
-    .s-count{position:absolute;left:8px;color:#d4a24a;font-size:11px;font-weight:800;background:rgba(212,162,74,.15);padding:2px 8px;border-radius:6px}
+    .pdf-title{color:#f7e28b;font-size:16px;font-weight:800;flex:1;text-align:center}
     .pdf-body{flex:1;overflow:auto;background:#1a1a1a;display:flex;flex-direction:column;align-items:center}
-    .pdf-page-container{position:relative;margin-bottom:10px;box-shadow:0 4px 20px rgba(0,0,0,.5);border-radius:4px;overflow:hidden}
+    .pdf-page-container{position:relative;box-shadow:0 4px 20px rgba(0,0,0,.5);overflow:hidden}
     .pdf-page-container canvas{display:block;width:100%;height:auto}
-    .text-layer{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;opacity:.25;line-height:1;pointer-events:none}
-    .text-layer span{color:transparent;position:absolute;white-space:pre;transform-origin:0% 0%}
-    .text-layer .hl{background:#ffeb3b;border-radius:2px;box-shadow:0 0 6px #ffeb3b;opacity:1}
-    .text-layer .hl-active{background:#ff9800;box-shadow:0 0 10px #ff9800}
-    .pdf-nav{background:rgba(26,18,8,.98);border-top:1px solid rgba(212,162,74,.3);display:flex;align-items:center;justify-content:center;gap:12px;padding:10px}
-    .page-info{color:#f7e28b;font-size:14px;font-weight:800;min-width:80px;text-align:center}
+    .pdf-nav{background:rgba(26,18,8,.98);border-top:none;display:flex;align-items:center;justify-content:center;gap:16px;padding:10px;margin:0}
+    .nav-arrow{width:50px;height:50px;border-radius:50%;border:1.5px solid rgba(212,162,74,.5);background:rgba(15,10,4,.9);color:#d4a24a;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:bold}
+    .nav-arrow:active{background:linear-gradient(135deg,#f9e7a1,#d4a24a);color:#1a1208}
+    .page-info{color:#f7e28b;font-size:16px;font-weight:800;min-width:80px;text-align:center}
     .pdf-loading{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background-color:#0a0704}
     .spinner{width:50px;height:50px;border:4px solid rgba(212,162,74,.2);border-top-color:#d4a24a;border-radius:50%;animation:spin 1s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
     .load-text{color:#f7e28b;margin-top:18px;font-size:15px;font-weight:700}
     .load-sub{color:#a69466;margin-top:6px;font-size:13px}
-    .search-status{color:#f7e28b;font-size:13px;text-align:center;padding:8px;background:rgba(212,162,74,.1)}
   </style>
 </head>
 <body>
@@ -141,13 +135,8 @@
   <div class="pdf-viewer" id="pdfViewer">
     <div class="pdf-topbar">
       <button class="tb tb-close" onclick="closePDF()">X</button>
-      <div class="search-wrap">
-        <input type="text" id="searchInput" placeholder="ابحث في الكتاب..." onkeydown="if(event.key=='Enter')doSearch()">
-        <span class="s-count" id="searchCount" style="display:none"></span>
-      </div>
-      <button class="tb" onclick="doSearch()">بحث</button>
+      <div class="pdf-title" id="pdfTitle">الكتاب</div>
     </div>
-    <div id="searchStatus" style="display:none" class="search-status"></div>
     <div class="pdf-body" id="pdfBody">
       <div class="pdf-loading">
         <div class="spinner"></div>
@@ -156,9 +145,9 @@
       </div>
     </div>
     <div class="pdf-nav">
-      <button class="tb" onclick="nextPage()">التالية</button>
+      <button class="nav-arrow" onclick="nextPage()">&#9654;</button>
       <div class="page-info" id="pageInfo">1 / 1</div>
-      <button class="tb" onclick="prevPage()">السابقة</button>
+      <button class="nav-arrow" onclick="prevPage()">&#9664;</button>
     </div>
   </div>
 
@@ -188,8 +177,6 @@
     var currentPage = 1;
     var totalPages = 0;
     var rendering = false;
-    var searchQuery = '';
-    var matches = [];
     var pdfReady = false;
 
     try {
@@ -199,32 +186,15 @@
       pdfReady = false;
     }
 
-    function normalizeArabic(text) {
-      var t = text;
-      t = t.replace(/[\u064B-\u065F\u0670\u0640]/g, '');
-      t = t.replace(/[أإآٱا]/g, 'ا');
-      t = t.replace(/ة/g, 'ه');
-      t = t.replace(/[یيئى]/g, 'ي');
-      t = t.replace(/ؤ/g, 'و');
-      t = t.replace(/\s+/g, ' ');
-      return t.trim();
-    }
-
     function openPDF(url) {
       if (!pdfReady) {
-        alert('PDF yuklenmedi');
+        alert('PDF yuklenmedi. Sayfayi yenileyin.');
         return;
       }
       document.getElementById('pdfViewer').classList.add('active');
       document.body.style.overflow = 'hidden';
       document.getElementById('pdfBody').innerHTML = '<div class="pdf-loading"><div class="spinner"></div><div class="load-text">جاري تحميل الكتاب...</div><div class="load-sub">يرجى الانتظار</div></div>';
       document.getElementById('pageInfo').innerText = '...';
-      document.getElementById('searchInput').value = '';
-      document.getElementById('searchCount').style.display = 'none';
-      var st = document.getElementById('searchStatus');
-      if (st) st.style.display = 'none';
-      searchQuery = '';
-      matches = [];
       currentPage = 1;
       pdfDoc = null;
       rendering = false;
@@ -244,7 +214,7 @@
 
       pdfDoc.getPage(num).then(function(page) {
         var body = document.getElementById('pdfBody');
-        var containerWidth = body.clientWidth - 16;
+        var containerWidth = body.clientWidth;
         if (containerWidth < 100) containerWidth = 300;
         var baseViewport = page.getViewport({scale: 1});
         var displayScale = containerWidth / baseViewport.width;
@@ -262,10 +232,6 @@
         canvas.style.height = 'auto';
         container.appendChild(canvas);
 
-        var textLayer = document.createElement('div');
-        textLayer.className = 'text-layer';
-        container.appendChild(textLayer);
-
         body.innerHTML = '';
         body.appendChild(container);
 
@@ -273,46 +239,15 @@
           canvasContext: canvas.getContext('2d'),
           viewport: viewport
         }).promise.then(function() {
-          return page.getTextContent();
-        }).then(function(textContent) {
-          var dv = page.getViewport({scale: displayScale});
-          for (var i = 0; i < textContent.items.length; i++) {
-            var item = textContent.items[i];
-            if (!item.str || item.str.trim() === '') continue;
-            var span = document.createElement('span');
-            span.textContent = item.str;
-            var tx = pdfjsLib.Util.transform(dv.transform, item.transform);
-            var fs = Math.sqrt(tx[2]*tx[2] + tx[3]*tx[3]);
-            span.style.left = tx[4] + 'px';
-            span.style.top = (tx[5] - fs) + 'px';
-            span.style.fontSize = fs + 'px';
-            span.style.fontFamily = 'sans-serif';
-            textLayer.appendChild(span);
-          }
           currentPage = num;
           document.getElementById('pageInfo').innerText = num + ' / ' + totalPages;
-          if (searchQuery) highlightPage();
           rendering = false;
-        }).catch(function() { rendering = false; });
-      }).catch(function() { rendering = false; });
-    }
-
-    function highlightPage() {
-      var nq = normalizeArabic(searchQuery);
-      var spans = document.querySelectorAll('.text-layer span');
-      for (var i = 0; i < spans.length; i++) {
-        var nt = normalizeArabic(spans[i].textContent);
-        if (nt.indexOf(nq) !== -1 || spans[i].textContent.indexOf(searchQuery) !== -1) {
-          spans[i].classList.add('hl');
-        }
-      }
-      setTimeout(function() {
-        var first = document.querySelector('.text-layer .hl');
-        if (first) {
-          first.classList.add('hl-active');
-          first.scrollIntoView({behavior:'smooth', block:'center'});
-        }
-      }, 300);
+        }).catch(function() {
+          rendering = false;
+        });
+      }).catch(function() {
+        rendering = false;
+      });
     }
 
     function nextPage() {
@@ -329,87 +264,13 @@
       }
     }
 
-    function doSearch() {
-      searchQuery = document.getElementById('searchInput').value.trim();
-      var countEl = document.getElementById('searchCount');
-      var statusEl = document.getElementById('searchStatus');
-
-      if (!searchQuery) {
-        countEl.style.display = 'none';
-        if (statusEl) statusEl.style.display = 'none';
-        var spans = document.querySelectorAll('.text-layer span');
-        for (var i = 0; i < spans.length; i++) {
-          spans[i].classList.remove('hl');
-          spans[i].classList.remove('hl-active');
-        }
-        matches = [];
-        return;
-      }
-
-      countEl.style.display = 'block';
-      countEl.innerText = '...';
-      if (statusEl) { statusEl.style.display = 'block'; statusEl.innerText = 'جاري البحث...'; }
-      matches = [];
-      var nq = normalizeArabic(searchQuery);
-      var sp = 1;
-
-      function sNext() {
-        if (sp > totalPages) {
-          if (matches.length === 0) {
-            countEl.innerText = '0';
-            if (statusEl) { statusEl.innerText = 'لم يتم العثور على نتائج'; setTimeout(function(){statusEl.style.display='none';}, 3000); }
-          } else {
-            countEl.innerText = '1/' + matches.length;
-            if (statusEl) { statusEl.innerText = 'تم العثور على ' + matches.length + ' نتيجة'; setTimeout(function(){statusEl.style.display='none';}, 2000); }
-            var fp = matches[0].page;
-            if (fp !== currentPage) { renderPage(fp); } else { highlightPage(); }
-          }
-          return;
-        }
-        if (statusEl) statusEl.innerText = 'صفحة ' + sp + '/' + totalPages;
-
-        pdfDoc.getPage(sp).then(function(page) {
-          return page.getTextContent();
-        }).then(function(tc) {
-          var found = false;
-          var allText = '';
-          for (var i = 0; i < tc.items.length; i++) {
-            var s = tc.items[i].str || '';
-            allText += s + ' ';
-            if (!found && s) {
-              var ns = normalizeArabic(s);
-              if (ns.indexOf(nq) !== -1 || s.indexOf(searchQuery) !== -1) found = true;
-            }
-          }
-          if (!found) {
-            var nAll = normalizeArabic(allText);
-            if (nAll.indexOf(nq) !== -1) found = true;
-          }
-          if (!found) {
-            var noSp = allText.replace(/\s/g, '');
-            var nNoSp = normalizeArabic(noSp);
-            var qNoSp = nq.replace(/\s/g, '');
-            if (nNoSp.indexOf(qNoSp) !== -1) found = true;
-          }
-          if (found) matches.push({page: sp});
-          sp++;
-          sNext();
-        }).catch(function() { sp++; sNext(); });
-      }
-      sNext();
-    }
-
     function closePDF() {
       document.getElementById('pdfViewer').classList.remove('active');
       document.getElementById('pdfBody').innerHTML = '';
       document.body.style.overflow = 'auto';
-      var st = document.getElementById('searchStatus');
-      if (st) st.style.display = 'none';
       pdfDoc = null;
       currentPage = 1;
       totalPages = 0;
-      matches = [];
-      searchQuery = '';
       rendering = false;
     }
   </script>
