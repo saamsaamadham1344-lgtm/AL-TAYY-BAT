@@ -1,3 +1,6 @@
+**
+
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -72,6 +75,7 @@
     @keyframes spin{to{transform:rotate(360deg)}}
     .load-text{color:#f7e28b;margin-top:18px;font-size:15px;font-weight:700}
     .load-sub{color:#a69466;margin-top:6px;font-size:13px}
+    .search-status{color:#f7e28b;font-size:13px;text-align:center;padding:8px;background:rgba(212,162,74,.1);border-bottom:1px solid rgba(212,162,74,.2)}
   </style>
 </head>
 <body>
@@ -131,6 +135,7 @@
       </div>
       <button class="tb" onclick="doSearch()">بحث</button>
     </div>
+    <div id="searchStatus" style="display:none" class="search-status"></div>
     <div class="pdf-body" id="pdfBody">
       <div class="pdf-loading">
         <div class="spinner"></div>
@@ -161,16 +166,16 @@
     let rendering = false;
     let searchQuery = '';
     let matches = [];
+    let currentMatchIndex = 0;
 
     function normalizeArabic(text){
       return text
-        .replace(/[\u064B-\u065F\u0670]/g, '')
-        .replace(/[أإآا]/g, 'ا')
+        .replace(/[\u064B-\u065F\u0670\u0640]/g, '')
+        .replace(/[أإآٱا]/g, 'ا')
         .replace(/ة/g, 'ه')
-        .replace(/ی/g, 'ي')
-        .replace(/ى/g, 'ي')
+        .replace(/[یيئى]/g, 'ي')
         .replace(/ؤ/g, 'و')
-        .replace(/ئ/g, 'ي')
+        .replace(/\s+/g, ' ')
         .trim();
     }
 
@@ -190,8 +195,10 @@
       document.getElementById('pageInfo').innerText = '...';
       document.getElementById('searchInput').value = '';
       document.getElementById('searchCount').style.display = 'none';
+      document.getElementById('searchStatus').style.display = 'none';
       searchQuery = '';
       matches = [];
+      currentMatchIndex = 0;
       currentPage = 1;
 
       try {
@@ -260,17 +267,29 @@
         document.getElementById('pageInfo').innerText = num + ' / ' + totalPages;
 
         if(searchQuery){
-          const normalizedQuery = normalizeArabic(searchQuery);
-          textLayer.querySelectorAll('span').forEach(span => {
-            if(normalizeArabic(span.textContent).includes(normalizedQuery)){
-              span.classList.add('hl');
-            }
-          });
+          highlightCurrentPage();
         }
       } catch(e){
         console.error(e);
       }
       rendering = false;
+    }
+
+    function highlightCurrentPage(){
+      const normalizedQuery = normalizeArabic(searchQuery);
+      document.querySelectorAll('.text-layer span').forEach(span => {
+        const normalizedText = normalizeArabic(span.textContent);
+        if(normalizedText.includes(normalizedQuery) || span.textContent.includes(searchQuery)){
+          span.classList.add('hl');
+        }
+      });
+      setTimeout(() => {
+        const firstHl = document.querySelector('.text-layer .hl');
+        if(firstHl){
+          firstHl.classList.add('hl-active');
+          firstHl.scrollIntoView({behavior:'smooth', block:'center'});
+        }
+      }, 300);
     }
 
     function goPage(dir){
@@ -284,9 +303,11 @@
     async function doSearch(){
       searchQuery = document.getElementById('searchInput').value.trim();
       const countEl = document.getElementById('searchCount');
+      const statusEl = document.getElementById('searchStatus');
 
       if(!searchQuery){
         countEl.style.display = 'none';
+        statusEl.style.display = 'none';
         document.querySelectorAll('.text-layer span').forEach(s => {
           s.classList.remove('hl');
           s.classList.remove('hl-active');
@@ -297,7 +318,10 @@
 
       countEl.style.display = 'block';
       countEl.innerText = '...';
+      statusEl.style.display = 'block';
+      statusEl.innerText = '...جاري البحث في الكتاب';
       matches = [];
+      currentMatchIndex = 0;
 
       const normalizedQuery = normalizeArabic(searchQuery);
 
@@ -305,48 +329,41 @@
         try {
           const page = await pdfDoc.getPage(i);
           const textContent = await page.getTextContent();
+
+          // طريقة 1: البحث في كل عنصر
+          let foundInItems = false;
           textContent.items.forEach((item) => {
-            if(item.str && normalizeArabic(item.str).includes(normalizedQuery)){
-              matches.push({page: i});
+            if(item.str){
+              const normalizedItem = normalizeArabic(item.str);
+              if(normalizedItem.includes(normalizedQuery) || item.str.includes(searchQuery)){
+                foundInItems = true;
+              }
             }
           });
-        } catch(e){}
-      }
 
-      if(matches.length === 0){
-        countEl.innerText = '0';
-      } else {
-        countEl.innerText = '1/' + matches.length;
-        const firstPage = matches[0].page;
-        if(firstPage !== currentPage){
-          await renderPage(firstPage);
-        } else {
-          document.querySelectorAll('.text-layer span').forEach(span => {
-            if(normalizeArabic(span.textContent).includes(normalizedQuery)){
-              span.classList.add('hl');
+          // طريقة 2: دمج كل النص في الصفحة والبحث فيه
+          if(!foundInItems){
+            const fullPageText = textContent.items.map(item => item.str || '').join(' ');
+            const normalizedFullText = normalizeArabic(fullPageText);
+            if(normalizedFullText.includes(normalizedQuery) || fullPageText.includes(searchQuery)){
+              foundInItems = true;
             }
-          });
-        }
-        setTimeout(() => {
-          const firstHl = document.querySelector('.text-layer .hl');
-          if(firstHl){
-            firstHl.classList.add('hl-active');
-            firstHl.scrollIntoView({behavior:'smooth', block:'center'});
           }
-        }, 500);
-      }
-    }
 
-    function closePDF(){
-      document.getElementById('pdfViewer').classList.remove('active');
-      document.getElementById('pdfBody').innerHTML = '';
-      document.body.style.overflow = 'auto';
-      pdfDoc = null;
-      currentPage = 1;
-      totalPages = 0;
-      matches = [];
-      searchQuery = '';
-    }
-  </script>
-</body>
-</html>
+          // طريقة 3: دمج بدون مسافات
+          if(!foundInItems){
+            const noSpaceText = textContent.items.map(item => item.str || '').join('');
+            const normalizedNoSpace = normalizeArabic(noSpaceText);
+            const queryNoSpace = normalizedQuery.replace(/\s/g, '');
+            if(normalizedNoSpace.includes(queryNoSpace) || noSpaceText.includes(searchQuery.replace(/\s/g, ''))){
+              foundInItems = true;
+            }
+          }
+
+          if(foundInItems){
+            matches.push({page: i});
+          }
+
+          statusEl.innerText = '...جاري البحث - صفحة ' + i + ' / ' + totalPages;
+        } catch(e){
+          console.error('Erro
