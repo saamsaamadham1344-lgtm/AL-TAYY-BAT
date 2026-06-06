@@ -2,570 +2,133 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-<title>قارئ الكتب العربية</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مكتبة الكتب الإسلامية</title>
 
 <style>
-:root{
-    --bg:#111111;
-    --card:#1a1a1a;
-    --gold:#d4af37;
-    --gold-light:#f4d35e;
-    --text:#ffffff;
-    --border:#333;
-}
-
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Tahoma,sans-serif;
 }
 
 body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:Tahoma, Arial, sans-serif;
-    min-height:100vh;
+background:#0d0d0d;
+color:white;
 }
 
-.header{
-    position:sticky;
-    top:0;
-    z-index:1000;
-    background:var(--card);
-    padding:12px;
-    border-bottom:1px solid var(--border);
+header{
+background:#111;
+padding:20px;
+text-align:center;
+border-bottom:2px solid #d4af37;
 }
 
-.book-buttons{
-    display:flex;
-    gap:10px;
-    margin-bottom:10px;
+header h1{
+color:#d4af37;
+font-size:28px;
 }
 
-.book-btn{
-    flex:1;
-    padding:12px;
-    background:#222;
-    color:var(--gold);
-    border:1px solid var(--gold);
-    border-radius:10px;
-    cursor:pointer;
-    font-size:15px;
-    font-weight:bold;
+header p{
+margin-top:10px;
+color:#ccc;
 }
 
-.book-btn.active{
-    background:var(--gold);
-    color:#000;
+.hero{
+padding:40px 20px;
+text-align:center;
 }
 
-.search-container{
-    display:flex;
-    gap:8px;
-    margin-bottom:10px;
+.hero h2{
+color:#d4af37;
+margin-bottom:15px;
 }
 
-.search-input{
-    flex:1;
-    padding:12px;
-    border:none;
-    border-radius:10px;
-    background:#222;
-    color:#fff;
-    font-size:15px;
+.books{
+display:grid;
+grid-template-columns:1fr;
+gap:20px;
+padding:20px;
+max-width:700px;
+margin:auto;
 }
 
-.search-input::placeholder{
-    color:#aaa;
+.book{
+background:#1a1a1a;
+padding:20px;
+border-radius:15px;
+border:1px solid #333;
+text-align:center;
 }
 
-.search-btn{
-    padding:12px 16px;
-    background:var(--gold);
-    color:#000;
-    border:none;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:bold;
+.book h3{
+color:#d4af37;
+margin-bottom:10px;
 }
 
-.search-info{
-    text-align:center;
-    color:var(--gold-light);
-    font-size:14px;
-    min-height:20px;
+.book p{
+color:#bbb;
+margin-bottom:15px;
 }
 
-.controls{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:10px;
-    margin-top:10px;
+.btn{
+display:inline-block;
+padding:12px 25px;
+background:#d4af37;
+color:#000;
+text-decoration:none;
+border-radius:10px;
+font-weight:bold;
 }
 
-.nav-btn{
-    padding:10px 15px;
-    border:none;
-    border-radius:8px;
-    background:var(--gold);
-    color:#000;
-    cursor:pointer;
-    font-weight:bold;
+footer{
+text-align:center;
+padding:20px;
+margin-top:30px;
+border-top:1px solid #333;
+color:#888;
 }
 
-.page-info{
-    min-width:100px;
-    text-align:center;
-    color:var(--gold);
+@media(min-width:768px){
+.books{
+grid-template-columns:1fr 1fr;
 }
-
-#viewerContainer{
-    padding:15px;
-}
-
-.page{
-    position:relative;
-    margin:0 auto 20px auto;
-    width:fit-content;
-    background:white;
-    box-shadow:0 0 15px rgba(0,0,0,.5);
-}
-
-.canvasWrapper{
-    position:relative;
-}
-
-canvas{
-    display:block;
-    max-width:100%;
-    height:auto;
-}
-
-.textLayer{
-    position:absolute;
-    inset:0;
-    overflow:hidden;
-    opacity:0.25;
-    line-height:1;
-}
-
-.textLayer span,
-.textLayer br{
-    color:transparent;
-    position:absolute;
-    white-space:pre;
-    cursor:text;
-    transform-origin:0% 0%;
-}
-
-.textLayer .highlight{
-    background:yellow;
-    border-radius:2px;
-    opacity:1;
-}
-
-.textLayer .highlight.selected{
-    background:#ff8c00;
-}
-
-.loading{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.85);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-}
-
-.spinner{
-    width:60px;
-    height:60px;
-    border:5px solid #333;
-    border-top:5px solid var(--gold);
-    border-radius:50%;
-    animation:spin 1s linear infinite;
-}
-
-@keyframes spin{
-    to{transform:rotate(360deg);}
-}
-
-.error{
-    text-align:center;
-    color:#ff4d4d;
-    padding:30px;
-    font-size:20px;
-}
-
-.hidden{
-    display:none;
-}
-
-@media(max-width:768px){
-    .page{
-        width:100%;
-    }
-
-    canvas{
-        width:100% !important;
-        height:auto !important;
-    }
 }
 </style>
+
 </head>
 <body>
 
-<div class="header">
+<header>
+<h1>📚 مكتبة الكتب الإسلامية</h1>
+<p>تصفح الكتب واقرأها مباشرة من الموقع</p>
+</header>
 
-    <div class="book-buttons">
-        <button class="book-btn active" onclick="loadBook('kitap1.pdf', this)">
-            Book 1
-        </button>
+<section class="hero">
+<h2>مرحباً بك</h2>
+<p>اختر الكتاب الذي تريد قراءته</p>
+</section>
 
-        <button class="book-btn" onclick="loadBook('kitap2.pdf', this)">
-            Book 2
-        </button>
-    </div>
+<section class="books">
 
-    <div class="search-container">
-        <input
-            id="searchInput"
-            class="search-input"
-            type="text"
-            placeholder="ابحث داخل الكتاب..."
-        >
-        <button class="search-btn" onclick="performSearch()">
-            بحث
-        </button>
-    </div>
-
-    <div id="searchInfo" class="search-info"></div>
-
-    <div class="controls">
-        <button class="nav-btn" onclick="prevPage()">◀</button>
-
-        <div id="pageInfo" class="page-info">
-            0 / 0
-        </div>
-
-        <button class="nav-btn" onclick="nextPage()">▶</button>
-    </div>
-
+<div class="book">
+<h3>الكتاب الأول</h3>
+<p>قراءة الكتاب الأول بصيغة PDF</p>
+<a href="kitap1.pdf" class="btn">فتح الكتاب</a>
 </div>
 
-<div id="viewerContainer"></div>
-
-<div id="loading" class="loading">
-    <div class="spinner"></div>
+<div class="book">
+<h3>الكتاب الثاني</h3>
+<p>قراءة الكتاب الثاني بصيغة PDF</p>
+<a href="kitap2.pdf" class="btn">فتح الكتاب</a>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.js"></script>
-
-<script>
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.js';
-
-let pdfDoc = null;
-let currentPage = 1;
-let totalPages = 0;
-
-let pageTextContent = [];
-let searchMatches = [];
-let currentMatchIndex = -1;
-
-const viewer = document.getElementById('viewerContainer');
-const loading = document.getElementById('loading');
-const searchInfo = document.getElementById('searchInfo');
-const pageInfo = document.getElementById('pageInfo');
-
-async function loadBook(pdfFile, button){
-
-    document.querySelectorAll('.book-btn')
-        .forEach(btn => btn.classList.remove('active'));
-
-    button.classList.add('active');
-
-    viewer.innerHTML = '';
-    pageTextContent = [];
-    searchMatches = [];
-    currentMatchIndex = -1;
-    searchInfo.textContent = '';
-
-    loading.classList.remove('hidden');
-
-    try{
-
-        pdfDoc = await pdfjsLib.getDocument(pdfFile).promise;
-
-        totalPages = pdfDoc.numPages;
-        currentPage = 1;
-
-        updatePageInfo();
-
-        for(let pageNum=1; pageNum<=totalPages; pageNum++){
-            await renderPage(pageNum);
-        }
-
-        loading.classList.add('hidden');
-
-    }catch(err){
-
-        console.error(err);
-
-        loading.classList.add('hidden');
-
-        viewer.innerHTML =
-        '<div class="error">تعذر فتح الكتاب</div>';
-    }
-}
-
-async function renderPage(pageNumber){
-
-    const page = await pdfDoc.getPage(pageNumber);
-
-    const viewport = page.getViewport({scale:1.5});
-
-    const pageDiv = document.createElement('div');
-    pageDiv.className = 'page';
-    pageDiv.dataset.page = pageNumber;
-
-    const wrapper = document.createElement('div');
-    wrapper.className = 'canvasWrapper';
-
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-
-    wrapper.appendChild(canvas);
-
-    const textLayerDiv = document.createElement('div');
-    textLayerDiv.className = 'textLayer';
-
-    textLayerDiv.style.width = viewport.width + 'px';
-    textLayerDiv.style.height = viewport.height + 'px';
-
-    wrapper.appendChild(textLayerDiv);
-
-    pageDiv.appendChild(wrapper);
-    viewer.appendChild(pageDiv);
-
-    await page.render({
-        canvasContext:ctx,
-        viewport
-    }).promise;
-
-    const textContent = await page.getTextContent();
-
-    pageTextContent[pageNumber] = textContent;
-
-    pdfjsLib.renderTextLayer({
-        textContentSource:textContent,
-        container:textLayerDiv,
-        viewport,
-        textDivs:[]
-    });
-}
-
-function updatePageInfo(){
-    pageInfo.textContent =
-    currentPage + ' / ' + totalPages;
-}
-
-function scrollToPage(pageNumber){
-
-    const pageEl =
-    document.querySelector(`[data-page="${pageNumber}"]`);
-
-    if(pageEl){
-        pageEl.scrollIntoView({
-            behavior:'smooth',
-            block:'start'
-        });
-    }
-
-    currentPage = pageNumber;
-    updatePageInfo();
-}
-
-function nextPage(){
-
-    if(currentPage < totalPages){
-        scrollToPage(currentPage + 1);
-    }
-}
-
-function prevPage(){
-
-    if(currentPage > 1){
-        scrollToPage(currentPage - 1);
-    }
-}
-
-async function performSearch(){
-
-    const query =
-    document.getElementById('searchInput')
-    .value
-    .trim();
-
-    clearHighlights();
-
-    if(!query){
-        searchInfo.textContent = '';
-        return;
-    }
-
-    searchMatches = [];
-
-    for(let pageNum=1; pageNum<=totalPages; pageNum++){
-
-        const content = pageTextContent[pageNum];
-
-        if(!content) continue;
-
-        content.items.forEach((item,index)=>{
-
-            if(item.str.includes(query)){
-
-                searchMatches.push({
-                    page:pageNum,
-                    itemIndex:index,
-                    text:query
-                });
-            }
-        });
-    }
-
-    if(searchMatches.length === 0){
-
-        searchInfo.textContent = '0/0';
-        return;
-    }
-
-    currentMatchIndex = 0;
-
-    highlightMatch();
-
-    updateSearchCounter();
-}
-
-function updateSearchCounter(){
-
-    if(searchMatches.length === 0){
-        searchInfo.textContent = '0/0';
-        return;
-    }
-
-    searchInfo.textContent =
-    (currentMatchIndex + 1) +
-    '/' +
-    searchMatches.length;
-}
-
-function highlightMatch(){
-
-    clearHighlights();
-
-    const match =
-    searchMatches[currentMatchIndex];
-
-    if(!match) return;
-
-    const pageElement =
-    document.querySelector(
-        `[data-page="${match.page}"] .textLayer`
-    );
-
-    if(!pageElement) return;
-
-    const spans =
-    pageElement.querySelectorAll('span');
-
-    if(spans[match.itemIndex]){
-
-        spans[match.itemIndex]
-            .classList.add('highlight');
-
-        spans[match.itemIndex]
-            .classList.add('selected');
-
-        scrollToPage(match.page);
-
-        setTimeout(()=>{
-
-            spans[match.itemIndex]
-            .scrollIntoView({
-                behavior:'smooth',
-                block:'center'
-            });
-
-        },300);
-    }
-}
-
-function clearHighlights(){
-
-    document
-    .querySelectorAll('.highlight')
-    .forEach(el=>{
-
-        el.classList.remove(
-            'highlight',
-            'selected'
-        );
-    });
-}
-
-document
-.getElementById('searchInput')
-.addEventListener('keydown',e=>{
-
-    if(e.key === 'Enter'){
-        performSearch();
-    }
-});
-
-document.addEventListener('keydown',e=>{
-
-    if(searchMatches.length === 0) return;
-
-    if(e.key === 'ArrowDown'){
-
-        currentMatchIndex++;
-
-        if(currentMatchIndex >= searchMatches.length){
-            currentMatchIndex = 0;
-        }
-
-        highlightMatch();
-        updateSearchCounter();
-    }
-
-    if(e.key === 'ArrowUp'){
-
-        currentMatchIndex--;
-
-        if(currentMatchIndex < 0){
-            currentMatchIndex =
-            searchMatches.length - 1;
-        }
-
-        highlightMatch();
-        updateSearchCounter();
-    }
-});
-
-loadBook(
-    'kitap1.pdf',
-    document.querySelector('.book-btn')
-);
-</script>
+</section>
+
+<footer>
+جميع الحقوق محفوظة © 2026
+</footer>
 
 </body>
 </html>
