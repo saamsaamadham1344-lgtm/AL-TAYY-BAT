@@ -118,20 +118,20 @@
         <button class="gold-btn" onclick="goTo('home')">الرئيسية</button>
       </div>
       <div class="book-grid">
-        <div class="book-card" onclick="openPDF('AL TAYYIBAT (2)-1-95-45-95 (1) (1).pdf')">
+        <div class="book-card">
           <div class="book-cover" style="background-image:url('IMG_20260606_013120.jpg')"></div>
           <div class="book-card-body">
             <div class="t">كتاب الطيبات</div>
             <div class="d">الجزء الأول - PDF</div>
-            <button class="open-btn">فتح الكتاب</button>
+            <button class="open-btn" onclick="openPDF1()">فتح الكتاب</button>
           </div>
         </div>
-        <div class="book-card" onclick="openPDF('kitab-altayyibat-1 (1).pdf')">
+        <div class="book-card">
           <div class="book-cover" style="background-image:url('IMG_20260606_013143.jpg')"></div>
           <div class="book-card-body">
             <div class="t">كتاب الطيبات</div>
             <div class="d">الجزء الثاني - PDF</div>
-            <button class="open-btn">فتح الكتاب</button>
+            <button class="open-btn" onclick="openPDF2()">فتح الكتاب</button>
           </div>
         </div>
       </div>
@@ -166,11 +166,10 @@
     <nav class="bottom-nav">
       <button class="nav-btn" onclick="goTo('books')"><div class="ico">&#128218;</div><span class="lbl">الكتب</span></button>
       <button class="nav-btn" onclick="goTo('videos')"><div class="ico">&#127916;</div><span class="lbl">الفيديوهات</span></button>
-      <button class="nav-btn active" id="navHome" onclick="goTo('home')"><div class="ico">&#127968;</div><span class="lbl">الرئيسية</span></button>
+      <button class="nav-btn active" onclick="goTo('home')"><div class="ico">&#127968;</div><span class="lbl">الرئيسية</span></button>
     </nav>
   </div>
 
-  <!-- SCRIPT 1: SAYFA GECIS - BAGIMSIZ CALISIR -->
   <script>
     function goTo(name) {
       var pages = document.querySelectorAll('.page');
@@ -179,20 +178,14 @@
       }
       var t = document.getElementById('page-' + name);
       if (t) t.classList.add('active');
-
       var btns = document.querySelectorAll('.nav-btn');
       for (var j = 0; j < btns.length; j++) {
         btns[j].classList.remove('active');
-      }
-      var clicked = event ? event.currentTarget : null;
-      if (clicked && clicked.classList.contains('nav-btn')) {
-        clicked.classList.add('active');
       }
       window.scrollTo(0, 0);
     }
   </script>
 
-  <!-- SCRIPT 2: PDF ISLEMLERI - AYRI CALISIR -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>
     var pdfDoc = null;
@@ -201,11 +194,13 @@
     var rendering = false;
     var searchQuery = '';
     var matches = [];
+    var pdfReady = false;
 
     try {
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      pdfReady = true;
     } catch(e) {
-      console.log('PDF.js yuklenmedi');
+      pdfReady = false;
     }
 
     function normalizeArabic(text) {
@@ -219,11 +214,20 @@
       return t.trim();
     }
 
+    function openPDF1() {
+      openPDF('AL%20TAYYIBAT%20(2)-1-95-45-95%20(1)%20(1).pdf');
+    }
+
+    function openPDF2() {
+      openPDF('kitab-altayyibat-1%20(1).pdf');
+    }
+
     function openPDF(url) {
-      if (typeof pdfjsLib === 'undefined') {
-        alert('PDF kütüphanesi yüklenemedi. Sayfayı yenileyin.');
+      if (!pdfReady) {
+        alert('PDF yuklenmedi. Sayfayi yenileyin.');
         return;
       }
+
       document.getElementById('pdfViewer').classList.add('active');
       document.body.style.overflow = 'hidden';
       document.getElementById('pdfBody').innerHTML = '<div class="pdf-loading"><div class="spinner"></div><div class="load-text">جاري تحميل الكتاب...</div><div class="load-sub">يرجى الانتظار</div></div>';
@@ -231,18 +235,19 @@
       document.getElementById('searchInput').value = '';
       document.getElementById('searchCount').style.display = 'none';
       var st = document.getElementById('searchStatus');
-      if(st) st.style.display = 'none';
+      if (st) st.style.display = 'none';
       searchQuery = '';
       matches = [];
       currentPage = 1;
       pdfDoc = null;
+      rendering = false;
 
-      pdfjsLib.getDocument(encodeURI(url)).promise.then(function(doc) {
+      pdfjsLib.getDocument(url).promise.then(function(doc) {
         pdfDoc = doc;
         totalPages = doc.numPages;
         renderPage(1);
       }).catch(function(e) {
-        document.getElementById('pdfBody').innerHTML = '<div class="pdf-loading"><div style="font-size:50px">&#9888;</div><div class="load-text">تعذر تحميل الكتاب</div><div class="load-sub">تأكد من اتصالك بالإنترنت</div></div>';
+        document.getElementById('pdfBody').innerHTML = '<div class="pdf-loading"><div style="font-size:50px">&#9888;</div><div class="load-text">تعذر تحميل الكتاب</div><div class="load-sub">' + e.message + '</div></div>';
       });
     }
 
@@ -253,6 +258,7 @@
       pdfDoc.getPage(num).then(function(page) {
         var body = document.getElementById('pdfBody');
         var containerWidth = body.clientWidth - 16;
+        if (containerWidth < 100) containerWidth = 300;
         var baseViewport = page.getViewport({scale: 1});
         var displayScale = containerWidth / baseViewport.width;
         var pixelRatio = window.devicePixelRatio || 1;
@@ -347,7 +353,7 @@
 
       if (!searchQuery) {
         countEl.style.display = 'none';
-        if(statusEl) statusEl.style.display = 'none';
+        if (statusEl) statusEl.style.display = 'none';
         var spans = document.querySelectorAll('.text-layer span');
         for (var i = 0; i < spans.length; i++) {
           spans[i].classList.remove('hl');
@@ -359,7 +365,7 @@
 
       countEl.style.display = 'block';
       countEl.innerText = '...';
-      if(statusEl) { statusEl.style.display = 'block'; statusEl.innerText = 'جاري البحث...'; }
+      if (statusEl) { statusEl.style.display = 'block'; statusEl.innerText = 'جاري البحث...'; }
       matches = [];
       var nq = normalizeArabic(searchQuery);
       var sp = 1;
@@ -368,16 +374,16 @@
         if (sp > totalPages) {
           if (matches.length === 0) {
             countEl.innerText = '0';
-            if(statusEl) { statusEl.innerText = 'لم يتم العثور على نتائج'; setTimeout(function(){statusEl.style.display='none';},3000); }
+            if (statusEl) { statusEl.innerText = 'لم يتم العثور على نتائج'; setTimeout(function(){statusEl.style.display='none';}, 3000); }
           } else {
             countEl.innerText = '1/' + matches.length;
-            if(statusEl) { statusEl.innerText = 'تم العثور على ' + matches.length + ' نتيجة'; setTimeout(function(){statusEl.style.display='none';},2000); }
+            if (statusEl) { statusEl.innerText = 'تم العثور على ' + matches.length + ' نتيجة'; setTimeout(function(){statusEl.style.display='none';}, 2000); }
             var fp = matches[0].page;
             if (fp !== currentPage) { renderPage(fp); } else { highlightPage(); }
           }
           return;
         }
-        if(statusEl) statusEl.innerText = 'جاري البحث - صفحة ' + sp + '/' + totalPages;
+        if (statusEl) statusEl.innerText = 'جاري البحث - صفحة ' + sp + '/' + totalPages;
 
         pdfDoc.getPage(sp).then(function(page) {
           return page.getTextContent();
@@ -414,4 +420,6 @@
       document.getElementById('pdfViewer').classList.remove('active');
       document.getElementById('pdfBody').innerHTML = '';
       document.body.style.overflow = 'auto';
-   
+      var st = document.getElementById('searchStatus');
+      if (st) st.style.display = 'none';
+      p
