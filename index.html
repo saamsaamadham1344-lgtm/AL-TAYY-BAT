@@ -14,11 +14,10 @@
     .logo-center{font-size:50px;line-height:1;filter:drop-shadow(0 4px 12px rgba(212,162,74,.5))}
     .header{text-align:center;margin-top:10px}
     .header h1{font-size:38px;font-weight:900;letter-spacing:1px;background:linear-gradient(110deg,#b8862a,#f9e7a1 50%,#b8862a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-    @keyframes shine{from{background-position:200% 0}to{background-position:-200% 0}}
     .header .sub{color:#d9c088;font-size:14px;margin-top:6px}
     .welcome{margin-top:14px;color:#f7e28b;font-size:14px;text-align:center}
-    .page{display:none}.page.active{display:block;animation:fadeIn .5s ease}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .page{display:none}
+    .page.active{display:block}
     .cards{margin-top:30px;display:flex;flex-direction:column;gap:18px}
     .card{padding:22px;display:flex;align-items:center;gap:14px;background:#0f0a04;border:1.5px solid rgba(212,162,74,.5);border-radius:18px}
     .gold-text{background:linear-gradient(135deg,#f9e7a1,#d4a24a 40%,#b8862a);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -33,56 +32,56 @@
     .book-grid{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-bottom:30px}
     .book-card{cursor:pointer}
     .book-cover{width:100%;aspect-ratio:3/4;background-size:cover;background-position:center;background-color:#1a1208;border-radius:14px 14px 0 0;overflow:hidden;position:relative}
-    .book-cover::before{content:'';position:absolute;top:10px;left:10px;right:10px;height:2px;background:linear-gradient(to right,transparent,#d4a24a,transparent)}
-    .book-cover::after{content:'';position:absolute;bottom:10px;left:10px;right:10px;height:2px;background:linear-gradient(to right,transparent,#d4a24a,transparent)}
     .book-card-body{background:#0f0a04;border:1.5px solid rgba(212,162,74,.5);border-top:none;border-radius:0 0 22px 22px;padding:12px;text-align:center}
     .book-card-body .t{color:#f7e28b;font-size:15px;font-weight:800}
     .book-card-body .d{color:#a69466;font-size:12px;margin-top:4px}
     .open-btn{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;padding:9px 18px;border-radius:999px;border:none;cursor:pointer;font-size:14px;font-weight:800;margin-top:10px;width:100%}
     .bottom-nav-wrap{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:0 18px 20px 18px;background:linear-gradient(to top,#000 70%,transparent)}
     .bottom-nav{max-width:560px;margin:0 auto;background:#0f0a04;border:1.5px solid rgba(212,162,74,.5);border-radius:999px;display:flex;overflow:hidden;padding:6px 0}
-    .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border:none;background:transparent;cursor:pointer;transition:all .3s}
+    .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border:none;background:transparent;cursor:pointer}
     .nav-btn .ico{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:transparent;font-size:22px}
     .nav-btn .lbl{font-size:12px;font-weight:700;color:#a69466}
     .nav-btn.active .ico{background:linear-gradient(135deg,#f9e7a1,#b8862a);color:#1a1208}
-    .nav-btn.active .lbl{color:#f7e28b;font-weight:800;font-size:13px}
-    .pdf-viewer{display:none;position:fixed;inset:0;background:#000;z-index:9999;flex-direction:column}
-    .pdf-viewer.active{display:flex;animation:fadeIn .3s ease}
-    .pdf-topbar{background:linear-gradient(135deg,rgba(26,18,8,.98),rgba(10,7,4,.98));border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;gap:8px;padding:8px 12px}
+    .nav-btn.active .lbl{color:#f7e28b;font-weight:800}
+    .pdf-viewer{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:9999;flex-direction:column}
+    .pdf-viewer.active{display:flex}
+    .pdf-topbar{background:rgba(26,18,8,.98);border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;gap:8px;padding:8px 12px}
     .tb{height:40px;border-radius:10px;border:1.5px solid rgba(212,162,74,.35);background:rgba(15,10,4,.9);color:#d4a24a;font-size:16px;cursor:pointer;padding:0 12px}
-    .tb:active{transform:scale(.93);background:linear-gradient(135deg,#f9e7a1,#d4a24a);color:#1a1208}
     .tb-close{background:linear-gradient(135deg,#b91c1c,#7f1d1d);color:#fff;border-color:rgba(185,28,28,.5);width:40px;padding:0}
     .search-wrap{flex:1;position:relative;display:flex;align-items:center}
     .search-wrap .s-icon{position:absolute;right:12px;color:#d4a24a;font-size:14px;pointer-events:none;z-index:2}
     .search-wrap input{width:100%;height:40px;padding:0 38px 0 50px;border-radius:10px;border:1.5px solid rgba(212,162,74,.4);background:rgba(15,10,4,.9);color:#d4a24a;font-size:14px}
-    .search-wrap input:focus{border-color:#d4a24a;box-shadow:0 0 0 3px rgba(212,162,74,.2)}
     .search-wrap input::placeholder{color:#a69466;font-weight:500}
     .s-count{position:absolute;left:8px;color:#d4a24a;font-size:11px;font-weight:800;background:rgba(212,162,74,.15);padding:2px 8px;border-radius:6px}
-    .pdf-body{flex:1;overflow:auto;background:#1a1a1a;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;align-items:center}
+    .pdf-body{flex:1;overflow:auto;background:#1a1a1a;display:flex;flex-direction:column;align-items:center}
     .pdf-page-container{position:relative;margin-bottom:10px;box-shadow:0 4px 20px rgba(0,0,0,.5);border-radius:4px;overflow:hidden}
     .pdf-page-container canvas{display:block;width:100%;height:auto}
     .text-layer{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;opacity:.25;line-height:1;pointer-events:none}
     .text-layer span{color:transparent;position:absolute;white-space:pre;transform-origin:0% 0%}
     .text-layer .hl{background:#ffeb3b;border-radius:2px;box-shadow:0 0 6px #ffeb3b;opacity:1}
     .text-layer .hl-active{background:#ff9800;box-shadow:0 0 10px #ff9800}
-    .pdf-nav{background:linear-gradient(135deg,rgba(26,18,8,.98),rgba(10,7,4,.98));border-top:1px solid rgba(212,162,74,.3);display:flex;align-items:center;justify-content:center;gap:12px;padding:10px}
+    .pdf-nav{background:rgba(26,18,8,.98);border-top:1px solid rgba(212,162,74,.3);display:flex;align-items:center;justify-content:center;gap:12px;padding:10px}
     .page-info{color:#f7e28b;font-size:14px;font-weight:800;min-width:80px;text-align:center}
     .pdf-loading{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background-color:#0a0704}
     .spinner{width:50px;height:50px;border:4px solid rgba(212,162,74,.2);border-top-color:#d4a24a;border-radius:50%;animation:spin 1s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
     .load-text{color:#f7e28b;margin-top:18px;font-size:15px;font-weight:700}
     .load-sub{color:#a69466;margin-top:6px;font-size:13px}
-    .search-status{color:#f7e28b;font-size:13px;text-align:center;padding:8px;background:rgba(212,162,74,.1);border-bottom:1px solid rgba(212,162,74,.2)}
+    .search-status{color:#f7e28b;font-size:13px;text-align:center;padding:8px;background:rgba(212,162,74,.1)}
   </style>
 </head>
 <body>
   <div class="container">
     <div class="top-row">
-      <div class="circle-btn">👤</div>
-      <div class="logo-center">🌾</div>
-      <div class="circle-btn">🔔</div>
+      <div class="circle-btn">&#128100;</div>
+      <div class="logo-center">&#127806;</div>
+      <div class="circle-btn">&#128276;</div>
     </div>
-    <div class="header"><h1>نظام الطيبات الذكي</h1><div class="sub">بناء نظام ذكي</div><div class="welcome">◆ أهلا وسهلا ◆</div></div>
+    <div class="header">
+      <h1>نظام الطيبات الذكي</h1>
+      <div class="sub">بناء نظام ذكي</div>
+      <div class="welcome">أهلا وسهلا</div>
+    </div>
 
     <main id="page-home" class="page active">
       <div class="cards">
@@ -90,33 +89,51 @@
           <div class="card-body">
             <h2 class="gold-text">الفيديوهات</h2>
             <p>شاهد أحدث الفيديوهات في مكان واحد</p>
-            <button class="gold-btn" onclick="switchPage('videos')">► مشاهدة</button>
+            <button class="gold-btn" onclick="goTo('videos')">مشاهدة</button>
           </div>
-          <div class="icon-visual">🎬</div>
+          <div class="icon-visual">&#127916;</div>
         </section>
         <section class="card">
           <div class="card-body">
             <h2 class="gold-text">الكتب</h2>
             <p>اقرأ أفضل الكتب ومقاطع PDF</p>
-            <button class="gold-btn" onclick="switchPage('books')">📖 استعراض</button>
+            <button class="gold-btn" onclick="goTo('books')">استعراض</button>
           </div>
-          <div class="icon-visual">📚</div>
+          <div class="icon-visual">&#128218;</div>
         </section>
       </div>
     </main>
 
-    <main id="page-videos" class="page"><div class="section-title"><h2>الفيديوهات</h2><p>قريباً إن شاء الله</p><button class="gold-btn" style="margin-top:12px;padding:8px 20px" onclick="switchPage('home')">الرئيسية</button></div></main>
+    <main id="page-videos" class="page">
+      <div class="section-title">
+        <h2>الفيديوهات</h2>
+        <p>قريباً إن شاء الله</p>
+        <button class="gold-btn" style="margin-top:12px;padding:8px 20px" onclick="goTo('home')">الرئيسية</button>
+      </div>
+    </main>
 
     <main id="page-books" class="page">
-      <div class="section-title"><h2>الكتب</h2><p>انقر على الكتاب للتصفح</p><button class="gold-btn" style="margin-top:12px;padding:8px 20px" onclick="switchPage('home')">الرئيسية</button></div>
+      <div class="section-title">
+        <h2>الكتب</h2>
+        <p>انقر على الكتاب للتصفح</p>
+        <button class="gold-btn" style="margin-top:12px;padding:8px 20px" onclick="goTo('home')">الرئيسية</button>
+      </div>
       <div class="book-grid">
-        <div class="book-card" onclick="openPDF('AL TAYYIBAT (2)-1-95-45-95 (1) (1).pdf','الجزء الأول')">
+        <div class="book-card" id="book1">
           <div class="book-cover" style="background-image: url('IMG_20260606_013120.jpg')"></div>
-          <div class="book-card-body"><div class="t">كتاب الطيبات</div><div class="d">الجزء الأول - PDF</div><button class="open-btn">فتح الكتاب</button></div>
+          <div class="book-card-body">
+            <div class="t">كتاب الطيبات</div>
+            <div class="d">الجزء الأول - PDF</div>
+            <button class="open-btn">فتح الكتاب</button>
+          </div>
         </div>
-        <div class="book-card" onclick="openPDF('kitab-altayyibat-1 (1).pdf','الجزء الثاني')">
+        <div class="book-card" id="book2">
           <div class="book-cover" style="background-image: url('IMG_20260606_013143.jpg')"></div>
-          <div class="book-card-body"><div class="t">كتاب الطيبات</div><div class="d">الجزء الثاني - PDF</div><button class="open-btn">فتح الكتاب</button></div>
+          <div class="book-card-body">
+            <div class="t">كتاب الطيبات</div>
+            <div class="d">الجزء الثاني - PDF</div>
+            <button class="open-btn">فتح الكتاب</button>
+          </div>
         </div>
       </div>
     </main>
@@ -124,191 +141,200 @@
 
   <div class="pdf-viewer" id="pdfViewer">
     <div class="pdf-topbar">
-      <button class="tb tb-close" onclick="closePDF()">X</button>
+      <button class="tb tb-close" id="btnClose">X</button>
       <div class="search-wrap">
-        <span class="s-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="...ابحث في الكتاب" onkeypress="if(event.key==='Enter')doSearch()">
+        <span class="s-icon">&#128269;</span>
+        <input type="text" id="searchInput" placeholder="ابحث في الكتاب...">
         <span class="s-count" id="searchCount" style="display:none"></span>
       </div>
-      <button class="tb" onclick="doSearch()">بحث</button>
+      <button class="tb" id="btnSearch">بحث</button>
     </div>
     <div id="searchStatus" style="display:none" class="search-status"></div>
     <div class="pdf-body" id="pdfBody">
       <div class="pdf-loading">
         <div class="spinner"></div>
-        <div class="load-text">...جاري تحميل الكتاب</div>
+        <div class="load-text">جاري تحميل الكتاب...</div>
         <div class="load-sub">يرجى الانتظار</div>
       </div>
     </div>
     <div class="pdf-nav">
-      <button class="tb" onclick="goPage(1)">→ التالية</button>
+      <button class="tb" id="btnNext">التالية</button>
       <div class="page-info" id="pageInfo">1 / 1</div>
-      <button class="tb" onclick="goPage(-1)">← السابقة</button>
+      <button class="tb" id="btnPrev">السابقة</button>
     </div>
   </div>
 
-  <div class="bottom-nav-wrap"><nav class="bottom-nav">
-    <button class="nav-btn" onclick="switchPage('books',this)"><div class="ico">📚</div><span class="lbl">الكتب</span></button>
-    <button class="nav-btn" onclick="switchPage('videos',this)"><div class="ico">🎬</div><span class="lbl">الفيديوهات</span></button>
-    <button class="nav-btn active" onclick="switchPage('home',this)"><div class="ico">🏠</div><span class="lbl">الرئيسية</span></button>
-  </nav></div>
+  <div class="bottom-nav-wrap">
+    <nav class="bottom-nav">
+      <button class="nav-btn" id="navBooks"><div class="ico">&#128218;</div><span class="lbl">الكتب</span></button>
+      <button class="nav-btn" id="navVideos"><div class="ico">&#127916;</div><span class="lbl">الفيديوهات</span></button>
+      <button class="nav-btn active" id="navHome"><div class="ico">&#127968;</div><span class="lbl">الرئيسية</span></button>
+    </nav>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    let pdfDoc = null;
-    let currentPage = 1;
-    let totalPages = 0;
-    let rendering = false;
-    let searchQuery = '';
-    let matches = [];
-    let currentMatchIndex = 0;
+    var pdfDoc = null;
+    var currentPage = 1;
+    var totalPages = 0;
+    var rendering = false;
+    var searchQuery = '';
+    var matches = [];
 
-    function normalizeArabic(text){
-      return text
-        .replace(/[\u064B-\u065F\u0670\u0640]/g, '')
-        .replace(/[أإآٱا]/g, 'ا')
-        .replace(/ة/g, 'ه')
-        .replace(/[یيئى]/g, 'ي')
-        .replace(/ؤ/g, 'و')
-        .replace(/\s+/g, ' ')
-        .trim();
+    function normalizeArabic(text) {
+      var t = text;
+      t = t.replace(/[\u064B-\u065F\u0670\u0640]/g, '');
+      t = t.replace(/[أإآٱا]/g, 'ا');
+      t = t.replace(/ة/g, 'ه');
+      t = t.replace(/[یيئى]/g, 'ي');
+      t = t.replace(/ؤ/g, 'و');
+      t = t.replace(/\s+/g, ' ');
+      return t.trim();
     }
 
-    function switchPage(n,b){
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      var pg = document.getElementById('page-'+n);
-      if(pg) pg.classList.add('active');
-      document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));
-      if(b) b.classList.add('active');
-      window.scrollTo({top:0,behavior:'smooth'});
+    function goTo(name) {
+      var pages = document.querySelectorAll('.page');
+      for (var i = 0; i < pages.length; i++) {
+        pages[i].classList.remove('active');
+      }
+      var target = document.getElementById('page-' + name);
+      if (target) {
+        target.classList.add('active');
+      }
+      var btns = document.querySelectorAll('.nav-btn');
+      for (var j = 0; j < btns.length; j++) {
+        btns[j].classList.remove('active');
+      }
+      if (name === 'home') document.getElementById('navHome').classList.add('active');
+      if (name === 'books') document.getElementById('navBooks').classList.add('active');
+      if (name === 'videos') document.getElementById('navVideos').classList.add('active');
+      window.scrollTo(0, 0);
     }
 
-    async function openPDF(url, title){
+    function openPDF(url, title) {
       document.getElementById('pdfViewer').classList.add('active');
       document.body.style.overflow = 'hidden';
-      document.getElementById('pdfBody').innerHTML = '<div class="pdf-loading"><div class="spinner"></div><div class="load-text">...جاري تحميل الكتاب</div><div class="load-sub">يرجى الانتظار</div></div>';
+      document.getElementById('pdfBody').innerHTML = '<div class="pdf-loading"><div class="spinner"></div><div class="load-text">جاري تحميل الكتاب...</div><div class="load-sub">يرجى الانتظار</div></div>';
       document.getElementById('pageInfo').innerText = '...';
       document.getElementById('searchInput').value = '';
       document.getElementById('searchCount').style.display = 'none';
       document.getElementById('searchStatus').style.display = 'none';
       searchQuery = '';
       matches = [];
-      currentMatchIndex = 0;
       currentPage = 1;
 
-      try {
-        pdfDoc = await pdfjsLib.getDocument(encodeURI(url)).promise;
-        totalPages = pdfDoc.numPages;
-        await renderPage(1);
-      } catch(e){
-        document.getElementById('pdfBody').innerHTML = '<div class="pdf-loading"><div style="font-size:50px">⚠️</div><div class="load-text">تعذر تحميل الكتاب</div><div class="load-sub">تأكد من اتصالك بالإنترنت</div></div>';
-      }
+      pdfjsLib.getDocument(encodeURI(url)).promise.then(function(doc) {
+        pdfDoc = doc;
+        totalPages = doc.numPages;
+        renderPage(1);
+      }).catch(function(e) {
+        document.getElementById('pdfBody').innerHTML = '<div class="pdf-loading"><div style="font-size:50px">&#9888;</div><div class="load-text">تعذر تحميل الكتاب</div><div class="load-sub">تأكد من اتصالك بالإنترنت</div></div>';
+      });
     }
 
-    async function renderPage(num){
-      if(rendering || !pdfDoc) return;
+    function renderPage(num) {
+      if (rendering || !pdfDoc) return;
       rendering = true;
 
-      try {
-        const page = await pdfDoc.getPage(num);
-        const body = document.getElementById('pdfBody');
+      pdfDoc.getPage(num).then(function(page) {
+        var body = document.getElementById('pdfBody');
+        var containerWidth = body.clientWidth - 16;
+        var baseViewport = page.getViewport({scale: 1});
+        var displayScale = containerWidth / baseViewport.width;
+        var pixelRatio = window.devicePixelRatio || 1;
+        var viewport = page.getViewport({scale: displayScale * pixelRatio});
 
-        const containerWidth = body.clientWidth - 16;
-        const baseViewport = page.getViewport({scale: 1});
-        const displayScale = containerWidth / baseViewport.width;
-        const pixelRatio = window.devicePixelRatio || 1;
-        const viewport = page.getViewport({scale: displayScale * pixelRatio});
-
-        const container = document.createElement('div');
+        var container = document.createElement('div');
         container.className = 'pdf-page-container';
         container.style.width = containerWidth + 'px';
 
-        const canvas = document.createElement('canvas');
+        var canvas = document.createElement('canvas');
         canvas.width = viewport.width;
         canvas.height = viewport.height;
         canvas.style.width = '100%';
         canvas.style.height = 'auto';
         container.appendChild(canvas);
 
-        const textLayer = document.createElement('div');
+        var textLayer = document.createElement('div');
         textLayer.className = 'text-layer';
         container.appendChild(textLayer);
 
         body.innerHTML = '';
         body.appendChild(container);
 
-        await page.render({
+        page.render({
           canvasContext: canvas.getContext('2d'),
           viewport: viewport
-        }).promise;
+        }).promise.then(function() {
+          return page.getTextContent();
+        }).then(function(textContent) {
+          var displayViewport = page.getViewport({scale: displayScale});
 
-        const textContent = await page.getTextContent();
-        const displayViewport = page.getViewport({scale: displayScale});
+          for (var i = 0; i < textContent.items.length; i++) {
+            var item = textContent.items[i];
+            if (!item.str || item.str.trim() === '') continue;
+            var span = document.createElement('span');
+            span.textContent = item.str;
+            var tx = pdfjsLib.Util.transform(displayViewport.transform, item.transform);
+            var fontSize = Math.sqrt(tx[2]*tx[2] + tx[3]*tx[3]);
+            span.style.left = tx[4] + 'px';
+            span.style.top = (tx[5] - fontSize) + 'px';
+            span.style.fontSize = fontSize + 'px';
+            span.style.fontFamily = 'sans-serif';
+            textLayer.appendChild(span);
+          }
 
-        textContent.items.forEach(item => {
-          if(!item.str || item.str.trim() === '') return;
-          const span = document.createElement('span');
-          span.textContent = item.str;
-          const tx = pdfjsLib.Util.transform(displayViewport.transform, item.transform);
-          const fontSize = Math.sqrt(tx[2]*tx[2] + tx[3]*tx[3]);
-          span.style.left = tx[4] + 'px';
-          span.style.top = (tx[5] - fontSize) + 'px';
-          span.style.fontSize = fontSize + 'px';
-          span.style.fontFamily = 'sans-serif';
-          textLayer.appendChild(span);
+          currentPage = num;
+          document.getElementById('pageInfo').innerText = num + ' / ' + totalPages;
+
+          if (searchQuery) {
+            highlightPage();
+          }
+
+          rendering = false;
+        }).catch(function(e) {
+          console.error(e);
+          rendering = false;
         });
-
-        currentPage = num;
-        document.getElementById('pageInfo').innerText = num + ' / ' + totalPages;
-
-        if(searchQuery){
-          highlightCurrentPage();
-        }
-      } catch(e){
+      }).catch(function(e) {
         console.error(e);
-      }
-      rendering = false;
+        rendering = false;
+      });
     }
 
-    function highlightCurrentPage(){
-      const normalizedQuery = normalizeArabic(searchQuery);
-      document.querySelectorAll('.text-layer span').forEach(span => {
-        const normalizedText = normalizeArabic(span.textContent);
-        if(normalizedText.includes(normalizedQuery) || span.textContent.includes(searchQuery)){
-          span.classList.add('hl');
+    function highlightPage() {
+      var nq = normalizeArabic(searchQuery);
+      var spans = document.querySelectorAll('.text-layer span');
+      for (var i = 0; i < spans.length; i++) {
+        var nt = normalizeArabic(spans[i].textContent);
+        if (nt.indexOf(nq) !== -1 || spans[i].textContent.indexOf(searchQuery) !== -1) {
+          spans[i].classList.add('hl');
         }
-      });
-      setTimeout(() => {
-        const firstHl = document.querySelector('.text-layer .hl');
-        if(firstHl){
-          firstHl.classList.add('hl-active');
-          firstHl.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+      setTimeout(function() {
+        var first = document.querySelector('.text-layer .hl');
+        if (first) {
+          first.classList.add('hl-active');
+          first.scrollIntoView({behavior:'smooth', block:'center'});
         }
       }, 300);
     }
 
-    function goPage(dir){
-      const newPage = currentPage + dir;
-      if(newPage >= 1 && newPage <= totalPages){
-        document.getElementById('pdfBody').scrollTop = 0;
-        renderPage(newPage);
-      }
-    }
-
-    async function doSearch(){
+    function doSearch() {
       searchQuery = document.getElementById('searchInput').value.trim();
-      const countEl = document.getElementById('searchCount');
-      const statusEl = document.getElementById('searchStatus');
+      var countEl = document.getElementById('searchCount');
+      var statusEl = document.getElementById('searchStatus');
 
-      if(!searchQuery){
+      if (!searchQuery) {
         countEl.style.display = 'none';
         statusEl.style.display = 'none';
-        document.querySelectorAll('.text-layer span').forEach(s => {
-          s.classList.remove('hl');
-          s.classList.remove('hl-active');
-        });
+        var spans = document.querySelectorAll('.text-layer span');
+        for (var i = 0; i < spans.length; i++) {
+          spans[i].classList.remove('hl');
+          spans[i].classList.remove('hl-active');
+        }
         matches = [];
         return;
       }
@@ -316,61 +342,86 @@
       countEl.style.display = 'block';
       countEl.innerText = '...';
       statusEl.style.display = 'block';
-      statusEl.innerText = '...جاري البحث في الكتاب';
+      statusEl.innerText = 'جاري البحث...';
       matches = [];
-      currentMatchIndex = 0;
 
-      const normalizedQuery = normalizeArabic(searchQuery);
+      var nq = normalizeArabic(searchQuery);
+      var searchPage = 1;
 
-      for(let i = 1; i <= totalPages; i++){
-        try {
-          const page = await pdfDoc.getPage(i);
-          const textContent = await page.getTextContent();
+      function searchNextPage() {
+        if (searchPage > totalPages) {
+          if (matches.length === 0) {
+            countEl.innerText = '0';
+            statusEl.innerText = 'لم يتم العثور على نتائج';
+            setTimeout(function() { statusEl.style.display = 'none'; }, 3000);
+          } else {
+            countEl.innerText = '1/' + matches.length;
+            statusEl.innerText = 'تم العثور على ' + matches.length + ' نتيجة';
+            setTimeout(function() { statusEl.style.display = 'none'; }, 2000);
+            var firstPage = matches[0].page;
+            if (firstPage !== currentPage) {
+              renderPage(firstPage);
+            } else {
+              highlightPage();
+            }
+          }
+          return;
+        }
 
-          // طريقة 1: البحث في كل عنصر
-          let foundInItems = false;
-          textContent.items.forEach((item) => {
-            if(item.str){
-              const normalizedItem = normalizeArabic(item.str);
-              if(normalizedItem.includes(normalizedQuery) || item.str.includes(searchQuery)){
-                foundInItems = true;
+        statusEl.innerText = 'جاري البحث - صفحة ' + searchPage + ' / ' + totalPages;
+
+        pdfDoc.getPage(searchPage).then(function(page) {
+          return page.getTextContent();
+        }).then(function(textContent) {
+          var found = false;
+
+          for (var i = 0; i < textContent.items.length; i++) {
+            if (textContent.items[i].str) {
+              var nt = normalizeArabic(textContent.items[i].str);
+              if (nt.indexOf(nq) !== -1 || textContent.items[i].str.indexOf(searchQuery) !== -1) {
+                found = true;
+                break;
               }
             }
-          });
+          }
 
-          // طريقة 2: دمج كل النص في الصفحة والبحث فيه
-          if(!foundInItems){
-            const fullPageText = textContent.items.map(item => item.str || '').join(' ');
-            const normalizedFullText = normalizeArabic(fullPageText);
-            if(normalizedFullText.includes(normalizedQuery) || fullPageText.includes(searchQuery)){
-              foundInItems = true;
+          if (!found) {
+            var allText = '';
+            for (var j = 0; j < textContent.items.length; j++) {
+              allText += (textContent.items[j].str || '') + ' ';
+            }
+            var nAll = normalizeArabic(allText);
+            if (nAll.indexOf(nq) !== -1 || allText.indexOf(searchQuery) !== -1) {
+              found = true;
             }
           }
 
-          // طريقة 3: دمج بدون مسافات
-          if(!foundInItems){
-            const noSpaceText = textContent.items.map(item => item.str || '').join('');
-            const normalizedNoSpace = normalizeArabic(noSpaceText);
-            const queryNoSpace = normalizedQuery.replace(/\s/g, '');
-            if(normalizedNoSpace.includes(queryNoSpace) || noSpaceText.includes(searchQuery.replace(/\s/g, ''))){
-              foundInItems = true;
+          if (!found) {
+            var noSpace = '';
+            for (var k = 0; k < textContent.items.length; k++) {
+              noSpace += (textContent.items[k].str || '');
+            }
+            var nNoSpace = normalizeArabic(noSpace);
+            var qNoSpace = nq.replace(/\s/g, '');
+            if (nNoSpace.indexOf(qNoSpace) !== -1) {
+              found = true;
             }
           }
 
-          if(foundInItems){
-            matches.push({page: i});
+          if (found) {
+            matches.push({page: searchPage});
           }
 
-          statusEl.innerText = '...جاري البحث - صفحة ' + i + ' / ' + totalPages;
-        } catch(e){
-          console.error('Error page ' + i, e);
-        }
+          searchPage++;
+          searchNextPage();
+        }).catch(function() {
+          searchPage++;
+          searchNextPage();
+        });
       }
 
-      if(matches.length === 0){
-        countEl.innerText = '0';
-        statusEl.innerText = 'لم يتم العثور على نتائج';
-        setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
-      } else {
-        countEl.innerText = '1/' + matches.length;
-        statusEl.innerTex
+      searchNextPage();
+    }
+
+    function closePDF() {
+      document.getElementById('pdfV
