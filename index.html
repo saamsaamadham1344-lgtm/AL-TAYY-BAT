@@ -49,8 +49,7 @@
     .tb{height:40px;border-radius:10px;border:1.5px solid rgba(212,162,74,.35);background:rgba(15,10,4,.9);color:#d4a24a;font-size:16px;cursor:pointer;padding:0 12px}
     .tb-close{background:linear-gradient(135deg,#b91c1c,#7f1d1d);color:#fff;border-color:rgba(185,28,28,.5);width:40px;padding:0}
     .search-wrap{flex:1;position:relative;display:flex;align-items:center}
-    .search-wrap .s-icon{position:absolute;right:12px;color:#d4a24a;font-size:14px;pointer-events:none;z-index:2}
-    .search-wrap input{width:100%;height:40px;padding:0 38px 0 50px;border-radius:10px;border:1.5px solid rgba(212,162,74,.4);background:rgba(15,10,4,.9);color:#d4a24a;font-size:14px}
+    .search-wrap input{width:100%;height:40px;padding:0 12px;border-radius:10px;border:1.5px solid rgba(212,162,74,.4);background:rgba(15,10,4,.9);color:#d4a24a;font-size:14px}
     .search-wrap input::placeholder{color:#a69466;font-weight:500}
     .s-count{position:absolute;left:8px;color:#d4a24a;font-size:11px;font-weight:800;background:rgba(212,162,74,.15);padding:2px 8px;border-radius:6px}
     .pdf-body{flex:1;overflow:auto;background:#1a1a1a;display:flex;flex-direction:column;align-items:center}
@@ -108,7 +107,7 @@
       <div class="section-title">
         <h2>الفيديوهات</h2>
         <p>قريباً إن شاء الله</p>
-        <button class="gold-btn" style="margin-top:12px;padding:8px 20px" onclick="goTo('home')">الرئيسية</button>
+        <button class="gold-btn" onclick="goTo('home')">الرئيسية</button>
       </div>
     </main>
 
@@ -116,19 +115,19 @@
       <div class="section-title">
         <h2>الكتب</h2>
         <p>انقر على الكتاب للتصفح</p>
-        <button class="gold-btn" style="margin-top:12px;padding:8px 20px" onclick="goTo('home')">الرئيسية</button>
+        <button class="gold-btn" onclick="goTo('home')">الرئيسية</button>
       </div>
       <div class="book-grid">
-        <div class="book-card" id="book1">
-          <div class="book-cover" style="background-image: url('IMG_20260606_013120.jpg')"></div>
+        <div class="book-card" onclick="openPDF('AL TAYYIBAT (2)-1-95-45-95 (1) (1).pdf')">
+          <div class="book-cover" style="background-image:url('IMG_20260606_013120.jpg')"></div>
           <div class="book-card-body">
             <div class="t">كتاب الطيبات</div>
             <div class="d">الجزء الأول - PDF</div>
             <button class="open-btn">فتح الكتاب</button>
           </div>
         </div>
-        <div class="book-card" id="book2">
-          <div class="book-cover" style="background-image: url('IMG_20260606_013143.jpg')"></div>
+        <div class="book-card" onclick="openPDF('kitab-altayyibat-1 (1).pdf')">
+          <div class="book-cover" style="background-image:url('IMG_20260606_013143.jpg')"></div>
           <div class="book-card-body">
             <div class="t">كتاب الطيبات</div>
             <div class="d">الجزء الثاني - PDF</div>
@@ -141,13 +140,12 @@
 
   <div class="pdf-viewer" id="pdfViewer">
     <div class="pdf-topbar">
-      <button class="tb tb-close" id="btnClose">X</button>
+      <button class="tb tb-close" onclick="closePDF()">X</button>
       <div class="search-wrap">
-        <span class="s-icon">&#128269;</span>
-        <input type="text" id="searchInput" placeholder="ابحث في الكتاب...">
+        <input type="text" id="searchInput" placeholder="ابحث في الكتاب..." onkeydown="if(event.key=='Enter')doSearch()">
         <span class="s-count" id="searchCount" style="display:none"></span>
       </div>
-      <button class="tb" id="btnSearch">بحث</button>
+      <button class="tb" onclick="doSearch()">بحث</button>
     </div>
     <div id="searchStatus" style="display:none" class="search-status"></div>
     <div class="pdf-body" id="pdfBody">
@@ -158,30 +156,57 @@
       </div>
     </div>
     <div class="pdf-nav">
-      <button class="tb" id="btnNext">التالية</button>
+      <button class="tb" onclick="nextPage()">التالية</button>
       <div class="page-info" id="pageInfo">1 / 1</div>
-      <button class="tb" id="btnPrev">السابقة</button>
+      <button class="tb" onclick="prevPage()">السابقة</button>
     </div>
   </div>
 
   <div class="bottom-nav-wrap">
     <nav class="bottom-nav">
-      <button class="nav-btn" id="navBooks"><div class="ico">&#128218;</div><span class="lbl">الكتب</span></button>
-      <button class="nav-btn" id="navVideos"><div class="ico">&#127916;</div><span class="lbl">الفيديوهات</span></button>
-      <button class="nav-btn active" id="navHome"><div class="ico">&#127968;</div><span class="lbl">الرئيسية</span></button>
+      <button class="nav-btn" onclick="goTo('books')"><div class="ico">&#128218;</div><span class="lbl">الكتب</span></button>
+      <button class="nav-btn" onclick="goTo('videos')"><div class="ico">&#127916;</div><span class="lbl">الفيديوهات</span></button>
+      <button class="nav-btn active" id="navHome" onclick="goTo('home')"><div class="ico">&#127968;</div><span class="lbl">الرئيسية</span></button>
     </nav>
   </div>
 
+  <!-- SCRIPT 1: SAYFA GECIS - BAGIMSIZ CALISIR -->
+  <script>
+    function goTo(name) {
+      var pages = document.querySelectorAll('.page');
+      for (var i = 0; i < pages.length; i++) {
+        pages[i].classList.remove('active');
+      }
+      var t = document.getElementById('page-' + name);
+      if (t) t.classList.add('active');
+
+      var btns = document.querySelectorAll('.nav-btn');
+      for (var j = 0; j < btns.length; j++) {
+        btns[j].classList.remove('active');
+      }
+      var clicked = event ? event.currentTarget : null;
+      if (clicked && clicked.classList.contains('nav-btn')) {
+        clicked.classList.add('active');
+      }
+      window.scrollTo(0, 0);
+    }
+  </script>
+
+  <!-- SCRIPT 2: PDF ISLEMLERI - AYRI CALISIR -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
     var pdfDoc = null;
     var currentPage = 1;
     var totalPages = 0;
     var rendering = false;
     var searchQuery = '';
     var matches = [];
+
+    try {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    } catch(e) {
+      console.log('PDF.js yuklenmedi');
+    }
 
     function normalizeArabic(text) {
       var t = text;
@@ -194,36 +219,23 @@
       return t.trim();
     }
 
-    function goTo(name) {
-      var pages = document.querySelectorAll('.page');
-      for (var i = 0; i < pages.length; i++) {
-        pages[i].classList.remove('active');
+    function openPDF(url) {
+      if (typeof pdfjsLib === 'undefined') {
+        alert('PDF kütüphanesi yüklenemedi. Sayfayı yenileyin.');
+        return;
       }
-      var target = document.getElementById('page-' + name);
-      if (target) {
-        target.classList.add('active');
-      }
-      var btns = document.querySelectorAll('.nav-btn');
-      for (var j = 0; j < btns.length; j++) {
-        btns[j].classList.remove('active');
-      }
-      if (name === 'home') document.getElementById('navHome').classList.add('active');
-      if (name === 'books') document.getElementById('navBooks').classList.add('active');
-      if (name === 'videos') document.getElementById('navVideos').classList.add('active');
-      window.scrollTo(0, 0);
-    }
-
-    function openPDF(url, title) {
       document.getElementById('pdfViewer').classList.add('active');
       document.body.style.overflow = 'hidden';
       document.getElementById('pdfBody').innerHTML = '<div class="pdf-loading"><div class="spinner"></div><div class="load-text">جاري تحميل الكتاب...</div><div class="load-sub">يرجى الانتظار</div></div>';
       document.getElementById('pageInfo').innerText = '...';
       document.getElementById('searchInput').value = '';
       document.getElementById('searchCount').style.display = 'none';
-      document.getElementById('searchStatus').style.display = 'none';
+      var st = document.getElementById('searchStatus');
+      if(st) st.style.display = 'none';
       searchQuery = '';
       matches = [];
       currentPage = 1;
+      pdfDoc = null;
 
       pdfjsLib.getDocument(encodeURI(url)).promise.then(function(doc) {
         pdfDoc = doc;
@@ -271,7 +283,6 @@
           return page.getTextContent();
         }).then(function(textContent) {
           var displayViewport = page.getViewport({scale: displayScale});
-
           for (var i = 0; i < textContent.items.length; i++) {
             var item = textContent.items[i];
             if (!item.str || item.str.trim() === '') continue;
@@ -285,21 +296,14 @@
             span.style.fontFamily = 'sans-serif';
             textLayer.appendChild(span);
           }
-
           currentPage = num;
           document.getElementById('pageInfo').innerText = num + ' / ' + totalPages;
-
-          if (searchQuery) {
-            highlightPage();
-          }
-
+          if (searchQuery) highlightPage();
           rendering = false;
         }).catch(function(e) {
-          console.error(e);
           rendering = false;
         });
       }).catch(function(e) {
-        console.error(e);
         rendering = false;
       });
     }
@@ -322,6 +326,20 @@
       }, 300);
     }
 
+    function nextPage() {
+      if (currentPage < totalPages) {
+        document.getElementById('pdfBody').scrollTop = 0;
+        renderPage(currentPage + 1);
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 1) {
+        document.getElementById('pdfBody').scrollTop = 0;
+        renderPage(currentPage - 1);
+      }
+    }
+
     function doSearch() {
       searchQuery = document.getElementById('searchInput').value.trim();
       var countEl = document.getElementById('searchCount');
@@ -329,7 +347,7 @@
 
       if (!searchQuery) {
         countEl.style.display = 'none';
-        statusEl.style.display = 'none';
+        if(statusEl) statusEl.style.display = 'none';
         var spans = document.querySelectorAll('.text-layer span');
         for (var i = 0; i < spans.length; i++) {
           spans[i].classList.remove('hl');
@@ -341,87 +359,59 @@
 
       countEl.style.display = 'block';
       countEl.innerText = '...';
-      statusEl.style.display = 'block';
-      statusEl.innerText = 'جاري البحث...';
+      if(statusEl) { statusEl.style.display = 'block'; statusEl.innerText = 'جاري البحث...'; }
       matches = [];
-
       var nq = normalizeArabic(searchQuery);
-      var searchPage = 1;
+      var sp = 1;
 
-      function searchNextPage() {
-        if (searchPage > totalPages) {
+      function sNext() {
+        if (sp > totalPages) {
           if (matches.length === 0) {
             countEl.innerText = '0';
-            statusEl.innerText = 'لم يتم العثور على نتائج';
-            setTimeout(function() { statusEl.style.display = 'none'; }, 3000);
+            if(statusEl) { statusEl.innerText = 'لم يتم العثور على نتائج'; setTimeout(function(){statusEl.style.display='none';},3000); }
           } else {
             countEl.innerText = '1/' + matches.length;
-            statusEl.innerText = 'تم العثور على ' + matches.length + ' نتيجة';
-            setTimeout(function() { statusEl.style.display = 'none'; }, 2000);
-            var firstPage = matches[0].page;
-            if (firstPage !== currentPage) {
-              renderPage(firstPage);
-            } else {
-              highlightPage();
-            }
+            if(statusEl) { statusEl.innerText = 'تم العثور على ' + matches.length + ' نتيجة'; setTimeout(function(){statusEl.style.display='none';},2000); }
+            var fp = matches[0].page;
+            if (fp !== currentPage) { renderPage(fp); } else { highlightPage(); }
           }
           return;
         }
+        if(statusEl) statusEl.innerText = 'جاري البحث - صفحة ' + sp + '/' + totalPages;
 
-        statusEl.innerText = 'جاري البحث - صفحة ' + searchPage + ' / ' + totalPages;
-
-        pdfDoc.getPage(searchPage).then(function(page) {
+        pdfDoc.getPage(sp).then(function(page) {
           return page.getTextContent();
-        }).then(function(textContent) {
+        }).then(function(tc) {
           var found = false;
-
-          for (var i = 0; i < textContent.items.length; i++) {
-            if (textContent.items[i].str) {
-              var nt = normalizeArabic(textContent.items[i].str);
-              if (nt.indexOf(nq) !== -1 || textContent.items[i].str.indexOf(searchQuery) !== -1) {
-                found = true;
-                break;
-              }
+          var allText = '';
+          for (var i = 0; i < tc.items.length; i++) {
+            var s = tc.items[i].str || '';
+            allText += s + ' ';
+            if (!found && s) {
+              var ns = normalizeArabic(s);
+              if (ns.indexOf(nq) !== -1 || s.indexOf(searchQuery) !== -1) found = true;
             }
           }
-
           if (!found) {
-            var allText = '';
-            for (var j = 0; j < textContent.items.length; j++) {
-              allText += (textContent.items[j].str || '') + ' ';
-            }
             var nAll = normalizeArabic(allText);
-            if (nAll.indexOf(nq) !== -1 || allText.indexOf(searchQuery) !== -1) {
-              found = true;
-            }
+            if (nAll.indexOf(nq) !== -1 || allText.indexOf(searchQuery) !== -1) found = true;
           }
-
           if (!found) {
-            var noSpace = '';
-            for (var k = 0; k < textContent.items.length; k++) {
-              noSpace += (textContent.items[k].str || '');
-            }
-            var nNoSpace = normalizeArabic(noSpace);
-            var qNoSpace = nq.replace(/\s/g, '');
-            if (nNoSpace.indexOf(qNoSpace) !== -1) {
-              found = true;
-            }
+            var noSp = allText.replace(/\s/g, '');
+            var nNoSp = normalizeArabic(noSp);
+            var qNoSp = nq.replace(/\s/g, '');
+            if (nNoSp.indexOf(qNoSp) !== -1) found = true;
           }
-
-          if (found) {
-            matches.push({page: searchPage});
-          }
-
-          searchPage++;
-          searchNextPage();
-        }).catch(function() {
-          searchPage++;
-          searchNextPage();
-        });
+          if (found) matches.push({page: sp});
+          sp++;
+          sNext();
+        }).catch(function() { sp++; sNext(); });
       }
-
-      searchNextPage();
+      sNext();
     }
 
     function closePDF() {
-      document.getElementById('pdfV
+      document.getElementById('pdfViewer').classList.remove('active');
+      document.getElementById('pdfBody').innerHTML = '';
+      document.body.style.overflow = 'auto';
+   
