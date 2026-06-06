@@ -26,10 +26,8 @@
     .card-body p{color:#d9c088;font-size:14px;margin-top:8px;line-height:1.6}
     .gold-btn{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;font-weight:800;padding:12px 26px;border:none;border-radius:999px;cursor:pointer;font-size:16px;margin-top:14px}
     .icon-visual{width:100px;height:100px;border-radius:24px;background:linear-gradient(135deg,#f9e7a1,#b8862a);display:flex;align-items:center;justify-content:center;font-size:48px}
-    .section-title{text-align:center;margin-top:28px}
-    .section-title h2{font-size:38px;font-weight:900;margin-top:10px;background:linear-gradient(135deg,#f9e7a1,#d4a24a 40%,#b8862a);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-    .section-title p{color:#d9c088;font-size:14px;margin-top:6px}
-    .book-grid{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-bottom:30px}
+    .books-top{text-align:center;margin-top:20px;margin-bottom:10px}
+    .book-grid{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-bottom:30px}
     .book-card{cursor:pointer}
     .book-cover{width:100%;aspect-ratio:3/4;background-size:cover;background-position:center;background-color:#1a1208;border-radius:14px 14px 0 0;overflow:hidden}
     .book-card-body{background:#0f0a04;border:1.5px solid rgba(212,162,74,.5);border-top:none;border-radius:0 0 22px 22px;padding:12px;text-align:center}
@@ -46,14 +44,13 @@
     .pdf-viewer{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:9999;flex-direction:column}
     .pdf-viewer.active{display:flex}
     .pdf-topbar{background:rgba(26,18,8,.98);border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;justify-content:space-between;padding:8px 12px}
-    .tb{height:40px;border-radius:10px;border:1.5px solid rgba(212,162,74,.35);background:rgba(15,10,4,.9);color:#d4a24a;font-size:16px;cursor:pointer;padding:0 12px}
-    .tb-close{background:linear-gradient(135deg,#b91c1c,#7f1d1d);color:#fff;border-color:rgba(185,28,28,.5);width:40px;padding:0}
+    .tb-close{height:40px;width:40px;border-radius:10px;border:none;background:linear-gradient(135deg,#b91c1c,#7f1d1d);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
     .pdf-title{color:#f7e28b;font-size:16px;font-weight:800;flex:1;text-align:center}
     .pdf-body{flex:1;overflow:auto;background:#1a1a1a;display:flex;flex-direction:column;align-items:center}
-    .pdf-page-container{position:relative;box-shadow:0 4px 20px rgba(0,0,0,.5);overflow:hidden}
+    .pdf-page-container{position:relative;overflow:hidden}
     .pdf-page-container canvas{display:block;width:100%;height:auto}
-    .pdf-nav{background:rgba(26,18,8,.98);border-top:none;display:flex;align-items:center;justify-content:center;gap:16px;padding:10px;margin:0}
-    .nav-arrow{width:50px;height:50px;border-radius:50%;border:1.5px solid rgba(212,162,74,.5);background:rgba(15,10,4,.9);color:#d4a24a;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:bold}
+    .pdf-nav{background:rgba(26,18,8,.98);display:flex;align-items:center;justify-content:center;gap:16px;padding:10px}
+    .nav-arrow{width:50px;height:50px;border-radius:50%;border:1.5px solid rgba(212,162,74,.5);background:rgba(15,10,4,.9);color:#d4a24a;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center}
     .nav-arrow:active{background:linear-gradient(135deg,#f9e7a1,#d4a24a);color:#1a1208}
     .page-info{color:#f7e28b;font-size:16px;font-weight:800;min-width:80px;text-align:center}
     .pdf-loading{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background-color:#0a0704}
@@ -98,17 +95,14 @@
     </main>
 
     <main id="page-videos" class="page">
-      <div class="section-title">
-        <h2>الفيديوهات</h2>
-        <p>قريباً إن شاء الله</p>
+      <div style="text-align:center;margin-top:40px">
+        <p style="color:#d9c088;font-size:16px">قريباً إن شاء الله</p>
         <button class="gold-btn" onclick="goTo('home')">الرئيسية</button>
       </div>
     </main>
 
     <main id="page-books" class="page">
-      <div class="section-title">
-        <h2>الكتب</h2>
-        <p>انقر على الكتاب للتصفح</p>
+      <div class="books-top">
         <button class="gold-btn" onclick="goTo('home')">الرئيسية</button>
       </div>
       <div class="book-grid">
@@ -134,7 +128,7 @@
 
   <div class="pdf-viewer" id="pdfViewer">
     <div class="pdf-topbar">
-      <button class="tb tb-close" onclick="closePDF()">X</button>
+      <button class="tb-close" onclick="closePDF()">X</button>
       <div class="pdf-title" id="pdfTitle">الكتاب</div>
     </div>
     <div class="pdf-body" id="pdfBody">
@@ -199,7 +193,11 @@
       pdfDoc = null;
       rendering = false;
 
-      pdfjsLib.getDocument(url).promise.then(function(doc) {
+      pdfjsLib.getDocument({
+        url: url,
+        cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+        cMapPacked: true
+      }).promise.then(function(doc) {
         pdfDoc = doc;
         totalPages = doc.numPages;
         renderPage(1);
@@ -217,9 +215,8 @@
         var containerWidth = body.clientWidth;
         if (containerWidth < 100) containerWidth = 300;
         var baseViewport = page.getViewport({scale: 1});
-        var displayScale = containerWidth / baseViewport.width;
-        var pixelRatio = window.devicePixelRatio || 1;
-        var viewport = page.getViewport({scale: displayScale * pixelRatio});
+        var scale = containerWidth / baseViewport.width;
+        var viewport = page.getViewport({scale: scale * 2});
 
         var container = document.createElement('div');
         container.className = 'pdf-page-container';
@@ -237,7 +234,8 @@
 
         page.render({
           canvasContext: canvas.getContext('2d'),
-          viewport: viewport
+          viewport: viewport,
+          intent: 'display'
         }).promise.then(function() {
           currentPage = num;
           document.getElementById('pageInfo').innerText = num + ' / ' + totalPages;
