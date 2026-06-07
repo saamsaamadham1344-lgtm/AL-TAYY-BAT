@@ -26,7 +26,7 @@
     .card-body p{color:#d9c088;font-size:14px;margin-top:8px;line-height:1.6}
     .gold-btn{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;font-weight:800;padding:12px 26px;border:none;border-radius:999px;cursor:pointer;font-size:16px;margin-top:14px}
     .icon-visual{width:100px;height:100px;border-radius:24px;background:linear-gradient(135deg,#f9e7a1,#b8862a);display:flex;align-items:center;justify-content:center;font-size:48px}
-    
+
     .books-top{text-align:center;margin-top:20px;margin-bottom:10px}
     .book-grid{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-bottom:30px}
     .book-card{cursor:pointer}
@@ -35,7 +35,7 @@
     .book-card-body .t{color:#f7e28b;font-size:15px;font-weight:800}
     .book-card-body .d{color:#a69466;font-size:12px;margin-top:4px}
     .open-btn{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;padding:9px 18px;border-radius:999px;border:none;cursor:pointer;font-size:14px;font-weight:800;margin-top:10px;width:100%}
-    
+
     #page-videos { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 1000; display: none; }
     #page-videos.active { display: block; }
     .video-container { width: 100vw; height: 100vh; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; position: relative; }
@@ -68,6 +68,7 @@
     .pdf-frame-wrap{flex:1;position:relative;overflow:hidden;background:#1a1a1a}
     .pdf-frame{width:100%;height:100%;border:none;background:#fff}
     .pdf-loading{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a0704;z-index:2}
+
     .spinner{width:50px;height:50px;border:4px solid rgba(212,162,74,.2);border-top-color:#d4a24a;border-radius:50%;animation:spin 1s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
     .hidden{display:none}
@@ -82,14 +83,43 @@
 
     .fullscreen-btn{position:absolute;bottom:20px;right:20px;z-index:100;background:rgba(0,0,0,0.8);color:#d4a24a;border:2px solid #d4a24a;padding:10px 16px;border-radius:999px;font-weight:bold;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:6px}
     .fullscreen-btn:hover{background:rgba(212,162,74,0.2)}
+
+/*===== TİKTOK/SHORTS TARZI KAYDIRMALI VİDEOLAR =====*/
+#video-list {
+  height: 100%;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.shorts-title {
+  position: absolute;
+  bottom: 80px;
+  left: 20px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(0,0,0,0.8);
+  z-index: 10;
+  max-width: 80%;
+  text-align: right;
+  direction: rtl;
+}
+.shorts-counter {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: #a69466;
+  font-size: 14px;
+  z-index: 10;
+}
   </style>
 </head>
 <body>
   <div class="container" id="main-ui">
     <div class="top-row">
-      <div class="circle-btn">&#128100;</div>
-      <div class="logo-center">&#127806;</div>
-      <div class="circle-btn">&#128276;</div>
+      <div class="circle-btn">🌐</div>
+      <div class="logo-center">🍎</div>
+      <div class="circle-btn">🔍</div>
     </div>
     <div class="header">
       <h1>نظام الطيبات الذكي</h1>
@@ -105,7 +135,7 @@
             <p>شاهد أحدث الفيديوهات في مكان واحد</p>
             <button class="gold-btn" onclick="goTo('videos')">مشاهدة</button>
           </div>
-          <div class="icon-visual">&#127916;</div>
+          <div class="icon-visual">🎥</div>
         </section>
 
         <section class="card">
@@ -114,7 +144,7 @@
             <p>شاهد الفيديوهات الطويلة من يوتيوب</p>
             <button class="gold-btn" onclick="goTo('longvideos')">مشاهدة</button>
           </div>
-          <div class="icon-visual">&#127909;</div>
+          <div class="icon-visual">📺</div>
         </section>
 
         <section class="card">
@@ -123,7 +153,7 @@
             <p>اقرأ أفضل الكتب ومقاطع PDF</p>
             <button class="gold-btn" onclick="goTo('books')">استعراض</button>
           </div>
-          <div class="icon-visual">&#128218;</div>
+          <div class="icon-visual">📚</div>
         </section>
       </div>
     </main>
@@ -187,10 +217,10 @@
 
   <div class="bottom-nav-wrap">
     <nav class="bottom-nav">
-      <button class="nav-btn" onclick="goTo('books')"><div class="ico">&#128218;</div><span class="lbl">الكتب</span></button>
-      <button class="nav-btn" onclick="goTo('longvideos')"><div class="ico">&#127909;</div><span class="lbl">طويلة</span></button>
-      <button class="nav-btn" onclick="goTo('videos')"><div class="ico">&#127916;</div><span class="lbl">قصيرة</span></button>
-      <button class="nav-btn active" id="btn-home" onclick="goTo('home')"><div class="ico">&#127968;</div><span class="lbl">الرئيسية</span></button>
+      <button class="nav-btn" onclick="goTo('books')"><div class="ico">📚</div><span class="lbl">الكتب</span></button>
+      <button class="nav-btn" onclick="goTo('longvideos')"><div class="ico">📺</div><span class="lbl">طويلة</span></button>
+      <button class="nav-btn" onclick="goTo('videos')"><div class="ico">🎥</div><span class="lbl">قصيرة</span></button>
+      <button class="nav-btn active" id="btn-home" onclick="goTo('home')"><div class="ico">🏠</div><span class="lbl">الرئيسية</span></button>
     </nav>
   </div>
 
@@ -307,6 +337,15 @@
       { id: "G11prrGf37o" },
     ];
 
+    // 📱 KISA VİDEOLAR (TikTok/Shorts tarzı)
+    const shortVideos = [
+      { id: "dQw4w9WgXcQ", title: "فيديو قصير 1" },
+      { id: "9bZkp7q19s4", title: "فيديو قصير 2" },
+      { id: "HYtXaWQYFkE", title: "فيديو قصير 3" }
+      // **Daha fazla video eklemek için buraya ekleyin:**
+      // { id: "YOUTUBE_İD", title: "Video Başlığı" }
+    ];
+
     function loadLongVideos() {
       const list = document.getElementById('longVideoList');
       list.innerHTML = '';
@@ -324,6 +363,54 @@
           </div>
         `;
         list.appendChild(card);
+      });
+    }
+
+    function loadShortVideos() {
+      const container = document.getElementById('video-list');
+      if (!container) return;
+
+      container.innerHTML = '';
+      shortVideos.forEach((video, index) => {
+        const videoDiv = document.createElement('div');
+        videoDiv.className = 'video-container';
+        videoDiv.innerHTML = `
+          <iframe
+            src="https://www.youtube.com/embed/${video.id}?autoplay=1&mute=1&loop=1&playsinline=1&controls=0&modestbranding=1&rel=0"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            webkitallowfullscreen
+            mozallowfullscreen
+          ></iframe>
+          <button class="video-back-btn" onclick="goTo('home')">X خروج</button>
+          <div class="shorts-title">${video.title}</div>
+          <div class="shorts-counter">فيديو ${index + 1} من ${shortVideos.length}</div>
+        `;
+        container.appendChild(videoDiv);
+      });
+
+      // Kaydırıldığında videoları otomatik oynat/durdur
+      let currentVideo = null;
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const iframe = entry.target.querySelector('iframe');
+            if (iframe) {
+              if (!iframe.src.includes('autoplay=1')) {
+                iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1');
+              }
+              if (currentVideo && currentVideo !== iframe) {
+                currentVideo.src = currentVideo.src.replace('autoplay=1', 'autoplay=0');
+              }
+              currentVideo = iframe;
+            }
+          }
+        });
+      }, { threshold: 0.7 });
+
+      container.querySelectorAll('.video-container').forEach(el => {
+        observer.observe(el);
       });
     }
 
@@ -349,7 +436,7 @@
     function goFullscreen() {
       const iframe = document.getElementById('vpFrame');
       const wrap = document.getElementById('vpFrameWrap');
-      
+
       if (iframe.requestFullscreen) {
         iframe.requestFullscreen();
       } else if (iframe.webkitRequestFullscreen) {
@@ -363,7 +450,7 @@
       } else if (wrap.requestFullscreen) {
         wrap.requestFullscreen();
       }
-      
+
       setTimeout(() => {
         if (screen.orientation && screen.orientation.lock) {
           screen.orientation.lock('landscape').catch(err => {
@@ -381,6 +468,7 @@
       const mainUI = document.getElementById('main-ui');
       if (pageName === 'videos') {
         mainUI.style.display = 'none';
+        loadShortVideos();
       } else {
         mainUI.style.display = 'block';
       }
@@ -398,19 +486,19 @@
     function openPDF(file, title) {
       const fullPDFUrl = SITE_URL + file;
       const googleViewer = "https://docs.google.com/viewer?url=" + encodeURIComponent(fullPDFUrl) + "&embedded=true";
-      
+
       document.getElementById('pdfTitle').innerText = title;
       document.getElementById('pdfLoading').classList.remove('hidden');
-      
+
       const frame = document.getElementById('pdfFrame');
       frame.src = googleViewer;
-      
+
       frame.onload = function() {
         setTimeout(() => {
           document.getElementById('pdfLoading').classList.add('hidden');
         }, 1500);
       };
-      
+
       document.getElementById('pdfViewer').classList.add('active');
     }
 
@@ -419,6 +507,5 @@
       document.getElementById('pdfFrame').src = '';
     }
   </script>
-
 </body>
 </html>
