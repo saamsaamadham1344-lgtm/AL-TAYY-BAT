@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     *{font-family:'Cairo',sans-serif;box-sizing:border-box;margin:0;padding:0}
-    body{background:radial-gradient(circle at 50% -30%,#2a1e0a 0%,#0a0704 55%,#000 100%);color:#fff;min-height:100vh;padding-bottom:200px}
+    body{background:radial-gradient(circle at 50% -30%,#2a1e0a 0%,#0a0704 55%,#000 100%);color:#fff;min-height:100vh;padding-bottom:180px}
     .container{max-width:520px;margin:0 auto;padding:0 18px}
     .top-row{display:flex;justify-content:space-between;align-items:center;padding-top:22px}
     .circle-btn{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#2a1e0a,#14100a);border:1px solid rgba(212,162,74,.5);display:flex;align-items:center;justify-content:center;font-size:20px}
@@ -27,24 +27,6 @@
     .whatsapp-btn:hover{background:#128C7E}
     .whatsapp-btn i{font-size:20px}
     .icon-visual{width:100px;height:100px;border-radius:24px;background:linear-gradient(135deg,#f9e7a1,#b8862a);display:flex;align-items:center;justify-content:center;font-size:48px}
-
-    /* Yorumlar için stiller */
-    .comments-top{text-align:center;margin-top:20px;margin-bottom:10px}
-    .comments-container{padding-bottom:30px;display:flex;flex-direction:column;height:calc(100vh - 200px)}
-    .comments-list{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:10px;background:#0f0a04;border-radius:18px;margin-bottom:10px}
-    .comment{background:#1a1208;padding:12px;border-radius:18px;max-width:90%;word-wrap:break-word;position:relative}
-    .comment-header{display:flex;align-items:center;gap:10px;margin-bottom:5px}
-    .comment-user{color:#f7e28b;font-weight:700}
-    .comment-time{color:#a69466;font-size:12px}
-    .comment-text{color:#fff;margin-top:5px}
-    .comment-input{display:flex;gap:10px;padding:10px;background:#0f0a04;border-top:1px solid rgba(212,162,74,.5)}
-    .comment-input input{flex:1;background:#1a1208;border:1px solid rgba(212,162,74,.3);color:#fff;padding:10px;border-radius:10px;font-family:'Cairo',sans-serif}
-    .reply-input{display:flex;gap:10px;padding:10px 10px 10px 30px;background:#1a1208;border-radius:10px;margin-top:10px}
-    .reply-input input{flex:1;background:#0f0a04;border:1px solid rgba(212,162,74,.3);color:#fff;padding:8px;border-radius:8px}
-    .delete-btn{background:#b91c1c;color:#fff;border:none;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer}
-    .reply-btn{background:#d4a24a;color:#1a1208;border:none;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer}
-    .replies{margin-top:10px;margin-left:20px;border-left:2px solid rgba(212,162,74,.3);padding-left:15px}
-    .hidden{display:none}
 
     /* Kitaplar */
     .books-top{text-align:center;margin-top:20px;margin-bottom:10px}
@@ -78,7 +60,7 @@
     .vp-frame-wrap{flex:1;position:relative;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
     .vp-frame{width:100%;height:100%;border:none}
 
-    /* PDF Viewer */
+    /* PDF Viewer - Google Viewer ile */
     .pdf-viewer{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0a0704;z-index:9999;flex-direction:column}
     .pdf-viewer.active{display:flex}
     .pdf-topbar{background:linear-gradient(135deg,rgba(26,18,8,.98),rgba(10,7,4,.98));border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;padding:10px 14px;gap:12px}
@@ -86,9 +68,26 @@
     .pdf-title{color:#f7e28b;font-size:17px;font-weight:800;flex:1;text-align:center}
     .pdf-frame-wrap{flex:1;position:relative;overflow:hidden;background:#1a1a1a}
     .pdf-frame{width:100%;height:100%;border:none;background:#fff}
-    .pdf-loading{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a0704;z-index:2}
-    .spinner{width:50px;height:50px;border:4px solid rgba(212,162,74,.2);border-top-color:#d4a24a;border-radius:50%;animation:spin 1s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* Shorts Title */
+    .shorts-title{position:absolute;bottom:80px;left:20px;color:#fff;font-size:18px;font-weight:bold;text-shadow:0 0 5px rgba(0,0,0,0.8);z-index:10;max-width:80%;text-align:right;direction:rtl}
+    .shorts-counter{position:absolute;bottom:20px;left:20px;color:#a69466;font-size:14px;z-index:10}
+
+    /* WhatsApp Modal */
+    .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.8);z-index:2000;justify-content:center;align-items:center}
+    .modal.active{display:flex}
+    .modal-content{background:#0f0a04;border:1.5px solid rgba(212,162,74,0.5);border-radius:20px;padding:30px;max-width:90%;width:400px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.5)}
+    .modal-title{color:#f7e28b;font-size:22px;font-weight:800;margin-bottom:15px}
+    .modal-text{color:#d9c088;font-size:16px;margin-bottom:25px;line-height:1.6}
+    .modal-close{position:absolute;top:15px;right:15px;background:none;border:none;color:#a69466;font-size:24px;cursor:pointer}
+    .whatsapp-modal-btn{background:#25D366;color:#fff;padding:12px 30px;border:none;border-radius:999px;cursor:pointer;font-size:16px;font-weight:bold;display:inline-flex;align-items:center;gap:8px}
+    .whatsapp-modal-btn:hover{background:#128C7E}
+
+    /* WhatsApp Section */
+    .whatsapp-section{text-align:center;padding:20px 0;margin-top:30px}
+    .whatsapp-section-btn{background:#25D366;color:#fff;padding:12px 24px;border:none;border-radius:999px;cursor:pointer;font-size:16px;font-weight:bold;display:inline-flex;align-items:center;gap:8px}
+    .whatsapp-section-btn:hover{background:#128C7E}
+    .whatsapp-section-btn i{font-size:20px}
 
     /* Bottom Navigation */
     .bottom-nav-wrap{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:0 18px 20px 18px;background:linear-gradient(to top,#000 70%,transparent)}
@@ -98,21 +97,21 @@
     .nav-btn.active .ico{background:linear-gradient(135deg,#f9e7a1,#b8862a);color:#1a1208}
     .nav-btn .lbl{font-size:12px;font-weight:700;color:#a69466}
     .nav-btn.active .lbl{color:#f7e28b}
-
-    /* Shorts Title */
-    .shorts-title{position:absolute;bottom:80px;left:20px;color:#fff;font-size:18px;font-weight:bold;text-shadow:0 0 5px rgba(0,0,0,0.8);z-index:10;max-width:80%;text-align:right;direction:rtl}
-    .shorts-counter{position:absolute;bottom:20px;left:20px;color:#a69466;font-size:14px;z-index:10}
-
-    /* WhatsApp Section */
-    .whatsapp-section{text-align:center;padding:20px 0;margin-top:30px}
-    .cloud-icon{font-size:40px;margin-bottom:10px}
-    .whatsapp-section-title{color:#f7e28b;font-size:18px;font-weight:800;margin-bottom:15px}
-    .whatsapp-section-btn{background:#25D366;color:#fff;padding:12px 24px;border:none;border-radius:999px;cursor:pointer;font-size:16px;font-weight:bold;display:inline-flex;align-items:center;gap:8px}
-    .whatsapp-section-btn:hover{background:#128C7E}
-    .whatsapp-section-btn i{font-size:20px}
   </style>
 </head>
 <body>
+  <!-- WhatsApp Modal -->
+  <div class="modal" id="whatsappModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeWhatsAppModal()">×</button>
+      <div class="modal-title">انضم إلى مجموعة واتساب</div>
+      <div class="modal-text">انضم إلى مجموعتنا على واتساب وكن معنا</div>
+      <button class="whatsapp-modal-btn" onclick="joinWhatsAppGroup()">
+        <i>📱</i> انضم إلى المجموعة
+      </button>
+    </div>
+  </div>
+
   <div class="container" id="main-ui">
     <div class="top-row">
       <div class="circle-btn">🌐</div>
@@ -125,6 +124,7 @@
 
     <main id="page-home" class="page active">
       <div class="cards">
+        <!-- 4 Ana Bölüm -->
         <section class="card">
           <div class="card-body">
             <h2 class="gold-text">الفيديوهات</h2>
@@ -154,20 +154,20 @@
 
         <section class="card">
           <div class="card-body">
-            <h2 class="gold-text">التعليقات</h2>
-            <p>شارك آراءك وتعليقاتك</p>
-            <button class="gold-btn" onclick="goTo('comments')">الدخول</button>
+            <h2 class="gold-text">مجموعة واتساب</h2>
+            <p>انضم إلى مجموعة واتساب للمناقشة</p>
+            <button class="whatsapp-btn" onclick="showWhatsAppModal()">
+              <i>📱</i> مجموعة واتساب
+            </button>
           </div>
-          <div class="icon-visual">💭</div>
+          <div class="icon-visual">📱</div>
         </section>
       </div>
 
       <!-- WhatsApp Section -->
       <div class="whatsapp-section">
-        <div class="cloud-icon">☁️</div>
-        <div class="whatsapp-section-title">واتساب إلى قسم</div>
-        <button class="whatsapp-section-btn" onclick="joinWhatsAppGroup()">
-          <i>📱</i> انضم إلى المجموعة
+        <button class="whatsapp-section-btn" onclick="showWhatsAppModal()">
+          <i>📱</i> انضم إلى مجموعة واتساب
         </button>
       </div>
     </main>
@@ -195,28 +195,16 @@
       </div>
     </main>
 
-    <!-- Uzun Videolar Sayfası -->
+    <!-- Uzun Videolar Sayfası (106 video) -->
     <main id="page-longvideos" class="page">
       <div class="long-top"><button class="gold-btn" onclick="goTo('home')">الرئيسية</button></div>
       <div class="long-video-list" id="longVideoList"></div>
     </main>
 
-    <!-- Kısa Videolar Sayfası -->
+    <!-- Kısa Videolar Sayfası (X butonu üstte) -->
     <main id="page-videos" class="page">
       <button class="video-back-btn" onclick="goTo('home')">X خروج</button>
       <div id="video-list"></div>
-    </main>
-
-    <!-- Yorumlar Sayfası -->
-    <main id="page-comments" class="page">
-      <div class="comments-top"><button class="gold-btn" onclick="goTo('home')">الرئيسية</button></div>
-      <div class="comments-container">
-        <div class="comments-list" id="commentsList"></div>
-        <div class="comment-input">
-          <input type="text" id="commentInput" placeholder="اكتب تعليقك هنا..." dir="auto">
-          <button class="gold-btn" onclick="addComment()">إرسال</button>
-        </div>
-      </div>
     </main>
 
     <!-- Video Player -->
@@ -231,7 +219,7 @@
       </div>
     </div>
 
-    <!-- PDF Viewer -->
+    <!-- PDF Viewer (Google Viewer) -->
     <div class="pdf-viewer" id="pdfViewer">
       <div class="pdf-topbar">
         <button class="tb-close" onclick="closePDF()">X</button>
@@ -239,16 +227,12 @@
       </div>
       <div class="pdf-frame-wrap">
         <iframe id="pdfFrame" class="pdf-frame"></iframe>
-        <div class="pdf-loading hidden" id="pdfLoading">
-          <div class="spinner"></div>
-        </div>
       </div>
     </div>
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav-wrap">
       <nav class="bottom-nav">
-        <button class="nav-btn" onclick="goTo('comments')"><div class="ico">💭</div><span class="lbl">تعليقات</span></button>
         <button class="nav-btn" onclick="goTo('books')"><div class="ico">📚</div><span class="lbl">الكتب</span></button>
         <button class="nav-btn" onclick="goTo('longvideos')"><div class="ico">📺</div><span class="lbl">طويلة</span></button>
         <button class="nav-btn" onclick="goTo('videos')"><div class="ico">🎥</div><span class="lbl">قصيرة</span></button>
@@ -283,15 +267,7 @@
       { id: "zDwSm77014Q" }, { id: "b1HcCo9-RzY" }, { id: "2LMnRSPBOZk" }, { id: "0gGcO7Q0EV0" }, { id: "1ekb9913gNk" },
       { id: "uCKlj9V7e4E" }, { id: "vd1oaXzNdTk" }, { id: "MjhLRgPpw9g" }, { id: "Nv2dtQ4X-ao" }, { id: "JtCExFozjDM" },
       { id: "nFD98X3uZb4" }, { id: "OUsrF0A1nI0" }, { id: "DwFg_wlhZzQ" }, { id: "SVWkerA8bsk" }, { id: "1vmK7osxMKM" },
-      { id: "G11prrGf37o" }, { id: "lSBvJKra-z1" }, { id: "YVOQHGTxmA2" }, { id: "E3jtLpbRgL1" }, { id: "pw405As_xZ2" },
-      { id: "-3zhpJ5yNK3" }, { id: "jXijubcRny1" }, { id: "_JtcBLLaDI2" }, { id: "F7GZGa0HFe2" }, { id: "wHKEeKwX2q2" },
-      { id: "5WWEe5O1uF9" }, { id: "zDwSm770143" }, { id: "b1HcCo9-Rz3" }, { id: "2LMnRSPBOZ1" }, { id: "0gGcO7Q0EV1" },
-      { id: "1ekb9913gN2" }, { id: "uCKlj9V7e43" }, { id: "vd1oaXzNdT2" }, { id: "MjhLRgPpw92" }, { id: "Nv2dtQ4X-ao2" },
-      { id: "JtCExFozjD3" }, { id: "nFD98X3uZb5" }, { id: "OUsrF0A1nI1" }, { id: "DwFg_wlhZz3" }, { id: "SVWkerA8bs1" },
-      { id: "1vmK7osxMK3" }, { id: "G11prrGf371" }, { id: "lSBvJKra-z4" }, { id: "YVOQHGTxmA3" }, { id: "E3jtLpbRgL4" },
-      { id: "pw405As_xZ4" }, { id: "-3zhpJ5yNK4" }, { id: "jXijubcRny4" }, { id: "_JtcBLLaDI5" }, { id: "F7GZGa0HFe5" },
-      { id: "wHKEeKwX2q5" }, { id: "5WWEe5O1uF0" }
-      // Buraya kendi 106 videonuzu ekleyin
+      { id: "G11prrGf37o" }
     ];
 
     // ========== KISA VİDEOLAR (YouTube Shorts) ==========
@@ -415,9 +391,18 @@
       }, 500);
     }
 
-    // ========== WhatsApp FONKSİYONU ==========
+    // ========== WhatsApp FONKSİYONLARI ==========
+    function showWhatsAppModal() {
+      document.getElementById('whatsappModal').classList.add('active');
+    }
+
+    function closeWhatsAppModal() {
+      document.getElementById('whatsappModal').classList.remove('active');
+    }
+
     function joinWhatsAppGroup() {
       window.open(WHATSAPP_GROUP_LINK, '_blank');
+      closeWhatsAppModal();
     }
 
     // ========== SAYFA GEÇİŞİ VE GERİ TUŞU ==========
@@ -438,7 +423,6 @@
       if (pageName === 'home') document.getElementById('btn-home').classList.add('active');
 
       if (pageName === 'longvideos') loadLongVideos();
-      if (pageName === 'comments') loadComments();
     }
 
     // Geri tuşuna basıldığında ana sayfaya dön
@@ -446,19 +430,12 @@
       goTo('home');
     });
 
-    // ========== PDF FONKSİYONLARI ==========
+    // ========== PDF FONKSİYONLARI (Google Viewer) ==========
     function openPDF(file, title) {
       const fullPDFUrl = "https://saamsaamadham1344-lgtm.github.io/AL-TAYY-BAT/" + file;
       const googleViewer = "https://docs.google.com/viewer?url=" + encodeURIComponent(fullPDFUrl) + "&embedded=true";
       document.getElementById('pdfTitle').innerText = title;
-      document.getElementById('pdfLoading').classList.remove('hidden');
-      const frame = document.getElementById('pdfFrame');
-      frame.src = googleViewer;
-      frame.onload = function() {
-        setTimeout(() => {
-          document.getElementById('pdfLoading').classList.add('hidden');
-        }, 1500);
-      };
+      document.getElementById('pdfFrame').src = googleViewer;
       document.getElementById('pdfViewer').classList.add('active');
     }
 
@@ -467,146 +444,10 @@
       document.getElementById('pdfFrame').src = '';
     }
 
-    // ========== YORUM SİSTEMİ (LocalStorage ile) ==========
-    function loadComments() {
-      const comments = JSON.parse(localStorage.getItem('comments') || '[]');
-      const container = document.getElementById('commentsList');
-      container.innerHTML = '';
-      comments.forEach((comment, index) => {
-        renderComment(index, comment, container);
-      });
-    }
-
-    function renderComment(index, comment, container) {
-      const commentDiv = document.createElement('div');
-      commentDiv.className = 'comment';
-      commentDiv.setAttribute('data-id', index);
-
-      let html = `
-        <div class="comment-header">
-          <span class="comment-user">${comment.user}</span>
-          <span class="comment-time">${new Date(comment.timestamp).toLocaleTimeString('ar-EG')}</span>
-      `;
-
-      const currentUser = localStorage.getItem('username') || 'مستخدم ' + Math.floor(Math.random() * 10000);
-      if (comment.user === currentUser) {
-        html += `<button class="delete-btn" onclick="deleteComment(${index})">حذف</button>`;
-      }
-
-      html += `
-          <button class="reply-btn" onclick="showReplyInput(${index})">رد</button>
-        </div>
-        <div class="comment-text">${comment.text}</div>
-      `;
-
-      if (comment.replies && comment.replies.length > 0) {
-        html += '<div class="replies">';
-        comment.replies.forEach((reply, replyIndex) => {
-          html += `
-            <div class="comment" data-id="${index}-${replyIndex}">
-              <div class="comment-header">
-                <span class="comment-user">${reply.user}</span>
-                <span class="comment-time">${new Date(reply.timestamp).toLocaleTimeString('ar-EG')}</span>
-          `;
-          if (reply.user === currentUser) {
-            html += `<button class="delete-btn" onclick="deleteReply(${index}, ${replyIndex})">حذف</button>`;
-          }
-          html += `
-              </div>
-              <div class="comment-text">${reply.text}</div>
-            </div>
-          `;
-        });
-        html += '</div>';
-      }
-
-      html += `
-        <div class="reply-input hidden" id="reply-input-${index}">
-          <input type="text" id="reply-text-${index}" placeholder="اكتب ردًا..." dir="auto">
-          <button class="gold-btn" onclick="addReply(${index})">إرسال</button>
-        </div>
-      `;
-
-      commentDiv.innerHTML = html;
-      container.appendChild(commentDiv);
-      container.scrollTop = container.scrollHeight;
-    }
-
-    function addComment() {
-      const input = document.getElementById('commentInput');
-      const text = input.value.trim();
-      if (text) {
-        const currentUser = localStorage.getItem('username') || 'مستخدم ' + Math.floor(Math.random() * 10000);
-        localStorage.setItem('username', currentUser);
-
-        const comments = JSON.parse(localStorage.getItem('comments') || '[]');
-        comments.push({
-          text: text,
-          user: currentUser,
-          timestamp: Date.now(),
-          replies: []
-        });
-        localStorage.setItem('comments', JSON.stringify(comments));
-        input.value = '';
-        loadComments();
-      }
-    }
-
-    function showReplyInput(commentIndex) {
-      const replyInput = document.getElementById(`reply-input-${commentIndex}`);
-      if (replyInput) replyInput.classList.toggle('hidden');
-    }
-
-    function addReply(commentIndex) {
-      const input = document.getElementById(`reply-text-${commentIndex}`);
-      const text = input.value.trim();
-      if (text) {
-        const currentUser = localStorage.getItem('username') || 'مستخدم ' + Math.floor(Math.random() * 10000);
-        const comments = JSON.parse(localStorage.getItem('comments') || '[]');
-
-        if (!comments[commentIndex].replies) {
-          comments[commentIndex].replies = [];
-        }
-
-        comments[commentIndex].replies.push({
-          text: text,
-          user: currentUser,
-          timestamp: Date.now()
-        });
-
-        localStorage.setItem('comments', JSON.stringify(comments));
-        input.value = '';
-        document.getElementById(`reply-input-${commentIndex}`).classList.add('hidden');
-        loadComments();
-      }
-    }
-
-    function deleteComment(commentIndex) {
-      if (confirm('هل أنت متأكد من حذف هذا التعليق؟')) {
-        const comments = JSON.parse(localStorage.getItem('comments') || '[]');
-        comments.splice(commentIndex, 1);
-        localStorage.setItem('comments', JSON.stringify(comments));
-        loadComments();
-      }
-    }
-
-    function deleteReply(commentIndex, replyIndex) {
-      if (confirm('هل أنت متأكد من حذف هذا الرد؟')) {
-        const comments = JSON.parse(localStorage.getItem('comments') || '[]');
-        if (comments[commentIndex] && comments[commentIndex].replies) {
-          comments[commentIndex].replies.splice(replyIndex, 1);
-          localStorage.setItem('comments', JSON.stringify(comments));
-          loadComments();
-        }
-      }
-    }
-
     // ========== SAYFA YÜKLENDİĞİNDE ==========
     window.onload = function() {
-      if (!localStorage.getItem('username')) {
-        const randomNum = Math.floor(Math.random() * 10000);
-        localStorage.setItem('username', 'مستخدم ' + randomNum);
-      }
+      // Kitaplar sayfasını düzgün çalıştırmak için
+      document.getElementById('page-books').style.display = 'none';
     };
   </script>
 </body>
