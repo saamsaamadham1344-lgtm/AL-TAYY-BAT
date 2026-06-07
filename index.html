@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     *{font-family:'Cairo',sans-serif;box-sizing:border-box;margin:0;padding:0}
-    body{background:radial-gradient(circle at 50% -30%,#2a1e0a 0%,#0a0704 55%,#000 100%);color:#fff;min-height:100vh;padding-bottom:140px}
+    body{background:radial-gradient(circle at 50% -30%,#2a1e0a 0%,#0a0704 55%,#000 100%);color:#fff;min-height:100vh;padding-bottom:200px}
     .container{max-width:520px;margin:0 auto;padding:0 18px}
     .top-row{display:flex;justify-content:space-between;align-items:center;padding-top:22px}
     .circle-btn{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#2a1e0a,#14100a);border:1px solid rgba(212,162,74,.5);display:flex;align-items:center;justify-content:center;font-size:20px}
@@ -46,7 +46,7 @@
     .replies{margin-top:10px;margin-left:20px;border-left:2px solid rgba(212,162,74,.3);padding-left:15px}
     .hidden{display:none}
 
-    /* Kitaplar, Videolar ve Diğer Bileşenler */
+    /* Kitaplar */
     .books-top{text-align:center;margin-top:20px;margin-bottom:10px}
     .book-grid{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-bottom:30px}
     .book-card{cursor:pointer}
@@ -55,6 +55,8 @@
     .book-card-body .t{color:#f7e28b;font-size:15px;font-weight:800}
     .book-card-body .d{color:#a69466;font-size:12px;margin-top:4px}
     .open-btn{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;padding:9px 18px;border-radius:999px;border:none;cursor:pointer;font-size:14px;font-weight:800;margin-top:10px;width:100%}
+
+    /* Videolar */
     #page-videos{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:1000;display:none}
     #page-videos.active{display:block}
     .video-container{width:100vw;height:100vh;scroll-snap-align:start;display:flex;align-items:center;justify-content:center;position:relative;background:#000}
@@ -75,6 +77,8 @@
     .vp-title{color:#f7e28b;font-size:17px;font-weight:800;flex:1;text-align:center}
     .vp-frame-wrap{flex:1;position:relative;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
     .vp-frame{width:100%;height:100%;border:none}
+
+    /* PDF Viewer */
     .pdf-viewer{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0a0704;z-index:9999;flex-direction:column}
     .pdf-viewer.active{display:flex}
     .pdf-topbar{background:linear-gradient(135deg,rgba(26,18,8,.98),rgba(10,7,4,.98));border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;padding:10px 14px;gap:12px}
@@ -85,6 +89,8 @@
     .pdf-loading{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a0704;z-index:2}
     .spinner{width:50px;height:50px;border:4px solid rgba(212,162,74,.2);border-top-color:#d4a24a;border-radius:50%;animation:spin 1s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* Bottom Navigation */
     .bottom-nav-wrap{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:0 18px 20px 18px;background:linear-gradient(to top,#000 70%,transparent)}
     .bottom-nav{max-width:560px;margin:0 auto;background:#0f0a04;border:1.5px solid rgba(212,162,74,.5);border-radius:999px;display:flex;overflow:hidden;padding:6px 0}
     .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border:none;background:transparent;cursor:pointer}
@@ -92,88 +98,21 @@
     .nav-btn.active .ico{background:linear-gradient(135deg,#f9e7a1,#b8862a);color:#1a1208}
     .nav-btn .lbl{font-size:12px;font-weight:700;color:#a69466}
     .nav-btn.active .lbl{color:#f7e28b}
+
+    /* Shorts Title */
     .shorts-title{position:absolute;bottom:80px;left:20px;color:#fff;font-size:18px;font-weight:bold;text-shadow:0 0 5px rgba(0,0,0,0.8);z-index:10;max-width:80%;text-align:right;direction:rtl}
     .shorts-counter{position:absolute;bottom:20px;left:20px;color:#a69466;font-size:14px;z-index:10}
 
-    /* WhatsApp Modal Penceresi */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      z-index: 2000;
-      justify-content: center;
-      align-items: center;
-    }
-    .modal.active {
-      display: flex;
-    }
-    .modal-content {
-      background: #0f0a04;
-      border: 1.5px solid rgba(212, 162, 74, 0.5);
-      border-radius: 20px;
-      padding: 30px;
-      max-width: 90%;
-      width: 400px;
-      text-align: center;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    }
-    .modal-title {
-      color: #f7e28b;
-      font-size: 22px;
-      font-weight: 800;
-      margin-bottom: 15px;
-    }
-    .modal-text {
-      color: #d9c088;
-      font-size: 16px;
-      margin-bottom: 25px;
-      line-height: 1.6;
-    }
-    .modal-close {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      background: none;
-      border: none;
-      color: #a69466;
-      font-size: 24px;
-      cursor: pointer;
-    }
-    .whatsapp-modal-btn {
-      background: #25D366;
-      color: #fff;
-      padding: 12px 30px;
-      border: none;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .whatsapp-modal-btn:hover {
-      background: #128C7E;
-    }
+    /* WhatsApp Section */
+    .whatsapp-section{text-align:center;padding:20px 0;margin-top:30px}
+    .cloud-icon{font-size:40px;margin-bottom:10px}
+    .whatsapp-section-title{color:#f7e28b;font-size:18px;font-weight:800;margin-bottom:15px}
+    .whatsapp-section-btn{background:#25D366;color:#fff;padding:12px 24px;border:none;border-radius:999px;cursor:pointer;font-size:16px;font-weight:bold;display:inline-flex;align-items:center;gap:8px}
+    .whatsapp-section-btn:hover{background:#128C7E}
+    .whatsapp-section-btn i{font-size:20px}
   </style>
 </head>
 <body>
-  <!-- WhatsApp Modal Penceresi -->
-  <div class="modal" id="whatsappModal">
-    <div class="modal-content">
-      <button class="modal-close" onclick="closeWhatsAppModal()">×</button>
-      <div class="modal-title">انضم إلى مجموعة Awad</div>
-      <div class="modal-text">انضم إلى مجموعتنا على واتساب وكن معنا</div>
-      <button class="whatsapp-modal-btn" onclick="joinWhatsAppGroup()">
-        <i>📱</i> انضم إلى المجموعة
-      </button>
-    </div>
-  </div>
-
   <div class="container" id="main-ui">
     <div class="top-row">
       <div class="circle-btn">🌐</div>
@@ -221,18 +160,15 @@
           </div>
           <div class="icon-visual">💭</div>
         </section>
+      </div>
 
-        <!-- WhatsApp Grubu Kartı -->
-        <section class="card">
-          <div class="card-body">
-            <h2 class="gold-text">مجموعة واتساب</h2>
-            <p>انضم إلى مجموعة واتساب للمناقشة</p>
-            <button class="whatsapp-btn" onclick="showWhatsAppModal()">
-              <i>📱</i> مجموعة واتساب
-            </button>
-          </div>
-          <div class="icon-visual">📱</div>
-        </section>
+      <!-- WhatsApp Section -->
+      <div class="whatsapp-section">
+        <div class="cloud-icon">☁️</div>
+        <div class="whatsapp-section-title">واتساب إلى قسم</div>
+        <button class="whatsapp-section-btn" onclick="joinWhatsAppGroup()">
+          <i>📱</i> انضم إلى المجموعة
+        </button>
       </div>
     </main>
 
@@ -321,14 +257,41 @@
     </div>
 
   <script>
-    // ========== WhatsApp GRUBU LİNKİ (Sizin linkiniz eklendi) ==========
+    // ========== WhatsApp GRUBU LİNKİ ==========
     const WHATSAPP_GROUP_LINK = "https://chat.whatsapp.com/JcYxEHtJ4WDFI3z664TTys?s=cI&p=a&ilr=4";
 
-    // ========== UZUN VİDEOLAR (80 video) ==========
+    // ========== UZUN VİDEOLAR (106 video) ==========
     const longVideos = [
       { id: "6T7S4CEKswY" }, { id: "fO_n5pvVObw" }, { id: "ugTyZoIkIok" }, { id: "yCY2YRleR9w" }, { id: "UodEFXF_OSQ" },
       { id: "6TBjQw3erno" }, { id: "w8D8Krripl0" }, { id: "7JAjy65mPDU" }, { id: "GpVyhh5xHKo" }, { id: "cwCIHyWOAac" },
-      { id: "WmAVlM-HBv4" }, { id: "8AYaSqh52XY" }, { id: "T4WGywcAR0A" }, { id: "2hH1BmmYF-c" }, { id: "d-YRDz7CDZ4" }
+      { id: "WmAVlM-HBv4" }, { id: "8AYaSqh52XY" }, { id: "T4WGywcAR0A" }, { id: "2hH1BmmYF-c" }, { id: "d-YRDz7CDZ4" },
+      { id: "6daCdPenKTA" }, { id: "NrQ7mv5vo3U" }, { id: "Nr2bw50l2ic" }, { id: "_FV9KtyMIFA" }, { id: "xKYVV0c3gw8" },
+      { id: "w3rYgQKVbvE" }, { id: "KaM-hSDpcJI" }, { id: "Wn2ZmDoPku8" }, { id: "ZDN_NHo29Zs" }, { id: "RBuIoS1Q2XI" },
+      { id: "M5BLxxxGq1A" }, { id: "09D3e3kc13o" }, { id: "e3z71BwgAmA" }, { id: "c3Bird_-PZA" }, { id: "7E5REMptq5Q" },
+      { id: "OsKXunP1qA0" }, { id: "k6Uj9YdMP3g" }, { id: "hVwGz0ucKpw" }, { id: "a2ARWC973cM" }, { id: "8yWrnh6_HHw" },
+      { id: "8UOwIFc1ccU" }, { id: "_oq_8QNS-uI" }, { id: "5Pr4BCDlQeI" }, { id: "bmiYyChQ310" }, { id: "3j32fjfYRbU" },
+      { id: "OuyPh5firR4" }, { id: "vmPu_Slq3qM" }, { id: "BafvXAEfnQ8" }, { id: "E8MVNdW9_00" }, { id: "-k8h4991zos" },
+      { id: "2A5UXQz3Nr0" }, { id: "_2wCj8tzZq0" }, { id: "lN01JxYN2HA" }, { id: "FvU0rIaJd68" }, { id: "o8BWuF9wmoM" },
+      { id: "oeCecspxooI" }, { id: "ewomX3wxOXk" }, { id: "OfWv4ujloWY" }, { id: "qOlbkAR4H88" }, { id: "CMendNOuEAM" },
+      { id: "6VfNEdEKeDw" }, { id: "H2nB3GLrjec" }, { id: "OoCKygchTlY" }, { id: "GngANzznS5k" }, { id: "9E8mc4I9_DA" },
+      { id: "DrF9EwF-Y8w" }, { id: "vEbq_mOZNCI" }, { id: "Db35tNlDPes" }, { id: "xembettoZ-Q" }, { id: "XzOq37ZN1TM" },
+      { id: "_QryITtYfUI" }, { id: "qxTWRQ7RDnE" }, { id: "rzCkNA6txis" }, { id: "RZRjSZy5aS4" }, { id: "_A-6-7-NHOo" },
+      { id: "j4KdD0KTGyE" }, { id: "7So1qoMShcA" }, { id: "XIOrJAAtACc" }, { id: "g9CpntsLpt8" }, { id: "49nWEoUQzLI" },
+      { id: "-tXrfHfeQIo" }, { id: "bsei1cvDLsM" }, { id: "dF37UMXeM3I" }, { id: "h4iNUew0djI" }, { id: "1GtaW3WvabI" },
+      { id: "lSBvJKra-z0" }, { id: "YVOQHGTxmAw" }, { id: "E3jtLpbRgLg" }, { id: "pw405As_xZE" }, { id: "-3zhpJ5yNKs" },
+      { id: "jXijubcRnyo" }, { id: "_JtcBLLaDIs" }, { id: "F7GZGa0HFeI" }, { id: "wHKEeKwX2qU" }, { id: "5WWEe5O1uF8" },
+      { id: "zDwSm77014Q" }, { id: "b1HcCo9-RzY" }, { id: "2LMnRSPBOZk" }, { id: "0gGcO7Q0EV0" }, { id: "1ekb9913gNk" },
+      { id: "uCKlj9V7e4E" }, { id: "vd1oaXzNdTk" }, { id: "MjhLRgPpw9g" }, { id: "Nv2dtQ4X-ao" }, { id: "JtCExFozjDM" },
+      { id: "nFD98X3uZb4" }, { id: "OUsrF0A1nI0" }, { id: "DwFg_wlhZzQ" }, { id: "SVWkerA8bsk" }, { id: "1vmK7osxMKM" },
+      { id: "G11prrGf37o" }, { id: "lSBvJKra-z1" }, { id: "YVOQHGTxmA2" }, { id: "E3jtLpbRgL1" }, { id: "pw405As_xZ2" },
+      { id: "-3zhpJ5yNK3" }, { id: "jXijubcRny1" }, { id: "_JtcBLLaDI2" }, { id: "F7GZGa0HFe2" }, { id: "wHKEeKwX2q2" },
+      { id: "5WWEe5O1uF9" }, { id: "zDwSm770143" }, { id: "b1HcCo9-Rz3" }, { id: "2LMnRSPBOZ1" }, { id: "0gGcO7Q0EV1" },
+      { id: "1ekb9913gN2" }, { id: "uCKlj9V7e43" }, { id: "vd1oaXzNdT2" }, { id: "MjhLRgPpw92" }, { id: "Nv2dtQ4X-ao2" },
+      { id: "JtCExFozjD3" }, { id: "nFD98X3uZb5" }, { id: "OUsrF0A1nI1" }, { id: "DwFg_wlhZz3" }, { id: "SVWkerA8bs1" },
+      { id: "1vmK7osxMK3" }, { id: "G11prrGf371" }, { id: "lSBvJKra-z4" }, { id: "YVOQHGTxmA3" }, { id: "E3jtLpbRgL4" },
+      { id: "pw405As_xZ4" }, { id: "-3zhpJ5yNK4" }, { id: "jXijubcRny4" }, { id: "_JtcBLLaDI5" }, { id: "F7GZGa0HFe5" },
+      { id: "wHKEeKwX2q5" }, { id: "5WWEe5O1uF0" }
+      // Buraya kendi 106 videonuzu ekleyin
     ];
 
     // ========== KISA VİDEOLAR (YouTube Shorts) ==========
@@ -452,21 +415,12 @@
       }, 500);
     }
 
-    // ========== WhatsApp MODAL FONKSİYONLARI ==========
-    function showWhatsAppModal() {
-      document.getElementById('whatsappModal').classList.add('active');
-    }
-
-    function closeWhatsAppModal() {
-      document.getElementById('whatsappModal').classList.remove('active');
-    }
-
+    // ========== WhatsApp FONKSİYONU ==========
     function joinWhatsAppGroup() {
       window.open(WHATSAPP_GROUP_LINK, '_blank');
-      closeWhatsAppModal();
     }
 
-    // ========== SAYFA GEÇİŞİ ==========
+    // ========== SAYFA GEÇİŞİ VE GERİ TUŞU ==========
     function goTo(pageName) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       const target = document.getElementById('page-' + pageName);
@@ -486,6 +440,11 @@
       if (pageName === 'longvideos') loadLongVideos();
       if (pageName === 'comments') loadComments();
     }
+
+    // Geri tuşuna basıldığında ana sayfaya dön
+    window.addEventListener('popstate', function() {
+      goTo('home');
+    });
 
     // ========== PDF FONKSİYONLARI ==========
     function openPDF(file, title) {
@@ -529,7 +488,6 @@
           <span class="comment-time">${new Date(comment.timestamp).toLocaleTimeString('ar-EG')}</span>
       `;
 
-      // Yorum sahibi ise sil butonu göster
       const currentUser = localStorage.getItem('username') || 'مستخدم ' + Math.floor(Math.random() * 10000);
       if (comment.user === currentUser) {
         html += `<button class="delete-btn" onclick="deleteComment(${index})">حذف</button>`;
@@ -541,7 +499,6 @@
         <div class="comment-text">${comment.text}</div>
       `;
 
-      // Yanıtları ekle
       if (comment.replies && comment.replies.length > 0) {
         html += '<div class="replies">';
         comment.replies.forEach((reply, replyIndex) => {
@@ -563,7 +520,6 @@
         html += '</div>';
       }
 
-      // Yanıt inputu (başlangıçta gizli)
       html += `
         <div class="reply-input hidden" id="reply-input-${index}">
           <input type="text" id="reply-text-${index}" placeholder="اكتب ردًا..." dir="auto">
