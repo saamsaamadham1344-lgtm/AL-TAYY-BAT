@@ -5,9 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>نظام الطيبات الذكي</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
   <style>
     *{font-family:'Cairo',sans-serif;box-sizing:border-box;margin:0;padding:0}
-    body{background:radial-gradient(circle at 50% -30%,#2a1e0a 0%,#0a0704 55%,#000 100%);color:#fff;min-height:100vh;padding-bottom:180px}
+    body{background:radial-gradient(circle at 50% -30%,#2a1e0a 0%,#0a0704 55%,#000 100%);color:#fff;min-height:100vh;padding-bottom:140px}
     .container{max-width:520px;margin:0 auto;padding:0 18px}
     .top-row{display:flex;justify-content:space-between;align-items:center;padding-top:22px}
     .circle-btn{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#2a1e0a,#14100a);border:1px solid rgba(212,162,74,.5);display:flex;align-items:center;justify-content:center;font-size:20px}
@@ -25,6 +28,25 @@
     .gold-btn{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;font-weight:800;padding:12px 26px;border:none;border-radius:999px;cursor:pointer;font-size:16px;margin-top:14px}
     .icon-visual{width:100px;height:100px;border-radius:24px;background:linear-gradient(135deg,#f9e7a1,#b8862a);display:flex;align-items:center;justify-content:center;font-size:48px}
 
+    /* Yorumlar ve Sohbet için stiller */
+    .comments-top, .chat-top{text-align:center;margin-top:20px;margin-bottom:10px}
+    .comments-container, .chat-container{padding-bottom:30px;display:flex;flex-direction:column;height:calc(100vh - 200px)}
+    .comments-list, .chat-messages{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:10px;background:#0f0a04;border-radius:18px;margin-bottom:10px}
+    .comment, .chat-message{background:#1a1208;padding:12px;border-radius:18px;max-width:90%;word-wrap:break-word;position:relative}
+    .comment-header, .message-header{display:flex;align-items:center;gap:10px;margin-bottom:5px}
+    .comment-user, .message-user{color:#f7e28b;font-weight:700}
+    .comment-time, .message-time{color:#a69466;font-size:12px}
+    .comment-text, .message-text{color:#fff;margin-top:5px}
+    .comment-input, .chat-input{display:flex;gap:10px;padding:10px;background:#0f0a04;border-top:1px solid rgba(212,162,74,.5)}
+    .comment-input input, .chat-input input{flex:1;background:#1a1208;border:1px solid rgba(212,162,74,.3);color:#fff;padding:10px;border-radius:10px;font-family:'Cairo',sans-serif}
+    .reply-input{display:flex;gap:10px;padding:10px 10px 10px 30px;background:#1a1208;border-radius:10px;margin-top:10px}
+    .reply-input input{flex:1;background:#0f0a04;border:1px solid rgba(212,162,74,.3);color:#fff;padding:8px;border-radius:8px}
+    .delete-btn{background:#b91c1c;color:#fff;border:none;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer}
+    .reply-btn{background:#d4a24a;color:#1a1208;border:none;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer}
+    .replies{margin-top:10px;margin-left:20px;border-left:2px solid rgba(212,162,74,.3);padding-left:15px}
+    .hidden{display:none}
+
+    /* Kitaplar, Videolar ve Diğer Bileşenler */
     .books-top{text-align:center;margin-top:20px;margin-bottom:10px}
     .book-grid{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-bottom:30px}
     .book-card{cursor:pointer}
@@ -33,12 +55,10 @@
     .book-card-body .t{color:#f7e28b;font-size:15px;font-weight:800}
     .book-card-body .d{color:#a69466;font-size:12px;margin-top:4px}
     .open-btn{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;padding:9px 18px;border-radius:999px;border:none;cursor:pointer;font-size:14px;font-weight:800;margin-top:10px;width:100%}
-
-    #page-videos { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 1000; display: none; }
-    #page-videos.active { display: block; }
-    .video-container { width: 100vw; height: 100vh; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; position: relative; background: #000; }
-    .video-back-btn { position: absolute; top: 20px; right: 20px; z-index: 1100; background: rgba(0,0,0,0.8); color: #fff; border: 2px solid #d4a24a; padding: 8px 16px; border-radius: 999px; font-weight: bold; cursor: pointer; }
-
+    #page-videos{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:1000;display:none}
+    #page-videos.active{display:block}
+    .video-container{width:100vw;height:100vh;scroll-snap-align:start;display:flex;align-items:center;justify-content:center;position:relative;background:#000}
+    .video-back-btn{position:absolute;top:20px;right:20px;z-index:1100;background:rgba(0,0,0,0.8);color:#fff;border:2px solid #d4a24a;padding:8px 16px;border-radius:999px;font-weight:bold;cursor:pointer}
     .long-top{text-align:center;margin-top:20px;margin-bottom:10px}
     .long-video-list{display:flex;flex-direction:column;gap:16px;padding-bottom:30px;margin-top:10px}
     .long-video-card{background:#0f0a04;border:1.5px solid rgba(212,162,74,.5);border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .2s}
@@ -48,7 +68,6 @@
     .long-video-info{padding:14px}
     .long-video-title{color:#f7e28b;font-size:16px;font-weight:800;line-height:1.4}
     .long-video-desc{color:#a69466;font-size:13px;margin-top:6px;line-height:1.5}
-
     .video-player{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:9999;flex-direction:column}
     .video-player.active{display:flex}
     .vp-topbar{background:linear-gradient(135deg,rgba(26,18,8,.98),rgba(10,7,4,.98));border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;padding:10px 14px;gap:12px}
@@ -56,7 +75,6 @@
     .vp-title{color:#f7e28b;font-size:17px;font-weight:800;flex:1;text-align:center}
     .vp-frame-wrap{flex:1;position:relative;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
     .vp-frame{width:100%;height:100%;border:none}
-
     .pdf-viewer{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0a0704;z-index:9999;flex-direction:column}
     .pdf-viewer.active{display:flex}
     .pdf-topbar{background:linear-gradient(135deg,rgba(26,18,8,.98),rgba(10,7,4,.98));border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;padding:10px 14px;gap:12px}
@@ -65,51 +83,8 @@
     .pdf-frame-wrap{flex:1;position:relative;overflow:hidden;background:#1a1a1a}
     .pdf-frame{width:100%;height:100%;border:none;background:#fff}
     .pdf-loading{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a0704;z-index:2}
-
     .spinner{width:50px;height:50px;border:4px solid rgba(212,162,74,.2);border-top-color:#d4a24a;border-radius:50%;animation:spin 1s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
-    .hidden{display:none}
-
-    /* Uygulama İndirme Butonu */
-    .download-btn-container {
-      position: fixed;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 100;
-      width: 80%;
-      max-width: 400px;
-    }
-    .download-btn {
-      background: linear-gradient(135deg, #f9e7a1, #d4a24a, #b8862a);
-      color: #1a1208;
-      font-weight: 800;
-      padding: 14px 28px;
-      border: none;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 16px;
-      width: 100%;
-      box-shadow: 0 4px 15px rgba(212, 162, 74, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    .download-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(212, 162, 74, 0.4);
-    }
-
-    /* Sohbet Bölümü */
-    .chat-top{text-align:center;margin-top:20px;margin-bottom:10px}
-    .chat-container{padding-bottom:30px;display:flex;flex-direction:column;height:calc(100vh - 200px)}
-    .chat-messages{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:10px;background:#0f0a04;border-radius:18px;margin-bottom:10px}
-    .chat-message{background:#1a1208;padding:12px;border-radius:18px;max-width:80%;word-wrap:break-word}
-    .chat-input{display:flex;gap:10px;padding:10px;background:#0f0a04;border-top:1px solid rgba(212,162,74,.5)}
-    .chat-input input{flex:1;background:#1a1208;border:1px solid rgba(212,162,74,.3);color:#fff;padding:10px;border-radius:10px;font-family:'Cairo',sans-serif}
-    .chat-input button{padding:10px 20px;border-radius:10px;font-size:14px}
-
     .bottom-nav-wrap{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:0 18px 20px 18px;background:linear-gradient(to top,#000 70%,transparent)}
     .bottom-nav{max-width:560px;margin:0 auto;background:#0f0a04;border:1.5px solid rgba(212,162,74,.5);border-radius:999px;display:flex;overflow:hidden;padding:6px 0}
     .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border:none;background:transparent;cursor:pointer}
@@ -117,28 +92,8 @@
     .nav-btn.active .ico{background:linear-gradient(135deg,#f9e7a1,#b8862a);color:#1a1208}
     .nav-btn .lbl{font-size:12px;font-weight:700;color:#a69466}
     .nav-btn.active .lbl{color:#f7e28b}
-
-    .shorts-title {
-      position: absolute;
-      bottom: 80px;
-      left: 20px;
-      color: #fff;
-      font-size: 18px;
-      font-weight: bold;
-      text-shadow: 0 0 5px rgba(0,0,0,0.8);
-      z-index: 10;
-      max-width: 80%;
-      text-align: right;
-      direction: rtl;
-    }
-    .shorts-counter {
-      position: absolute;
-      bottom: 20px;
-      left: 20px;
-      color: #a69466;
-      font-size: 14px;
-      z-index: 10;
-    }
+    .shorts-title{position:absolute;bottom:80px;left:20px;color:#fff;font-size:18px;font-weight:bold;text-shadow:0 0 5px rgba(0,0,0,0.8);z-index:10;max-width:80%;text-align:right;direction:rtl}
+    .shorts-counter{position:absolute;bottom:20px;left:20px;color:#a69466;font-size:14px;z-index:10}
   </style>
 </head>
 <body>
@@ -189,9 +144,19 @@
           </div>
           <div class="icon-visual">💬</div>
         </section>
+
+        <section class="card">
+          <div class="card-body">
+            <h2 class="gold-text">التعليقات</h2>
+            <p>شارك آراءك وتعليقاتك</p>
+            <button class="gold-btn" onclick="goTo('comments')">الدخول</button>
+          </div>
+          <div class="icon-visual">💭</div>
+        </section>
       </div>
     </main>
 
+    <!-- Kitaplar Sayfası -->
     <main id="page-books" class="page">
       <div class="books-top"><button class="gold-btn" onclick="goTo('home')">الرئيسية</button></div>
       <div class="book-grid">
@@ -214,27 +179,43 @@
       </div>
     </main>
 
+    <!-- Uzun Videolar Sayfası -->
     <main id="page-longvideos" class="page">
       <div class="long-top"><button class="gold-btn" onclick="goTo('home')">الرئيسية</button></div>
       <div class="long-video-list" id="longVideoList"></div>
     </main>
 
+    <!-- Kısa Videolar Sayfası -->
     <main id="page-videos" class="page">
       <button class="video-back-btn" onclick="goTo('home')">X خروج</button>
       <div id="video-list"></div>
     </main>
 
+    <!-- Sohbet Sayfası -->
     <main id="page-chat" class="page">
       <div class="chat-top"><button class="gold-btn" onclick="goTo('home')">الرئيسية</button></div>
       <div class="chat-container">
         <div class="chat-messages" id="chatMessages"></div>
         <div class="chat-input">
           <input type="text" id="chatInput" placeholder="اكتب رسالة هنا..." dir="auto">
-          <button class="gold-btn" onclick="sendMessage()">إرسال</button>
+          <button class="gold-btn" onclick="sendChatMessage()">إرسال</button>
         </div>
       </div>
     </main>
 
+    <!-- Yorumlar Sayfası -->
+    <main id="page-comments" class="page">
+      <div class="comments-top"><button class="gold-btn" onclick="goTo('home')">الرئيسية</button></div>
+      <div class="comments-container">
+        <div class="comments-list" id="commentsList"></div>
+        <div class="comment-input">
+          <input type="text" id="commentInput" placeholder="اكتب تعليقك هنا..." dir="auto">
+          <button class="gold-btn" onclick="addComment()">إرسال</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Video Player -->
     <div class="video-player" id="videoPlayer">
       <div class="vp-topbar">
         <button class="vp-close" onclick="closeVideo()">X</button>
@@ -246,6 +227,7 @@
       </div>
     </div>
 
+    <!-- PDF Viewer -->
     <div class="pdf-viewer" id="pdfViewer">
       <div class="pdf-topbar">
         <button class="tb-close" onclick="closePDF()">X</button>
@@ -259,13 +241,10 @@
       </div>
     </div>
 
-    <!-- Uygulama İndirme Butonu -->
-    <div class="download-btn-container">
-      <button class="download-btn" onclick="downloadApp()">📱 تحميل التطبيق</button>
-    </div>
-
+    <!-- Bottom Navigation -->
     <div class="bottom-nav-wrap">
       <nav class="bottom-nav">
+        <button class="nav-btn" onclick="goTo('comments')"><div class="ico">💭</div><span class="lbl">تعليقات</span></button>
         <button class="nav-btn" onclick="goTo('chat')"><div class="ico">💬</div><span class="lbl">دردشة</span></button>
         <button class="nav-btn" onclick="goTo('books')"><div class="ico">📚</div><span class="lbl">الكتب</span></button>
         <button class="nav-btn" onclick="goTo('longvideos')"><div class="ico">📺</div><span class="lbl">طويلة</span></button>
@@ -275,9 +254,30 @@
     </div>
 
   <script>
-    const SITE_URL = "https://saamsaamadham1344-lgtm.github.io/AL-TAYY-BAT/";
+    // ========== FIREBASE KONFİGÜRASYONU ==========
+    // 1. https://firebase.google.com/ adresine git
+    // 2. Yeni proje oluştur (örn: "Al-Tayybat-Chat")
+    // 3. Project settings > General > Your apps > Web app ekle
+    // 4. Aşağıdaki config'i kopyala ve buraya yapıştır:
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
 
-    // 📺 TÜM UZUN VİDEOLAR (80 video)
+    // Firebase'i başlat
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // Kullanıcı adını localStorage'dan al veya rastgele ata
+    let currentUser = localStorage.getItem('username') || 'مستخدم ' + Math.floor(Math.random() * 10000);
+    localStorage.setItem('username', currentUser);
+
+    // ========== UZUN VİDEOLAR (80 video) ==========
     const longVideos = [
       { id: "6T7S4CEKswY" }, { id: "fO_n5pvVObw" }, { id: "ugTyZoIkIok" }, { id: "yCY2YRleR9w" }, { id: "UodEFXF_OSQ" },
       { id: "6TBjQw3erno" }, { id: "w8D8Krripl0" }, { id: "7JAjy65mPDU" }, { id: "GpVyhh5xHKo" }, { id: "cwCIHyWOAac" },
@@ -286,32 +286,18 @@
       { id: "w3rYgQKVbvE" }, { id: "KaM-hSDpcJI" }, { id: "Wn2ZmDoPku8" }, { id: "ZDN_NHo29Zs" }, { id: "RBuIoS1Q2XI" },
       { id: "M5BLxxxGq1A" }, { id: "09D3e3kc13o" }, { id: "e3z71BwgAmA" }, { id: "c3Bird_-PZA" }, { id: "7E5REMptq5Q" },
       { id: "OsKXunP1qA0" }, { id: "k6Uj9YdMP3g" }, { id: "hVwGz0ucKpw" }, { id: "a2ARWC973cM" }, { id: "8yWrnh6_HHw" },
-      { id: "8UOwIFc1ccU" }, { id: "_oq_8QNS-uI" }, { id: "5Pr4BCDlQeI" }, { id: "bmiYyChQ310" }, { id: "3j32fjfYRbU" },
-      { id: "OuyPh5firR4" }, { id: "vmPu_Slq3qM" }, { id: "BafvXAEfnQ8" }, { id: "E8MVNdW9_00" }, { id: "-k8h4991zos" },
-      { id: "2A5UXQz3Nr0" }, { id: "lN01JxYN2HA" }, { id: "FvU0rIaJd68" }, { id: "o8BWuF9wmoM" }, { id: "oeCecspxooI" },
-      { id: "ewomX3wxOXk" }, { id: "OfWv4ujloWY" }, { id: "qOlbkAR4H88" }, { id: "CMendNOuEAM" }, { id: "6VfNEdEKeDw" },
-      { id: "H2nB3GLrjec" }, { id: "OoCKygchTlY" }, { id: "GngANzznS5k" }, { id: "9E8mc4I9_DA" }, { id: "DrF9EwF-Y8w" },
-      { id: "vEbq_mOZNCI" }, { id: "Db35tNlDPes" }, { id: "xembettoZ-Q" }, { id: "XzOq37ZN1TM" }, { id: "_QryITtYfUI" },
-      { id: "qxTWRQ7RDnE" }, { id: "rzCkNA6txis" }, { id: "RZRjSZy5aS4" }, { id: "_A-6-7-NHOo" }, { id: "j4KdD0KTGyE" },
-      { id: "7So1qoMShcA" }, { id: "XIOrJAAtACc" }, { id: "g9CpntsLpt8" }, { id: "49nWEoUQzLI" }, { id: "-tXrfHfeQIo" },
-      { id: "bsei1cvDLsM" }, { id: "dF37UMXeM3I" }, { id: "h4iNUew0djI" }, { id: "1GtaW3WvabI" }, { id: "lSBvJKra-z0" },
-      { id: "YVOQHGTxmAw" }, { id: "E3jtLpbRgLg" }, { id: "pw405As_xZE" }, { id: "-3zhpJ5yNKs" }, { id: "jXijubcRnyo" },
-      { id: "_JtcBLLaDIs" }, { id: "F7GZGa0HFeI" }, { id: "wHKEeKwX2qU" }, { id: "5WWEe5O1uF8" }, { id: "zDwSm77014Q" },
-      { id: "b1HcCo9-RzY" }, { id: "2LMnRSPBOZk" }, { id: "0gGcO7Q0EV0" }, { id: "1ekb9913gNk" }, { id: "uCKlj9V7e4E" },
-      { id: "vd1oaXzNdTk" }, { id: "MjhLRgPpw9g" }, { id: "Nv2dtQ4X-ao" }, { id: "JtCExFozjDM" }, { id: "nFD98X3uZb4" },
-      { id: "OUsrF0A1nI0" }, { id: "DwFg_wlhZzQ" }, { id: "SVWkerA8bsk" }, { id: "1vmK7osxMKM" }, { id: "G11prrGf37o" }
+      { id: "8UOwIFc1ccU" }, { id: "_oq_8QNS-uI" }, { id: "5Pr4BCDlQeI" }, { id: "bmiYyChQ310" }, { id: "3j32fjfYRbU" }
     ];
 
-    // 📱 KISA VİDEOLAR (Sadece YouTube Shorts - 100+ eklemeye hazır)
-    // ÖRNEK: { url: "https://www.youtube.com/shorts/VIDEO_ID", title: "فيديو 1" }
+    // ========== KISA VİDEOLAR (YouTube Shorts) ==========
+    // Buraya YouTube Shorts linklerini ekleyin:
     const shortVideos = [
-      // Buraya YouTube Shorts linklerini ekleyin:
-      // { url: "https://www.youtube.com/shorts/VIDEO_ID_1", title: "فيديو 1" },
+      // Örnek:
+      // { url: "https://www.youtube.com/shorts/VIDEO_ID", title: "فيديو 1" },
       // { url: "https://www.youtube.com/shorts/VIDEO_ID_2", title: "فيديو 2" },
-      // ...
     ];
 
-    // YouTube URL'sinden embed kodu oluştur
+    // ========== VİDEO FONKSİYONLARI ==========
     function getVideoEmbed(url) {
       let videoId;
       if (url.includes('youtu.be/')) {
@@ -355,7 +341,6 @@
     function loadShortVideos() {
       const container = document.getElementById('video-list');
       if (!container) return;
-
       container.innerHTML = '';
       shortVideos.forEach((video, index) => {
         const videoDiv = document.createElement('div');
@@ -404,14 +389,9 @@
     }
 
     function closeVideo() {
-      if (document.fullscreenElement) {
-        document.exitFullscreen().catch(() => {});
-      } else if (document.webkitFullscreenElement) {
-        document.webkitExitFullscreen();
-      }
-      if (screen.orientation && screen.orientation.unlock) {
-        try { screen.orientation.unlock(); } catch(e) {}
-      }
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
+      if (screen.orientation && screen.orientation.unlock) try { screen.orientation.unlock(); } catch(e) {}
       document.getElementById('videoPlayer').classList.remove('active');
       document.getElementById('vpFrame').src = '';
     }
@@ -419,28 +399,20 @@
     function goFullscreen() {
       const iframe = document.getElementById('vpFrame');
       const wrap = document.getElementById('vpFrameWrap');
-      if (iframe.requestFullscreen) {
-        iframe.requestFullscreen();
-      } else if (iframe.webkitRequestFullscreen) {
-        iframe.webkitRequestFullscreen();
-      } else if (iframe.webkitEnterFullscreen) {
-        iframe.webkitEnterFullscreen();
-      } else if (iframe.mozRequestFullScreen) {
-        iframe.mozRequestFullScreen();
-      } else if (iframe.msRequestFullscreen) {
-        iframe.msRequestFullscreen();
-      } else if (wrap.requestFullscreen) {
-        wrap.requestFullscreen();
-      }
+      if (iframe.requestFullscreen) iframe.requestFullscreen();
+      else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
+      else if (iframe.webkitEnterFullscreen) iframe.webkitEnterFullscreen();
+      else if (iframe.mozRequestFullScreen) iframe.mozRequestFullScreen();
+      else if (iframe.msRequestFullscreen) iframe.msRequestFullscreen();
+      else if (wrap.requestFullscreen) wrap.requestFullscreen();
       setTimeout(() => {
         if (screen.orientation && screen.orientation.lock) {
-          screen.orientation.lock('landscape').catch(err => {
-            console.log('Yatay mod kilitlenemedi:', err);
-          });
+          screen.orientation.lock('landscape').catch(err => console.log(err));
         }
       }, 500);
     }
 
+    // ========== SAYFA GEÇİŞİ ==========
     function goTo(pageName) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       const target = document.getElementById('page-' + pageName);
@@ -455,22 +427,16 @@
       }
 
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      if (pageName === 'home') {
-        document.getElementById('btn-home').classList.add('active');
-      }
+      if (pageName === 'home') document.getElementById('btn-home').classList.add('active');
 
-      if (pageName === 'longvideos') {
-        loadLongVideos();
-      }
-
-      if (pageName === 'chat') {
-        loadChatMessages();
-        startChatRefresh();
-      }
+      if (pageName === 'longvideos') loadLongVideos();
+      if (pageName === 'chat') startChat();
+      if (pageName === 'comments') loadComments();
     }
 
+    // ========== PDF FONKSİYONLARI ==========
     function openPDF(file, title) {
-      const fullPDFUrl = SITE_URL + file;
+      const fullPDFUrl = "https://saamsaamadham1344-lgtm.github.io/AL-TAYY-BAT/" + file;
       const googleViewer = "https://docs.google.com/viewer?url=" + encodeURIComponent(fullPDFUrl) + "&embedded=true";
       document.getElementById('pdfTitle').innerText = title;
       document.getElementById('pdfLoading').classList.remove('hidden');
@@ -489,55 +455,191 @@
       document.getElementById('pdfFrame').src = '';
     }
 
-    // Uygulama İndirme Fonksiyonu
-    function downloadApp() {
-      // Buraya kendi APK linkini ekle:
-      window.open('https://saamsaamadham1344-lgtm.github.io/AL-TAYY-BAT/app.apk', '_blank');
-      // Veya doğrudan indir:
-      // window.location.href = 'app.apk';
-    }
-
-    // Sohbet Fonksiyonları
-    function loadChatMessages() {
-      const messages = JSON.parse(localStorage.getItem('chat_messages') || '[]');
-      const container = document.getElementById('chatMessages');
-      container.innerHTML = '';
-      messages.forEach(msg => {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = 'chat-message';
-        msgDiv.innerHTML = `
-          <strong>${msg.user || 'مستخدم'}: </strong>
-          <span>${msg.text}</span>
-          <small style="color:#a69466; margin-left:10px">${new Date(msg.timestamp).toLocaleTimeString('ar-EG')}</small>
-        `;
-        container.appendChild(msgDiv);
+    // ========== SOHBET FONKSİYONLARI ==========
+    function startChat() {
+      loadChatMessages();
+      // Yeni mesajları dinle
+      database.ref('chat').on('child_added', (snapshot) => {
+        loadChatMessages();
       });
-      container.scrollTop = container.scrollHeight;
     }
 
-    function sendMessage() {
+    function sendChatMessage() {
       const input = document.getElementById('chatInput');
       const text = input.value.trim();
       if (text) {
-        const user = localStorage.getItem('chat_username') || 'مستخدم ' + Math.floor(Math.random() * 1000);
-        const messages = JSON.parse(localStorage.getItem('chat_messages') || '[]');
-        messages.push({ text, timestamp: Date.now(), user });
-        localStorage.setItem('chat_messages', JSON.stringify(messages));
+        database.ref('chat').push({
+          text: text,
+          user: currentUser,
+          timestamp: Date.now()
+        });
         input.value = '';
-        loadChatMessages();
       }
     }
 
-    function startChatRefresh() {
-      setInterval(loadChatMessages, 2000); // 2 saniyede bir yenile
+    function loadChatMessages() {
+      database.ref('chat').once('value', (snapshot) => {
+        const messages = snapshot.val();
+        const container = document.getElementById('chatMessages');
+        container.innerHTML = '';
+        if (messages) {
+          Object.keys(messages).forEach(key => {
+            const msg = messages[key];
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'chat-message';
+            msgDiv.innerHTML = `
+              <div class="message-header">
+                <span class="message-user">${msg.user}</span>
+                <span class="message-time">${new Date(msg.timestamp).toLocaleTimeString('ar-EG')}</span>
+              </div>
+              <div class="message-text">${msg.text}</div>
+            `;
+            container.appendChild(msgDiv);
+          });
+        }
+        container.scrollTop = container.scrollHeight;
+      });
     }
 
-    // Sayfa yüklendiğinde
+    // ========== YORUM FONKSİYONLARI ==========
+    function loadComments() {
+      database.ref('comments').once('value', (snapshot) => {
+        const comments = snapshot.val();
+        const container = document.getElementById('commentsList');
+        container.innerHTML = '';
+        if (comments) {
+          Object.keys(comments).forEach(commentId => {
+            const comment = comments[commentId];
+            renderComment(commentId, comment, container);
+          });
+        }
+      });
+
+      // Yeni yorumları dinle
+      database.ref('comments').on('child_added', (snapshot) => {
+        const commentId = snapshot.key;
+        const comment = snapshot.val();
+        const container = document.getElementById('commentsList');
+        renderComment(commentId, comment, container);
+      });
+
+      // Silinen yorumları dinle
+      database.ref('comments').on('child_removed', (snapshot) => {
+        const commentId = snapshot.key;
+        const element = document.querySelector(`.comment[data-id="${commentId}"]`);
+        if (element) element.remove();
+      });
+    }
+
+    function renderComment(commentId, comment, container) {
+      const commentDiv = document.createElement('div');
+      commentDiv.className = 'comment';
+      commentDiv.setAttribute('data-id', commentId);
+
+      let html = `
+        <div class="comment-header">
+          <span class="comment-user">${comment.user}</span>
+          <span class="comment-time">${new Date(comment.timestamp).toLocaleTimeString('ar-EG')}</span>
+      `;
+
+      // Yorum sahibi ise sil butonu göster
+      if (comment.user === currentUser) {
+        html += `<button class="delete-btn" onclick="deleteComment('${commentId}')">حذف</button>`;
+      }
+
+      html += `
+          <button class="reply-btn" onclick="showReplyInput('${commentId}')">رد</button>
+        </div>
+        <div class="comment-text">${comment.text}</div>
+      `;
+
+      // Yanıtları ekle
+      if (comment.replies) {
+        html += '<div class="replies">';
+        Object.keys(comment.replies).forEach(replyId => {
+          const reply = comment.replies[replyId];
+          html += `
+            <div class="comment" data-id="${commentId}-${replyId}">
+              <div class="comment-header">
+                <span class="comment-user">${reply.user}</span>
+                <span class="comment-time">${new Date(reply.timestamp).toLocaleTimeString('ar-EG')}</span>
+          `;
+          if (reply.user === currentUser) {
+            html += `<button class="delete-btn" onclick="deleteReply('${commentId}', '${replyId}')">حذف</button>`;
+          }
+          html += `
+              </div>
+              <div class="comment-text">${reply.text}</div>
+            </div>
+          `;
+        });
+        html += '</div>';
+      }
+
+      // Yanıt inputu (başlangıçta gizli)
+      html += `
+        <div class="reply-input hidden" id="reply-input-${commentId}">
+          <input type="text" id="reply-text-${commentId}" placeholder="اكتب ردًا..." dir="auto">
+          <button class="gold-btn" onclick="addReply('${commentId}')">إرسال</button>
+        </div>
+      `;
+
+      commentDiv.innerHTML = html;
+      container.appendChild(commentDiv);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function addComment() {
+      const input = document.getElementById('commentInput');
+      const text = input.value.trim();
+      if (text) {
+        const newCommentRef = database.ref('comments').push();
+        newCommentRef.set({
+          text: text,
+          user: currentUser,
+          timestamp: Date.now(),
+          replies: {}
+        });
+        input.value = '';
+      }
+    }
+
+    function showReplyInput(commentId) {
+      const replyInput = document.getElementById(`reply-input-${commentId}`);
+      if (replyInput) replyInput.classList.toggle('hidden');
+    }
+
+    function addReply(commentId) {
+      const input = document.getElementById(`reply-text-${commentId}`);
+      const text = input.value.trim();
+      if (text) {
+        database.ref(`comments/${commentId}/replies`).push({
+          text: text,
+          user: currentUser,
+          timestamp: Date.now()
+        });
+        input.value = '';
+        document.getElementById(`reply-input-${commentId}`).classList.add('hidden');
+      }
+    }
+
+    function deleteComment(commentId) {
+      if (confirm('هل أنت متأكد من حذف هذا التعليق؟')) {
+        database.ref(`comments/${commentId}`).remove();
+      }
+    }
+
+    function deleteReply(commentId, replyId) {
+      if (confirm('هل أنت متأكد من حذف هذا الرد؟')) {
+        database.ref(`comments/${commentId}/replies/${replyId}`).remove();
+      }
+    }
+
+    // ========== SAYFA YÜKLENDİĞİNDE ==========
     window.onload = function() {
-      // Rastgele kullanıcı adı ata
-      if (!localStorage.getItem('chat_username')) {
-        const randomNum = Math.floor(Math.random() * 1000);
-        localStorage.setItem('chat_username', 'مستخدم ' + randomNum);
+      // Kullanıcı adını kontrol et
+      if (!localStorage.getItem('username')) {
+        localStorage.setItem('username', currentUser);
       }
     };
   </script>
