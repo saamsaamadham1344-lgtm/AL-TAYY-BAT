@@ -34,24 +34,64 @@
     .book-card-body .d{color:#a69466;font-size:12px;margin-top:4px}
     .open-btn{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;padding:9px 18px;border-radius:999px;border:none;cursor:pointer;font-size:14px;font-weight:800;margin-top:10px;width:100%;position:relative;z-index:20}
     
-    /* SHORTS SNAP SCROLL YAPISI */
-    #page-videos{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:2000;display:none}
+    /* SHORTS TAM EKRAN DÜZENİ */
+    #page-videos{
+      height:100vh;
+      overflow-y:scroll;
+      scroll-snap-type:y mandatory;
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      bottom:0;
+      background:#000;
+      z-index:2000;
+      display:none;
+      -webkit-overflow-scrolling:touch;
+    }
     #page-videos.active{display:block}
     
-    /* Videoyu kırpıp yazılardan arındıran yeni kapsayıcı maske */
-    .shorts-container{width:100vw;height:100vh;scroll-snap-align:start;position:relative;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    /* Doğru Kaydırma Alanı Yönetimi */
+    .shorts-container{
+      width:100vw;
+      height:100vh;
+      scroll-snap-align:start;
+      scroll-snap-stop:always; /* Tek seferde sadece 1 video atlamasını zorunlu kılar */
+      position:relative;
+      background:#000;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
     
-    /* Gelişmiş Maskeleme: Yazıları ekran dışına taşırıp yok ediyoruz */
+    /* Videoyu kırparak yazıları dışarı fırlatma maskesi */
     .shorts-frame{
       width: 100%;
       height: 100%;
       border: none;
-      transform: scale(1.15); /* Videoyu hafif büyüterek logoları ve çubukları dışarı taşıyoruz */
+      pointer-events: auto;
+      transform: scale(1.16); /* Yazıları gizlemek için hassas büyütme oranı */
       transform-origin: center center;
     }
     
     .shorts-overlay-title{position:absolute;bottom:100px;right:20px;color:#fff;background:rgba(0,0,0,0.6);padding:6px 14px;border-radius:8px;font-size:14px;font-weight:bold;z-index:2100;pointer-events:none;border-right:3px solid #d4a24a}
-    .video-back-btn{position:absolute;top:20px;right:20px;z-index:2200;background:rgba(0,0,0,0.8);color:#fff;border:2px solid #d4a24a;padding:8px 16px;border-radius:999px;font-weight:bold;cursor:pointer}
+    
+    /* HER ZAMAN EN ÜSTTE KALAN ÇIKIŞ BUTONU */
+    .video-back-btn{
+      position:fixed;
+      top:20px;
+      right:20px;
+      z-index:99999; /* En üst katmana taşındı */
+      background:rgba(0,0,0,0.85);
+      color:#fff;
+      border:2px solid #d4a24a;
+      padding:10px 20px;
+      border-radius:999px;
+      font-weight:bold;
+      cursor:pointer;
+      box-shadow:0 4px 15px rgba(0,0,0,0.5);
+    }
 
     .long-top{text-align:center;margin-top:20px;margin-bottom:10px}
     .long-video-list{display:flex;flex-direction:column;gap:16px;padding-bottom:30px;margin-top:10px}
@@ -62,7 +102,6 @@
     .long-video-title{color:#f7e28b;font-size:16px;font-weight:800}
     .long-video-desc{color:#a69466;font-size:13px;margin-top:6px}
     
-    /* Uzun videolar için de temiz oynatıcı kutusu */
     .video-player{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:5000;flex-direction:column}
     .video-player.active{display:flex}
     .vp-topbar{background:#1a1208;border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;padding:10px 14px;gap:12px}
@@ -304,7 +343,6 @@
         const container = document.createElement('div');
         container.className = 'shorts-container';
         
-        // controls=0 ve rel=0 parametreleri eklendi, maskeleme ile birleştirildi
         container.innerHTML = `
           <iframe class="shorts-frame" data-src="https://www.youtube.com/embed/${v.id}?enablejsapi=1&rel=0&autoplay=1&controls=0&showinfo=0&iv_load_policy=3" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           <div class="shorts-overlay-title">فيديو قصير ${idx + 1}</div>
