@@ -5,9 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>نظام الطيبات الذكي</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
   <style>
     *{font-family:'Cairo',sans-serif;box-sizing:border-box;margin:0;padding:0}
     body{background:radial-gradient(circle at 50% -30%,#2a1e0a 0%,#0a0704 55%,#000 100%);color:#fff;min-height:100vh;padding-bottom:140px}
@@ -26,19 +23,22 @@
     .card-body h2{font-size:28px;font-weight:900}
     .card-body p{color:#d9c088;font-size:14px;margin-top:8px;line-height:1.6}
     .gold-btn{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;font-weight:800;padding:12px 26px;border:none;border-radius:999px;cursor:pointer;font-size:16px;margin-top:14px}
+    .whatsapp-btn{background:#25D366;color:#fff;padding:12px 24px;border:none;border-radius:999px;cursor:pointer;font-size:16px;font-weight:bold;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;width:100%}
+    .whatsapp-btn:hover{background:#128C7E}
+    .whatsapp-btn i{font-size:20px}
     .icon-visual{width:100px;height:100px;border-radius:24px;background:linear-gradient(135deg,#f9e7a1,#b8862a);display:flex;align-items:center;justify-content:center;font-size:48px}
 
-    /* Yorumlar ve Sohbet için stiller */
-    .comments-top, .chat-top{text-align:center;margin-top:20px;margin-bottom:10px}
-    .comments-container, .chat-container{padding-bottom:30px;display:flex;flex-direction:column;height:calc(100vh - 200px)}
-    .comments-list, .chat-messages{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:10px;background:#0f0a04;border-radius:18px;margin-bottom:10px}
-    .comment, .chat-message{background:#1a1208;padding:12px;border-radius:18px;max-width:90%;word-wrap:break-word;position:relative}
-    .comment-header, .message-header{display:flex;align-items:center;gap:10px;margin-bottom:5px}
-    .comment-user, .message-user{color:#f7e28b;font-weight:700}
-    .comment-time, .message-time{color:#a69466;font-size:12px}
-    .comment-text, .message-text{color:#fff;margin-top:5px}
-    .comment-input, .chat-input{display:flex;gap:10px;padding:10px;background:#0f0a04;border-top:1px solid rgba(212,162,74,.5)}
-    .comment-input input, .chat-input input{flex:1;background:#1a1208;border:1px solid rgba(212,162,74,.3);color:#fff;padding:10px;border-radius:10px;font-family:'Cairo',sans-serif}
+    /* Yorumlar için stiller */
+    .comments-top{text-align:center;margin-top:20px;margin-bottom:10px}
+    .comments-container{padding-bottom:30px;display:flex;flex-direction:column;height:calc(100vh - 200px)}
+    .comments-list{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:10px;background:#0f0a04;border-radius:18px;margin-bottom:10px}
+    .comment{background:#1a1208;padding:12px;border-radius:18px;max-width:90%;word-wrap:break-word;position:relative}
+    .comment-header{display:flex;align-items:center;gap:10px;margin-bottom:5px}
+    .comment-user{color:#f7e28b;font-weight:700}
+    .comment-time{color:#a69466;font-size:12px}
+    .comment-text{color:#fff;margin-top:5px}
+    .comment-input{display:flex;gap:10px;padding:10px;background:#0f0a04;border-top:1px solid rgba(212,162,74,.5)}
+    .comment-input input{flex:1;background:#1a1208;border:1px solid rgba(212,162,74,.3);color:#fff;padding:10px;border-radius:10px;font-family:'Cairo',sans-serif}
     .reply-input{display:flex;gap:10px;padding:10px 10px 10px 30px;background:#1a1208;border-radius:10px;margin-top:10px}
     .reply-input input{flex:1;background:#0f0a04;border:1px solid rgba(212,162,74,.3);color:#fff;padding:8px;border-radius:8px}
     .delete-btn{background:#b91c1c;color:#fff;border:none;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer}
@@ -94,9 +94,86 @@
     .nav-btn.active .lbl{color:#f7e28b}
     .shorts-title{position:absolute;bottom:80px;left:20px;color:#fff;font-size:18px;font-weight:bold;text-shadow:0 0 5px rgba(0,0,0,0.8);z-index:10;max-width:80%;text-align:right;direction:rtl}
     .shorts-counter{position:absolute;bottom:20px;left:20px;color:#a69466;font-size:14px;z-index:10}
+
+    /* WhatsApp Modal Penceresi */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal.active {
+      display: flex;
+    }
+    .modal-content {
+      background: #0f0a04;
+      border: 1.5px solid rgba(212, 162, 74, 0.5);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 90%;
+      width: 400px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+    .modal-title {
+      color: #f7e28b;
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+    .modal-text {
+      color: #d9c088;
+      font-size: 16px;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      color: #a69466;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .whatsapp-modal-btn {
+      background: #25D366;
+      color: #fff;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .whatsapp-modal-btn:hover {
+      background: #128C7E;
+    }
   </style>
 </head>
 <body>
+  <!-- WhatsApp Modal Penceresi -->
+  <div class="modal" id="whatsappModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeWhatsAppModal()">×</button>
+      <div class="modal-title">انضم إلى مجموعة Awad</div>
+      <div class="modal-text">انضم إلى مجموعتنا على واتساب وكن معنا</div>
+      <button class="whatsapp-modal-btn" onclick="joinWhatsAppGroup()">
+        <i>📱</i> انضم إلى المجموعة
+      </button>
+    </div>
+  </div>
+
   <div class="container" id="main-ui">
     <div class="top-row">
       <div class="circle-btn">🌐</div>
@@ -138,20 +215,23 @@
 
         <section class="card">
           <div class="card-body">
-            <h2 class="gold-text">الدردشة</h2>
-            <p>تواصل مع الآخرين في الوقت الفعلي</p>
-            <button class="gold-btn" onclick="goTo('chat')">الدخول</button>
-          </div>
-          <div class="icon-visual">💬</div>
-        </section>
-
-        <section class="card">
-          <div class="card-body">
             <h2 class="gold-text">التعليقات</h2>
             <p>شارك آراءك وتعليقاتك</p>
             <button class="gold-btn" onclick="goTo('comments')">الدخول</button>
           </div>
           <div class="icon-visual">💭</div>
+        </section>
+
+        <!-- WhatsApp Grubu Kartı -->
+        <section class="card">
+          <div class="card-body">
+            <h2 class="gold-text">مجموعة واتساب</h2>
+            <p>انضم إلى مجموعة واتساب للمناقشة</p>
+            <button class="whatsapp-btn" onclick="showWhatsAppModal()">
+              <i>📱</i> مجموعة واتساب
+            </button>
+          </div>
+          <div class="icon-visual">📱</div>
         </section>
       </div>
     </main>
@@ -189,18 +269,6 @@
     <main id="page-videos" class="page">
       <button class="video-back-btn" onclick="goTo('home')">X خروج</button>
       <div id="video-list"></div>
-    </main>
-
-    <!-- Sohbet Sayfası -->
-    <main id="page-chat" class="page">
-      <div class="chat-top"><button class="gold-btn" onclick="goTo('home')">الرئيسية</button></div>
-      <div class="chat-container">
-        <div class="chat-messages" id="chatMessages"></div>
-        <div class="chat-input">
-          <input type="text" id="chatInput" placeholder="اكتب رسالة هنا..." dir="auto">
-          <button class="gold-btn" onclick="sendChatMessage()">إرسال</button>
-        </div>
-      </div>
     </main>
 
     <!-- Yorumlar Sayfası -->
@@ -245,7 +313,6 @@
     <div class="bottom-nav-wrap">
       <nav class="bottom-nav">
         <button class="nav-btn" onclick="goTo('comments')"><div class="ico">💭</div><span class="lbl">تعليقات</span></button>
-        <button class="nav-btn" onclick="goTo('chat')"><div class="ico">💬</div><span class="lbl">دردشة</span></button>
         <button class="nav-btn" onclick="goTo('books')"><div class="ico">📚</div><span class="lbl">الكتب</span></button>
         <button class="nav-btn" onclick="goTo('longvideos')"><div class="ico">📺</div><span class="lbl">طويلة</span></button>
         <button class="nav-btn" onclick="goTo('videos')"><div class="ico">🎥</div><span class="lbl">قصيرة</span></button>
@@ -254,47 +321,20 @@
     </div>
 
   <script>
-    // ========== FIREBASE KONFİGÜRASYONU ==========
-    // 1. https://firebase.google.com/ adresine git
-    // 2. Yeni proje oluştur (örn: "Al-Tayybat-Chat")
-    // 3. Project settings > General > Your apps > Web app ekle
-    // 4. Aşağıdaki config'i kopyala ve buraya yapıştır:
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-
-    // Firebase'i başlat
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
-    // Kullanıcı adını localStorage'dan al veya rastgele ata
-    let currentUser = localStorage.getItem('username') || 'مستخدم ' + Math.floor(Math.random() * 10000);
-    localStorage.setItem('username', currentUser);
+    // ========== WhatsApp GRUBU LİNKİ (Sizin linkiniz eklendi) ==========
+    const WHATSAPP_GROUP_LINK = "https://chat.whatsapp.com/JcYxEHtJ4WDFI3z664TTys?s=cI&p=a&ilr=4";
 
     // ========== UZUN VİDEOLAR (80 video) ==========
     const longVideos = [
       { id: "6T7S4CEKswY" }, { id: "fO_n5pvVObw" }, { id: "ugTyZoIkIok" }, { id: "yCY2YRleR9w" }, { id: "UodEFXF_OSQ" },
       { id: "6TBjQw3erno" }, { id: "w8D8Krripl0" }, { id: "7JAjy65mPDU" }, { id: "GpVyhh5xHKo" }, { id: "cwCIHyWOAac" },
-      { id: "WmAVlM-HBv4" }, { id: "8AYaSqh52XY" }, { id: "T4WGywcAR0A" }, { id: "2hH1BmmYF-c" }, { id: "d-YRDz7CDZ4" },
-      { id: "6daCdPenKTA" }, { id: "NrQ7mv5vo3U" }, { id: "Nr2bw50l2ic" }, { id: "_FV9KtyMIFA" }, { id: "xKYVV0c3gw8" },
-      { id: "w3rYgQKVbvE" }, { id: "KaM-hSDpcJI" }, { id: "Wn2ZmDoPku8" }, { id: "ZDN_NHo29Zs" }, { id: "RBuIoS1Q2XI" },
-      { id: "M5BLxxxGq1A" }, { id: "09D3e3kc13o" }, { id: "e3z71BwgAmA" }, { id: "c3Bird_-PZA" }, { id: "7E5REMptq5Q" },
-      { id: "OsKXunP1qA0" }, { id: "k6Uj9YdMP3g" }, { id: "hVwGz0ucKpw" }, { id: "a2ARWC973cM" }, { id: "8yWrnh6_HHw" },
-      { id: "8UOwIFc1ccU" }, { id: "_oq_8QNS-uI" }, { id: "5Pr4BCDlQeI" }, { id: "bmiYyChQ310" }, { id: "3j32fjfYRbU" }
+      { id: "WmAVlM-HBv4" }, { id: "8AYaSqh52XY" }, { id: "T4WGywcAR0A" }, { id: "2hH1BmmYF-c" }, { id: "d-YRDz7CDZ4" }
     ];
 
     // ========== KISA VİDEOLAR (YouTube Shorts) ==========
-    // Buraya YouTube Shorts linklerini ekleyin:
     const shortVideos = [
-      // Örnek:
+      // Buraya YouTube Shorts linklerini ekleyin:
       // { url: "https://www.youtube.com/shorts/VIDEO_ID", title: "فيديو 1" },
-      // { url: "https://www.youtube.com/shorts/VIDEO_ID_2", title: "فيديو 2" },
     ];
 
     // ========== VİDEO FONKSİYONLARI ==========
@@ -412,6 +452,20 @@
       }, 500);
     }
 
+    // ========== WhatsApp MODAL FONKSİYONLARI ==========
+    function showWhatsAppModal() {
+      document.getElementById('whatsappModal').classList.add('active');
+    }
+
+    function closeWhatsAppModal() {
+      document.getElementById('whatsappModal').classList.remove('active');
+    }
+
+    function joinWhatsAppGroup() {
+      window.open(WHATSAPP_GROUP_LINK, '_blank');
+      closeWhatsAppModal();
+    }
+
     // ========== SAYFA GEÇİŞİ ==========
     function goTo(pageName) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -430,7 +484,6 @@
       if (pageName === 'home') document.getElementById('btn-home').classList.add('active');
 
       if (pageName === 'longvideos') loadLongVideos();
-      if (pageName === 'chat') startChat();
       if (pageName === 'comments') loadComments();
     }
 
@@ -455,86 +508,20 @@
       document.getElementById('pdfFrame').src = '';
     }
 
-    // ========== SOHBET FONKSİYONLARI ==========
-    function startChat() {
-      loadChatMessages();
-      // Yeni mesajları dinle
-      database.ref('chat').on('child_added', (snapshot) => {
-        loadChatMessages();
-      });
-    }
-
-    function sendChatMessage() {
-      const input = document.getElementById('chatInput');
-      const text = input.value.trim();
-      if (text) {
-        database.ref('chat').push({
-          text: text,
-          user: currentUser,
-          timestamp: Date.now()
-        });
-        input.value = '';
-      }
-    }
-
-    function loadChatMessages() {
-      database.ref('chat').once('value', (snapshot) => {
-        const messages = snapshot.val();
-        const container = document.getElementById('chatMessages');
-        container.innerHTML = '';
-        if (messages) {
-          Object.keys(messages).forEach(key => {
-            const msg = messages[key];
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'chat-message';
-            msgDiv.innerHTML = `
-              <div class="message-header">
-                <span class="message-user">${msg.user}</span>
-                <span class="message-time">${new Date(msg.timestamp).toLocaleTimeString('ar-EG')}</span>
-              </div>
-              <div class="message-text">${msg.text}</div>
-            `;
-            container.appendChild(msgDiv);
-          });
-        }
-        container.scrollTop = container.scrollHeight;
-      });
-    }
-
-    // ========== YORUM FONKSİYONLARI ==========
+    // ========== YORUM SİSTEMİ (LocalStorage ile) ==========
     function loadComments() {
-      database.ref('comments').once('value', (snapshot) => {
-        const comments = snapshot.val();
-        const container = document.getElementById('commentsList');
-        container.innerHTML = '';
-        if (comments) {
-          Object.keys(comments).forEach(commentId => {
-            const comment = comments[commentId];
-            renderComment(commentId, comment, container);
-          });
-        }
-      });
-
-      // Yeni yorumları dinle
-      database.ref('comments').on('child_added', (snapshot) => {
-        const commentId = snapshot.key;
-        const comment = snapshot.val();
-        const container = document.getElementById('commentsList');
-        renderComment(commentId, comment, container);
-      });
-
-      // Silinen yorumları dinle
-      database.ref('comments').on('child_removed', (snapshot) => {
-        const commentId = snapshot.key;
-        const element = document.querySelector(`.comment[data-id="${commentId}"]`);
-        if (element) element.remove();
+      const comments = JSON.parse(localStorage.getItem('comments') || '[]');
+      const container = document.getElementById('commentsList');
+      container.innerHTML = '';
+      comments.forEach((comment, index) => {
+        renderComment(index, comment, container);
       });
     }
 
-    function renderComment(commentId, comment, container) {
+    function renderComment(index, comment, container) {
       const commentDiv = document.createElement('div');
       commentDiv.className = 'comment';
-      commentDiv.setAttribute('data-id', commentId);
+      commentDiv.setAttribute('data-id', index);
 
       let html = `
         <div class="comment-header">
@@ -543,29 +530,29 @@
       `;
 
       // Yorum sahibi ise sil butonu göster
+      const currentUser = localStorage.getItem('username') || 'مستخدم ' + Math.floor(Math.random() * 10000);
       if (comment.user === currentUser) {
-        html += `<button class="delete-btn" onclick="deleteComment('${commentId}')">حذف</button>`;
+        html += `<button class="delete-btn" onclick="deleteComment(${index})">حذف</button>`;
       }
 
       html += `
-          <button class="reply-btn" onclick="showReplyInput('${commentId}')">رد</button>
+          <button class="reply-btn" onclick="showReplyInput(${index})">رد</button>
         </div>
         <div class="comment-text">${comment.text}</div>
       `;
 
       // Yanıtları ekle
-      if (comment.replies) {
+      if (comment.replies && comment.replies.length > 0) {
         html += '<div class="replies">';
-        Object.keys(comment.replies).forEach(replyId => {
-          const reply = comment.replies[replyId];
+        comment.replies.forEach((reply, replyIndex) => {
           html += `
-            <div class="comment" data-id="${commentId}-${replyId}">
+            <div class="comment" data-id="${index}-${replyIndex}">
               <div class="comment-header">
                 <span class="comment-user">${reply.user}</span>
                 <span class="comment-time">${new Date(reply.timestamp).toLocaleTimeString('ar-EG')}</span>
           `;
           if (reply.user === currentUser) {
-            html += `<button class="delete-btn" onclick="deleteReply('${commentId}', '${replyId}')">حذف</button>`;
+            html += `<button class="delete-btn" onclick="deleteReply(${index}, ${replyIndex})">حذف</button>`;
           }
           html += `
               </div>
@@ -578,9 +565,9 @@
 
       // Yanıt inputu (başlangıçta gizli)
       html += `
-        <div class="reply-input hidden" id="reply-input-${commentId}">
-          <input type="text" id="reply-text-${commentId}" placeholder="اكتب ردًا..." dir="auto">
-          <button class="gold-btn" onclick="addReply('${commentId}')">إرسال</button>
+        <div class="reply-input hidden" id="reply-input-${index}">
+          <input type="text" id="reply-text-${index}" placeholder="اكتب ردًا..." dir="auto">
+          <button class="gold-btn" onclick="addReply(${index})">إرسال</button>
         </div>
       `;
 
@@ -593,53 +580,76 @@
       const input = document.getElementById('commentInput');
       const text = input.value.trim();
       if (text) {
-        const newCommentRef = database.ref('comments').push();
-        newCommentRef.set({
+        const currentUser = localStorage.getItem('username') || 'مستخدم ' + Math.floor(Math.random() * 10000);
+        localStorage.setItem('username', currentUser);
+
+        const comments = JSON.parse(localStorage.getItem('comments') || '[]');
+        comments.push({
           text: text,
           user: currentUser,
           timestamp: Date.now(),
-          replies: {}
+          replies: []
         });
+        localStorage.setItem('comments', JSON.stringify(comments));
         input.value = '';
+        loadComments();
       }
     }
 
-    function showReplyInput(commentId) {
-      const replyInput = document.getElementById(`reply-input-${commentId}`);
+    function showReplyInput(commentIndex) {
+      const replyInput = document.getElementById(`reply-input-${commentIndex}`);
       if (replyInput) replyInput.classList.toggle('hidden');
     }
 
-    function addReply(commentId) {
-      const input = document.getElementById(`reply-text-${commentId}`);
+    function addReply(commentIndex) {
+      const input = document.getElementById(`reply-text-${commentIndex}`);
       const text = input.value.trim();
       if (text) {
-        database.ref(`comments/${commentId}/replies`).push({
+        const currentUser = localStorage.getItem('username') || 'مستخدم ' + Math.floor(Math.random() * 10000);
+        const comments = JSON.parse(localStorage.getItem('comments') || '[]');
+
+        if (!comments[commentIndex].replies) {
+          comments[commentIndex].replies = [];
+        }
+
+        comments[commentIndex].replies.push({
           text: text,
           user: currentUser,
           timestamp: Date.now()
         });
+
+        localStorage.setItem('comments', JSON.stringify(comments));
         input.value = '';
-        document.getElementById(`reply-input-${commentId}`).classList.add('hidden');
+        document.getElementById(`reply-input-${commentIndex}`).classList.add('hidden');
+        loadComments();
       }
     }
 
-    function deleteComment(commentId) {
+    function deleteComment(commentIndex) {
       if (confirm('هل أنت متأكد من حذف هذا التعليق؟')) {
-        database.ref(`comments/${commentId}`).remove();
+        const comments = JSON.parse(localStorage.getItem('comments') || '[]');
+        comments.splice(commentIndex, 1);
+        localStorage.setItem('comments', JSON.stringify(comments));
+        loadComments();
       }
     }
 
-    function deleteReply(commentId, replyId) {
+    function deleteReply(commentIndex, replyIndex) {
       if (confirm('هل أنت متأكد من حذف هذا الرد؟')) {
-        database.ref(`comments/${commentId}/replies/${replyId}`).remove();
+        const comments = JSON.parse(localStorage.getItem('comments') || '[]');
+        if (comments[commentIndex] && comments[commentIndex].replies) {
+          comments[commentIndex].replies.splice(replyIndex, 1);
+          localStorage.setItem('comments', JSON.stringify(comments));
+          loadComments();
+        }
       }
     }
 
     // ========== SAYFA YÜKLENDİĞİNDE ==========
     window.onload = function() {
-      // Kullanıcı adını kontrol et
       if (!localStorage.getItem('username')) {
-        localStorage.setItem('username', currentUser);
+        const randomNum = Math.floor(Math.random() * 10000);
+        localStorage.setItem('username', 'مستخدم ' + randomNum);
       }
     };
   </script>
