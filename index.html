@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>نظام الطيبات الذكي</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Facebook SDK (Facebook videoları için gerekli) -->
+  <div id="fb-root"></div>
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0"></script>
   <style>
     *{font-family:'Cairo',sans-serif;box-sizing:border-box;margin:0;padding:0}
     body{background:radial-gradient(circle at 50% -30%,#2a1e0a 0%,#0a0704 55%,#000 100%);color:#fff;min-height:100vh;padding-bottom:140px}
@@ -102,6 +105,15 @@
       color: #a69466;
       font-size: 14px;
       z-index: 10;
+    }
+    /* Facebook videoları için */
+    .fb-video {
+      width: 100% !important;
+      height: 100% !important;
+    }
+    .fb-video iframe {
+      width: 100% !important;
+      height: 100% !important;
     }
   </style>
 </head>
@@ -326,13 +338,15 @@
       { id: "G11prrGf37o" }
     ];
 
-    // 📱 KISA VİDEOLAR (URL ile ekle)
+    // 📱 KISA VİDEOLAR (Facebook ve YouTube Shorts)
     const shortVideos = [
-      { url: "https://www.youtube.com/shorts/dQw4w9WgXcQ", title: "فيديو 1" },
-      { url: "https://www.youtube.com/shorts/9bZkp7q19s4", title: "فيديو 2" }
+      { url: "https://www.facebook.com/watch/?v=973105205355229&vanity=61583681001581", title: "فيديو فيسبوك 1" }
+      // YouTube Shorts eklemek için:
+      // { url: "https://www.youtube.com/shorts/VIDEO_ID", title: "فيديو يوتيوب" }
     ];
 
     function getVideoEmbed(url) {
+      // YouTube URL'leri
       if (url.includes('youtube.com') || url.includes('youtu.be')) {
         let videoId;
         if (url.includes('youtu.be/')) {
@@ -352,14 +366,7 @@
           ></iframe>
         `;
       }
-      else if (url.includes('tiktok.com')) {
-        const videoId = url.split('/video/')[1]?.split('?')[0] || url.split('/')[4];
-        return `
-          <blockquote class="tiktok-embed" cite="${url}" data-video-id="${videoId}">
-            <section></section>
-          </blockquote>
-        `;
-      }
+      // Facebook URL'leri
       else if (url.includes('facebook.com')) {
         return `
           <div class="fb-video" data-href="${url}" data-width="100%" data-height="100%" data-show-text="false">
@@ -369,6 +376,7 @@
           </div>
         `;
       }
+      // Doğrudan MP4 linkleri
       else {
         return `
           <video autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover;">
@@ -415,6 +423,7 @@
         container.appendChild(videoDiv);
       });
 
+      // Kaydırıldığında videoları otomatik oynat/durdur
       let currentVideo = null;
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -475,7 +484,6 @@
     function goFullscreen() {
       const iframe = document.getElementById('vpFrame');
       const wrap = document.getElementById('vpFrameWrap');
-
       if (iframe.requestFullscreen) {
         iframe.requestFullscreen();
       } else if (iframe.webkitRequestFullscreen) {
@@ -489,7 +497,6 @@
       } else if (wrap.requestFullscreen) {
         wrap.requestFullscreen();
       }
-
       setTimeout(() => {
         if (screen.orientation && screen.orientation.lock) {
           screen.orientation.lock('landscape').catch(err => {
@@ -525,19 +532,15 @@
     function openPDF(file, title) {
       const fullPDFUrl = SITE_URL + file;
       const googleViewer = "https://docs.google.com/viewer?url=" + encodeURIComponent(fullPDFUrl) + "&embedded=true";
-
       document.getElementById('pdfTitle').innerText = title;
       document.getElementById('pdfLoading').classList.remove('hidden');
-
       const frame = document.getElementById('pdfFrame');
       frame.src = googleViewer;
-
       frame.onload = function() {
         setTimeout(() => {
           document.getElementById('pdfLoading').classList.add('hidden');
         }, 1500);
       };
-
       document.getElementById('pdfViewer').classList.add('active');
     }
 
