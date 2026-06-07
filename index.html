@@ -42,6 +42,26 @@
     .video-container iframe { width: 100%; height: 100%; border: none; }
     .video-back-btn { position: absolute; top: 20px; right: 20px; z-index: 1100; background: rgba(0,0,0,0.8); color: #fff; border: 2px solid #d4a24a; padding: 8px 16px; border-radius: 999px; font-weight: bold; cursor: pointer; }
 
+    /* UZUN VİDEOLAR SAYFASI */
+    .long-top{text-align:center;margin-top:20px;margin-bottom:10px}
+    .long-video-list{display:flex;flex-direction:column;gap:16px;padding-bottom:30px;margin-top:10px}
+    .long-video-card{background:#0f0a04;border:1.5px solid rgba(212,162,74,.5);border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .2s}
+    .long-video-card:hover{transform:translateY(-3px)}
+    .long-video-thumb{width:100%;aspect-ratio:16/9;background-size:cover;background-position:center;background-color:#1a1208;position:relative;display:flex;align-items:center;justify-content:center}
+    .play-overlay{position:absolute;width:60px;height:60px;border-radius:50%;background:rgba(212,162,74,.9);display:flex;align-items:center;justify-content:center;font-size:26px;color:#1a1208;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+    .long-video-info{padding:14px}
+    .long-video-title{color:#f7e28b;font-size:16px;font-weight:800;line-height:1.4}
+    .long-video-desc{color:#a69466;font-size:13px;margin-top:6px;line-height:1.5}
+
+    /* UZUN VİDEO OYNATICI */
+    .video-player{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:9999;flex-direction:column}
+    .video-player.active{display:flex}
+    .vp-topbar{background:linear-gradient(135deg,rgba(26,18,8,.98),rgba(10,7,4,.98));border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;padding:10px 14px;gap:12px}
+    .vp-close{height:42px;width:42px;border-radius:12px;border:1.5px solid rgba(185,28,28,.5);background:linear-gradient(135deg,#b91c1c,#7f1d1d);color:#fff;font-size:18px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .vp-title{color:#f7e28b;font-size:17px;font-weight:800;flex:1;text-align:center}
+    .vp-frame-wrap{flex:1;position:relative;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
+    .vp-frame{width:100%;height:100%;border:none}
+
     .pdf-viewer{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0a0704;z-index:9999;flex-direction:column}
     .pdf-viewer.active{display:flex}
     .pdf-topbar{background:linear-gradient(135deg,rgba(26,18,8,.98),rgba(10,7,4,.98));border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;padding:10px 14px;gap:12px}
@@ -76,6 +96,7 @@
       <div class="welcome">أهلا وسهلا</div>
     </div>
 
+    <!-- ANA SAYFA -->
     <main id="page-home" class="page active">
       <div class="cards">
         <section class="card">
@@ -86,6 +107,17 @@
           </div>
           <div class="icon-visual">&#127916;</div>
         </section>
+
+        <!-- YENİ: UZUN VİDEOLAR KARTI -->
+        <section class="card">
+          <div class="card-body">
+            <h2 class="gold-text">الفيديوهات الطويلة</h2>
+            <p>شاهد الفيديوهات الطويلة من يوتيوب</p>
+            <button class="gold-btn" onclick="goTo('longvideos')">مشاهدة</button>
+          </div>
+          <div class="icon-visual">&#127909;</div>
+        </section>
+
         <section class="card">
           <div class="card-body">
             <h2 class="gold-text">الكتب</h2>
@@ -97,6 +129,7 @@
       </div>
     </main>
 
+    <!-- KİTAPLAR SAYFASI -->
     <main id="page-books" class="page">
       <div class="books-top"><button class="gold-btn" onclick="goTo('home')">الرئيسية</button></div>
       <div class="book-grid">
@@ -118,12 +151,31 @@
         </div>
       </div>
     </main>
+
+    <!-- YENİ: UZUN VİDEOLAR SAYFASI -->
+    <main id="page-longvideos" class="page">
+      <div class="long-top"><button class="gold-btn" onclick="goTo('home')">الرئيسية</button></div>
+      <div class="long-video-list" id="longVideoList">
+        <!-- Videolar buraya JavaScript ile otomatik eklenir -->
+      </div>
+    </main>
   </div>
 
   <main id="page-videos" class="page">
     <button class="video-back-btn" onclick="goTo('home')">X خروج</button>
     <div id="video-list"></div>
   </main>
+
+  <!-- YENİ: UZUN VİDEO OYNATICI -->
+  <div class="video-player" id="videoPlayer">
+    <div class="vp-topbar">
+      <button class="vp-close" onclick="closeVideo()">X</button>
+      <div class="vp-title" id="vpTitle">فيديو</div>
+    </div>
+    <div class="vp-frame-wrap">
+      <iframe id="vpFrame" class="vp-frame" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>
 
   <div class="pdf-viewer" id="pdfViewer">
     <div class="pdf-topbar">
@@ -141,24 +193,78 @@
   <div class="bottom-nav-wrap">
     <nav class="bottom-nav">
       <button class="nav-btn" onclick="goTo('books')"><div class="ico">&#128218;</div><span class="lbl">الكتب</span></button>
-      <button class="nav-btn" onclick="goTo('videos')"><div class="ico">&#127916;</div><span class="lbl">الفيديوهات</span></button>
+      <button class="nav-btn" onclick="goTo('longvideos')"><div class="ico">&#127909;</div><span class="lbl">طويلة</span></button>
+      <button class="nav-btn" onclick="goTo('videos')"><div class="ico">&#127916;</div><span class="lbl">قصيرة</span></button>
       <button class="nav-btn active" id="btn-home" onclick="goTo('home')"><div class="ico">&#127968;</div><span class="lbl">الرئيسية</span></button>
     </nav>
   </div>
 
   <script>
-    // SİTENİN TAM ADRESİ (PDF'leri Google'a göstermek için gerekli)
     const SITE_URL = "https://saamsaamadham1344-lgtm.github.io/AL-TAYY-BAT/";
+
+    // ============================================
+    // 📺 UZUN VİDEOLAR LİSTESİ
+    // Yeni video eklemek için aşağıya yeni satır ekleyin
+    // YouTube linkindeki video ID'sini (v= sonrası) kopyalayın
+    // ============================================
+    const longVideos = [
+      {
+        id: "dQw4w9WgXcQ",  // YouTube video ID
+        title: "اسم الفيديو الأول",
+        description: "وصف قصير للفيديو"
+      },
+      {
+        id: "9bZkp7q19f0",
+        title: "اسم الفيديو الثاني",
+        description: "وصف قصير للفيديو"
+      },
+      {
+        id: "kJQP7kiw5Fk",
+        title: "اسم الفيديو الثالث",
+        description: "وصف قصير للفيديو"
+      }
+    ];
+
+    // UZUN VİDEOLARI EKRANA YAZDIR
+    function loadLongVideos() {
+      const list = document.getElementById('longVideoList');
+      list.innerHTML = '';
+      longVideos.forEach(v => {
+        const card = document.createElement('div');
+        card.className = 'long-video-card';
+        card.onclick = () => playVideo(v.id, v.title);
+        card.innerHTML = `
+          <div class="long-video-thumb" style="background-image:url('https://img.youtube.com/vi/${v.id}/hqdefault.jpg')">
+            <div class="play-overlay">▶</div>
+          </div>
+          <div class="long-video-info">
+            <div class="long-video-title">${v.title}</div>
+            <div class="long-video-desc">${v.description}</div>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    // VİDEO OYNAT
+    function playVideo(videoId, title) {
+      document.getElementById('vpTitle').innerText = title;
+      document.getElementById('vpFrame').src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+      document.getElementById('videoPlayer').classList.add('active');
+    }
+
+    // VİDEO KAPAT
+    function closeVideo() {
+      document.getElementById('videoPlayer').classList.remove('active');
+      document.getElementById('vpFrame').src = '';
+    }
 
     // SAYFA GEÇİŞ FONKSİYONU
     function goTo(pageName) {
-      // Tüm sayfaları gizle
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      // İstenen sayfayı göster
       const target = document.getElementById('page-' + pageName);
       if (target) target.classList.add('active');
 
-      // Ana sayfada container görünsün, video sayfasında gizlensin
       const mainUI = document.getElementById('main-ui');
       if (pageName === 'videos') {
         mainUI.style.display = 'none';
@@ -166,12 +272,14 @@
         mainUI.style.display = 'block';
       }
 
-      // Alt menü aktif buton güncelle
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      const navMap = { home: 0, videos: 1, books: 0 };
-      // Basit: ana sayfaya dönünce home aktif
       if (pageName === 'home') {
         document.getElementById('btn-home').classList.add('active');
+      }
+
+      // Uzun videolar sayfasına geçince listeyi yükle
+      if (pageName === 'longvideos') {
+        loadLongVideos();
       }
     }
 
@@ -186,7 +294,6 @@
       const frame = document.getElementById('pdfFrame');
       frame.src = googleViewer;
       
-      // Yüklenince spinner gizle
       frame.onload = function() {
         setTimeout(() => {
           document.getElementById('pdfLoading').classList.add('hidden');
@@ -196,7 +303,6 @@
       document.getElementById('pdfViewer').classList.add('active');
     }
 
-    // PDF KAPATMA
     function closePDF() {
       document.getElementById('pdfViewer').classList.remove('active');
       document.getElementById('pdfFrame').src = '';
