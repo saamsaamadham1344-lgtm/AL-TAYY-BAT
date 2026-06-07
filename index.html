@@ -34,7 +34,7 @@
     .book-card-body .d{color:#a69466;font-size:12px;margin-top:4px}
     .open-btn{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;padding:9px 18px;border-radius:999px;border:none;cursor:pointer;font-size:14px;font-weight:800;margin-top:10px;width:100%;position:relative;z-index:20}
     
-    /* TAM EKRAN SHORTS (TIKTOK/REELS) TASARIMI */
+    /* SHORTS SNAP SCROLL YAPISI */
     #page-videos{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:2000;display:none}
     #page-videos.active{display:block}
     .shorts-container{width:100vw;height:100vh;scroll-snap-align:start;position:relative;background:#000;display:flex;align-items:center;justify-content:center}
@@ -182,7 +182,7 @@
       </div>
       <div class="vp-frame-wrap" id="vpFrameWrap">
         <iframe id="vpFrame" class="vp-frame" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>
-        <button class="fullscreen-btn" onclick="goFullscreen()">⛶ ملء Şاشة</button>
+        <button class="fullscreen-btn" onclick="goFullscreen()">⛶ ملء الشاشة</button>
       </div>
     </div>
 
@@ -255,7 +255,6 @@
       { id: "GFO8zaowwkA" }, { id: "eWM02D0nMaw" }, { id: "kvXGVthS3s4" }, { id: "jpXQ_IChYnw" }, { id: "QiZrnujexw28EQZO" }
     ];
 
-    // 1 SAATLİK KARIŞTIRMA FONKSİYONU
     function shuffleByHour(array) {
       const currentHourSeed = Math.floor(Date.now() / (1000 * 60 * 60));
       let shuffled = [...array];
@@ -268,7 +267,6 @@
       return shuffled;
     }
 
-    // UZUN VİDEO LİSTELEME
     function loadLongVideos() {
       const list = document.getElementById('longVideoList');
       list.innerHTML = '';
@@ -283,7 +281,7 @@
       });
     }
 
-    // TIKTOK TARZI TAM EKRAN SHORTS SİSTEMİ
+    // SES KARIŞMASI ENGELLENMİŞ SHORTS SİSTEMİ
     function loadShortVideos() {
       const list = document.getElementById('video-list');
       list.innerHTML = '';
@@ -293,44 +291,50 @@
         const container = document.createElement('div');
         container.className = 'shorts-container';
         
-        // YouTube Shorts player yapısı oluşturuluyor (Kullanıcı kaydırdıkça yüklenecek boş iframe)
+        // src adresi boş bırakıldı, sadece ekrana gelince yüklenecek
         container.innerHTML = `
-          <iframe class="shorts-frame" data-src="https://www.youtube.com/embed/${v.id}?enablejsapi=1&rel=0&autoplay=0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <iframe class="shorts-frame" data-src="https://www.youtube.com/embed/${v.id}?enablejsapi=1&rel=0&autoplay=1" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           <div class="shorts-overlay-title">فيديو قصير ${idx + 1}</div>
         `;
         list.appendChild(container);
       });
 
-      // Kaydırma (Scroll) takip mekanizması: Sadece ekranda duran videoyu oynatır
+      // Gelişmiş Takip Mekanizması: Ekranda durmayan videonun bağlantısını kökten koparır!
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           const iframe = entry.target.querySelector('iframe');
           if (entry.isIntersecting) {
-            // Video ekrana tam oturduğunda çalıştır (Autoplay tetiklemesi)
-            if(!iframe.src) {
-              iframe.src = iframe.getAttribute('data-src').replace('autoplay=0', 'autoplay=1');
-            } else {
-              iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+            // Video tam ekrana oturduğunda adresi ver ve çalmasını sağla
+            const targetSrc = iframe.getAttribute('data-src');
+            if (iframe.src !== targetSrc) {
+              iframe.src = targetSrc;
             }
           } else {
-            // Kullanıcı videoyu kaydırıp geçince otomatik durdur
-            if(iframe.src) {
-              iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-            }
+            // Kullanıcı bu videoyu kaydırıp geçtiği an adresi sıfırla (Böylece arkada ses asla çalamaz!)
+            iframe.src = '';
           }
         });
-      }, { threshold: 0.6 }); // Ekranın %60'ı kaplandığında tetiklenir
+      }, { threshold: 0.5 }); // Ekranın yarısından fazlası kayınca hemen devreye girer
 
       document.querySelectorAll('.shorts-container').forEach(div => observer.observe(div));
     }
 
-    // SHORTS BÖLÜMÜNDEN ÇIKARKEN TÜM VİDEOLARI DURDURMA FONKSİYONU
+    // SHORTS BÖLÜMÜNDEN ÇIKARKEN TÜM OYNATICILARI TERTEMİZ ETME FONKSİYONU
+    function clearAllShortsIframes() {
+      document.querySelectorAll('.shorts-frame').forEach(iframe => { 
+        iframe.src = ''; 
+      });
+      const list = document.getElementById('video-list');
+      if (list) list.innerHTML = ''; // İçeriği tamamen boşaltıp RAM'i de rahatlatıyoruz
+    }
+
     function stopAllShortsAndGoHome() {
-      document.querySelectorAll('.shorts-frame').forEach(iframe => { iframe.src = ''; });
+      clearAllShortsIframes();
       goTo('home');
     }
+    
     function stopAllShortsAndGoTo(page) {
-      document.querySelectorAll('.shorts-frame').forEach(iframe => { iframe.src = ''; });
+      clearAllShortsIframes();
       goTo(page);
     }
 
