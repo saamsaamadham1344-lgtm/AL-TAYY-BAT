@@ -14,8 +14,6 @@
     .logo-center{font-size:50px;line-height:1;filter:drop-shadow(0 4px 12px rgba(212,162,74,.5))}
     .header{text-align:center;margin-top:10px}
     .header h1{font-size:38px;font-weight:900;letter-spacing:1px;background:linear-gradient(110deg,#b8862a,#f9e7a1 50%,#b8862a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-    .header .sub{color:#d9c088;font-size:14px;margin-top:6px}
-    .welcome{margin-top:14px;color:#f7e28b;font-size:14px;text-align:center}
     .page{display:none}
     .page.active{display:block}
     .cards{margin-top:30px;display:flex;flex-direction:column;gap:18px}
@@ -38,8 +36,7 @@
 
     #page-videos { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 1000; display: none; }
     #page-videos.active { display: block; }
-    .video-container { width: 100vw; height: 100vh; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; position: relative; }
-    .video-container iframe { width: 100%; height: 100%; border: none; }
+    .video-container { width: 100vw; height: 100vh; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; position: relative; background: #000; }
     .video-back-btn { position: absolute; top: 20px; right: 20px; z-index: 1100; background: rgba(0,0,0,0.8); color: #fff; border: 2px solid #d4a24a; padding: 8px 16px; border-radius: 999px; font-weight: bold; cursor: pointer; }
 
     .long-top{text-align:center;margin-top:20px;margin-bottom:10px}
@@ -84,47 +81,39 @@
     .fullscreen-btn{position:absolute;bottom:20px;right:20px;z-index:100;background:rgba(0,0,0,0.8);color:#d4a24a;border:2px solid #d4a24a;padding:10px 16px;border-radius:999px;font-weight:bold;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:6px}
     .fullscreen-btn:hover{background:rgba(212,162,74,0.2)}
 
-/*===== TİKTOK/SHORTS TARZI KAYDIRMALI VİDEOLAR =====*/
-#video-list {
-  height: 100%;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
-  -webkit-overflow-scrolling: touch;
-}
-.shorts-title {
-  position: absolute;
-  bottom: 80px;
-  left: 20px;
-  color: #fff;
-  font-size: 18px;
-  font-weight: bold;
-  text-shadow: 0 0 5px rgba(0,0,0,0.8);
-  z-index: 10;
-  max-width: 80%;
-  text-align: right;
-  direction: rtl;
-}
-.shorts-counter {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  color: #a69466;
-  font-size: 14px;
-  z-index: 10;
-}
+    /* TikTok/Shorts tarzı kaydırılabilir videolar */
+    .shorts-title {
+      position: absolute;
+      bottom: 80px;
+      left: 20px;
+      color: #fff;
+      font-size: 18px;
+      font-weight: bold;
+      text-shadow: 0 0 5px rgba(0,0,0,0.8);
+      z-index: 10;
+      max-width: 80%;
+      text-align: right;
+      direction: rtl;
+    }
+    .shorts-counter {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      color: #a69466;
+      font-size: 14px;
+      z-index: 10;
+    }
   </style>
 </head>
 <body>
   <div class="container" id="main-ui">
     <div class="top-row">
       <div class="circle-btn">🌐</div>
-      <div class="logo-center">🍎</div>
+      <div class="logo-center">🌾</div>
       <div class="circle-btn">🔍</div>
     </div>
     <div class="header">
       <h1>نظام الطيبات الذكي</h1>
-      <div class="sub">بناء نظام ذكي</div>
-      <div class="welcome">أهلا وسهلا</div>
     </div>
 
     <main id="page-home" class="page active">
@@ -227,124 +216,65 @@
   <script>
     const SITE_URL = "https://saamsaamadham1344-lgtm.github.io/AL-TAYY-BAT/";
 
-    // 📺 UZUN VİDEOLAR LİSTESİ (80 video)
+    // 📺 UZUN VİDEOLAR LİSTESİ
     const longVideos = [
       { id: "6T7S4CEKswY" },
       { id: "fO_n5pvVObw" },
-      { id: "ugTyZoIkIok" },
-      { id: "yCY2YRleR9w" },
-      { id: "UodEFXF_OSQ" },
-      { id: "6TBjQw3erno" },
-      { id: "w8D8Krripl0" },
-      { id: "7JAjy65mPDU" },
-      { id: "GpVyhh5xHKo" },
-      { id: "cwCIHyWOAac" },
-      { id: "WmAVlM-HBv4" },
-      { id: "8AYaSqh52XY" },
-      { id: "T4WGywcAR0A" },
-      { id: "2hH1BmmYF-c" },
-      { id: "d-YRDz7CDZ4" },
-      { id: "6daCdPenKTA" },
-      { id: "NrQ7mv5vo3U" },
-      { id: "Nr2bw50l2ic" },
-      { id: "_FV9KtyMIFA" },
-      { id: "xKYVV0c3gw8" },
-      { id: "w3rYgQKVbvE" },
-      { id: "KaM-hSDpcJI" },
-      { id: "Wn2ZmDoPku8" },
-      { id: "ZDN_NHo29Zs" },
-      { id: "RBuIoS1Q2XI" },
-      { id: "M5BLxxxGq1A" },
-      { id: "09D3e3kc13o" },
-      { id: "e3z71BwgAmA" },
-      { id: "c3Bird_-PZA" },
-      { id: "7E5REMptq5Q" },
-      { id: "OsKXunP1qA0" },
-      { id: "k6Uj9YdMP3g" },
-      { id: "hVwGz0ucKpw" },
-      { id: "a2ARWC973cM" },
-      { id: "8yWrnh6_HHw" },
-      { id: "8UOwIFc1ccU" },
-      { id: "_oq_8QNS-uI" },
-      { id: "5Pr4BCDlQeI" },
-      { id: "bmiYyChQ310" },
-      { id: "3j32fjfYRbU" },
-      { id: "OuyPh5firR4" },
-      { id: "vmPu_Slq3qM" },
-      { id: "BafvXAEfnQ8" },
-      { id: "E8MVNdW9_00" },
-      { id: "-k8h4991zos" },
-      { id: "2A5UXQz3Nr0" },
-      { id: "_2wCj8tzZq0" },
-      { id: "lN01JxYN2HA" },
-      { id: "FvU0rIaJd68" },
-      { id: "o8BWuF9wmoM" },
-      { id: "oeCecspxooI" },
-      { id: "ewomX3wxOXk" },
-      { id: "OfWv4ujloWY" },
-      { id: "qOlbkAR4H88" },
-      { id: "CMendNOuEAM" },
-      { id: "6VfNEdEKeDw" },
-      { id: "H2nB3GLrjec" },
-      { id: "OoCKygchTlY" },
-      { id: "GngANzznS5k" },
-      { id: "9E8mc4I9_DA" },
-      { id: "DrF9EwF-Y8w" },
-      { id: "vEbq_mOZNCI" },
-      { id: "Db35tNlDPes" },
-      { id: "xembettoZ-Q" },
-      { id: "XzOq37ZN1TM" },
-      { id: "_QryITtYfUI" },
-      { id: "qxTWRQ7RDnE" },
-      { id: "rzCkNA6txis" },
-      { id: "RZRjSZy5aS4" },
-      { id: "_A-6-7-NHOo" },
-      { id: "j4KdD0KTGyE" },
-      { id: "7So1qoMShcA" },
-      { id: "XIOrJAAtACc" },
-      { id: "g9CpntsLpt8" },
-      { id: "49nWEoUQzLI" },
-      { id: "-tXrfHfeQIo" },
-      { id: "bsei1cvDLsM" },
-      { id: "dF37UMXeM3I" },
-      { id: "h4iNUew0djI" },
-      { id: "1GtaW3WvabI" },
-      { id: "lSBvJKra-z0" },
-      { id: "YVOQHGTxmAw" },
-      { id: "E3jtLpbRgLg" },
-      { id: "pw405As_xZE" },
-      { id: "-3zhpJ5yNKs" },
-      { id: "jXijubcRnyo" },
-      { id: "_JtcBLLaDIs" },
-      { id: "F7GZGa0HFeI" },
-      { id: "wHKEeKwX2qU" },
-      { id: "5WWEe5O1uF8" },
-      { id: "zDwSm77014Q" },
-      { id: "b1HcCo9-RzY" },
-      { id: "2LMnRSPBOZk" },
-      { id: "0gGcO7Q0EV0" },
-      { id: "1ekb9913gNk" },
-      { id: "uCKlj9V7e4E" },
-      { id: "vd1oaXzNdTk" },
-      { id: "MjhLRgPpw9g" },
-      { id: "Nv2dtQ4X-ao" },
-      { id: "JtCExFozjDM" },
-      { id: "nFD98X3uZb4" },
-      { id: "OUsrF0A1nI0" },
-      { id: "DwFg_wlhZzQ" },
-      { id: "SVWkerA8bsk" },
-      { id: "1vmK7osxMKM" },
-      { id: "G11prrGf37o" },
+      { id: "ugTyZoIkIok" }
     ];
 
-    // 📱 KISA VİDEOLAR (TikTok/Shorts tarzı)
+    // 📱 KISA VİDEOLAR (URL ile ekle - YouTube, TikTok, Facebook)
     const shortVideos = [
-      { id: "dQw4w9WgXcQ", title: "فيديو قصير 1" },
-      { id: "9bZkp7q19s4", title: "فيديو قصير 2" },
-      { id: "HYtXaWQYFkE", title: "فيديو قصير 3" }
-      // **Daha fazla video eklemek için buraya ekleyin:**
-      // { id: "YOUTUBE_İD", title: "Video Başlığı" }
+      { url: "https://www.youtube.com/shorts/dQw4w9WgXcQ", title: "فيديو 1" },
+      { url: "https://www.youtube.com/shorts/9bZkp7q19s4", title: "فيديو 2" }
     ];
+
+    // Video URL'sinden embed kodu oluştur
+    function getVideoEmbed(url) {
+      if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        let videoId;
+        if (url.includes('youtu.be/')) {
+          videoId = url.split('youtu.be/')[1].split('?')[0].split('&')[0];
+        } else if (url.includes('shorts/')) {
+          videoId = url.split('shorts/')[1].split('?')[0].split('&')[0];
+        } else {
+          videoId = url.split('v=')[1].split('&')[0];
+        }
+        return `
+          <iframe
+            src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playsinline=1&controls=0&modestbranding=1&rel=0"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            style="width:100%; height:100%;"
+          ></iframe>
+        `;
+      }
+      else if (url.includes('tiktok.com')) {
+        const videoId = url.split('/video/')[1]?.split('?')[0] || url.split('/')[4];
+        return `
+          <blockquote class="tiktok-embed" cite="${url}" data-video-id="${videoId}">
+            <section></section>
+          </blockquote>
+        `;
+      }
+      else if (url.includes('facebook.com')) {
+        return `
+          <div class="fb-video" data-href="${url}" data-width="100%" data-height="100%" data-show-text="false">
+            <div class="fb-xfbml-parse-ignore">
+              <blockquote cite="${url}"><a href="${url}">Facebook Video</a></blockquote>
+            </div>
+          </div>
+        `;
+      }
+      else {
+        return `
+          <video autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover;">
+            <source src="${url}" type="video/mp4">
+          </video>
+        `;
+      }
+    }
 
     function loadLongVideos() {
       const list = document.getElementById('longVideoList');
@@ -375,14 +305,7 @@
         const videoDiv = document.createElement('div');
         videoDiv.className = 'video-container';
         videoDiv.innerHTML = `
-          <iframe
-            src="https://www.youtube.com/embed/${video.id}?autoplay=1&mute=1&loop=1&playsinline=1&controls=0&modestbranding=1&rel=0"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-            webkitallowfullscreen
-            mozallowfullscreen
-          ></iframe>
+          ${getVideoEmbed(video.url)}
           <button class="video-back-btn" onclick="goTo('home')">X خروج</button>
           <div class="shorts-title">${video.title}</div>
           <div class="shorts-counter">فيديو ${index + 1} من ${shortVideos.length}</div>
@@ -390,13 +313,13 @@
         container.appendChild(videoDiv);
       });
 
-      // Kaydırıldığında videoları otomatik oynat/durdur
       let currentVideo = null;
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             const iframe = entry.target.querySelector('iframe');
-            if (iframe) {
+            const video = entry.target.querySelector('video');
+            if (iframe && iframe.src.includes('youtube.com')) {
               if (!iframe.src.includes('autoplay=1')) {
                 iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1');
               }
@@ -404,6 +327,20 @@
                 currentVideo.src = currentVideo.src.replace('autoplay=1', 'autoplay=0');
               }
               currentVideo = iframe;
+            } else if (video) {
+              video.play().catch(e => console.log("Video oynatma hatası:", e));
+              if (currentVideo && currentVideo !== video) {
+                currentVideo.pause();
+              }
+              currentVideo = video;
+            }
+          } else {
+            const iframe = entry.target.querySelector('iframe');
+            const video = entry.target.querySelector('video');
+            if (iframe && iframe.src.includes('youtube.com') && iframe !== currentVideo) {
+              iframe.src = iframe.src.replace('autoplay=1', 'autoplay=0');
+            } else if (video && video !== currentVideo) {
+              video.pause();
             }
           }
         });
