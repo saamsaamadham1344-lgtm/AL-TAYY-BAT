@@ -33,10 +33,15 @@
     .book-card-body .t{color:#f7e28b;font-size:15px;font-weight:800}
     .book-card-body .d{color:#a69466;font-size:12px;margin-top:4px}
     .open-btn{background:linear-gradient(135deg,#f9e7a1,#d4a24a,#b8862a);color:#1a1208;padding:9px 18px;border-radius:999px;border:none;cursor:pointer;font-size:14px;font-weight:800;margin-top:10px;width:100%;position:relative;z-index:20}
+    
+    /* TAM EKRAN SHORTS (TIKTOK/REELS) TASARIMI */
     #page-videos{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:2000;display:none}
     #page-videos.active{display:block}
-    .video-container{width:100vw;height:100vh;scroll-snap-align:start;display:flex;align-items:center;justify-content:center;position:relative;background:#000}
+    .shorts-container{width:100vw;height:100vh;scroll-snap-align:start;position:relative;background:#000;display:flex;align-items:center;justify-content:center}
+    .shorts-frame{width:100%;height:100%;border:none;object-fit:cover}
+    .shorts-overlay-title{position:absolute;bottom:100px;right:20px;color:#fff;background:rgba(0,0,0,0.6);padding:6px 14px;border-radius:8px;font-size:14px;font-weight:bold;z-index:2100;pointer-events:none;border-right:3px solid #d4a24a}
     .video-back-btn{position:absolute;top:20px;right:20px;z-index:2200;background:rgba(0,0,0,0.8);color:#fff;border:2px solid #d4a24a;padding:8px 16px;border-radius:999px;font-weight:bold;cursor:pointer}
+
     .long-top{text-align:center;margin-top:20px;margin-bottom:10px}
     .long-video-list{display:flex;flex-direction:column;gap:16px;padding-bottom:30px;margin-top:10px}
     .long-video-card{background:#0f0a04;border:1.5px solid rgba(212,162,74,.5);border-radius:18px;overflow:hidden;cursor:pointer}
@@ -166,7 +171,7 @@
     </main>
 
     <main id="page-videos" class="page">
-      <button class="video-back-btn" onclick="goTo('home')">X خروج</button>
+      <button class="video-back-btn" onclick="stopAllShortsAndGoHome()">X خروج</button>
       <div id="video-list"></div>
     </main>
 
@@ -177,7 +182,7 @@
       </div>
       <div class="vp-frame-wrap" id="vpFrameWrap">
         <iframe id="vpFrame" class="vp-frame" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>
-        <button class="fullscreen-btn" onclick="goFullscreen()">⛶ ملء الشاشة</button>
+        <button class="fullscreen-btn" onclick="goFullscreen()">⛶ ملء Şاشة</button>
       </div>
     </div>
 
@@ -192,10 +197,10 @@
 
     <div class="bottom-nav-wrap">
       <nav class="bottom-nav">
-        <button class="nav-btn" onclick="goTo('books')"><div class="ico">📚</div><span class="lbl">الكتب</span></button>
-        <button class="nav-btn" onclick="goTo('longvideos')"><div class="ico">📺</div><span class="lbl">طويلة</span></button>
-        <button class="nav-btn" onclick="goTo('videos')"><div class="ico">🎥</div><span class="lbl">قصيرة</span></button>
-        <button class="nav-btn active" id="btn-home" onclick="goTo('home')"><div class="ico">🏠</div><span class="lbl">الرئيسية</span></button>
+        <button class="nav-btn" onclick="stopAllShortsAndGoTo('books')"><div class="ico">📚</div><span class="lbl">الكتب</span></button>
+        <button class="nav-btn" onclick="stopAllShortsAndGoTo('longvideos')"><div class="ico">📺</div><span class="lbl">طويلة</span></button>
+        <button class="nav-btn" onclick="stopAllShortsAndGoTo('videos')"><div class="ico">🎥</div><span class="lbl">قصيرة</span></button>
+        <button class="nav-btn active" id="btn-home" onclick="stopAllShortsAndGoTo('home')"><div class="ico">🏠</div><span class="lbl">الرئيسية</span></button>
       </nav>
     </div>
   </div>
@@ -226,18 +231,107 @@
       { id: "nFD98X3uZb4" }, { id: "OUsrF0A1nI0" }, { id: "DwFg_wlhZzQ" }, { id: "SVWkerA8bsk" }, { id: "1vmK7osxMKM" },
       { id: "G11prrGf37o" }
     ];
-    const shortVideos = [];
 
+    const shortVideos = [
+      { id: "yVCWJU7WDhg" }, { id: "RE8jOtqEf8A" }, { id: "QsRRmIWqZIE" }, { id: "FMnXxZxJo18" }, { id: "sZWaWWatB-k" },
+      { id: "fkepFka3--g" }, { id: "zePhKiayw3U" }, { id: "dM97YLX50os" }, { id: "GvwzqVCG8xE" }, { id: "AHJCR-HTRVk" },
+      { id: "nQvE3FXB8cc" }, { id: "JS2Os8pA0Sw" }, { id: "kkG-8gFoMt4" }, { id: "nJXrQk130Uk" }, { id: "5zaRSm7uBWs" },
+      { id: "pwxMhJbWUwQ" }, { id: "0my1ENmRBWU" }, { id: "wA-T2FXWrtA" }, { id: "u2jnx9owH7g" }, { id: "PHIhO2gmE2o" },
+      { id: "0IWPT3WfL8Q" }, { id: "Ka2PGQ6X7JI" }, { id: "ZyFK1_A-qDo" }, { id: "XtvSwHOZalQ" }, { id: "ePM3CnD0QuM" },
+      { id: "w2HDlriRuLk" }, { id: "Ts7qCplw_uQ" }, { id: "fLvtM3QYBFQ" }, { id: "zOMOGHHT0LQ" }, { id: "5wXOht6wnEk" },
+      { id: "jbeiHwVgT34" }, { id: "K1ErIZ214ck" }, { id: "xwhRcJ4AzEc" }, { id: "PGPQu1fRN9w" }, { id: "fJzp337K9d8" },
+      { id: "Y8HdLCaJ98c" }, { id: "yL5W4R6CqxY" }, { id: "KKTxZ-ScCvQ" }, { id: "5653h5hjK6s" }, { id: "YjZCX3sQa9M" },
+      { id: "hFmlc6OkY0o" }, { id: "Hluw9sxICtw" }, { id: "rCflorQa7yc" }, { id: "NFPdec8esVg" }, { id: "9egjEqy9ifc" },
+      { id: "ZzS6XhvCQ6I" }, { id: "--4LKMegTPs" }, { id: "dsF0tZdTto4" }, { id: "oCrXIlQDEeo" }, { id: "fP3LzNlcuhk" },
+      { id: "3Ejduzz2S3M" }, { id: "qx23GkJ1NUo" }, { id: "Uw0HyhNl0z0" }, { id: "od5PdFWtmW4" }, { id: "9HdC3UE4B7E" },
+      { id: "hBuc1CawnDA" }, { id: "6oRyA_GH_lM" }, { id: "Kk0UOhxvv10" }, { id: "R2YtxJuSiUI" }, { id: "wanGej60Rfs" },
+      { id: "i8FK176H-as" }, { id: "N_6mX2AfLOU" }, { id: "zg_i776o2m4" }, { id: "PXdF_9PMDFE" }, { id: "gxYblKHHis4" },
+      { id: "wpTS9l3L2Hg" }, { id: "zmRvrm7IkwE" }, { id: "1eyORjJ-IlI" }, { id: "Fdvc7WW9hEg" }, { id: "wBx21pBVZdI" },
+      { id: "6J7f60cs83A" }, { id: "krxsqszNwTI" }, { id: "5wnYzF71Hl4" }, { id: "5VCJoLMoJDw" }, { id: "UST-ca_Fv7E" },
+      { id: "s-tT3mad7pE" }, { id: "uNGR3CKU6OE" }, { id: "mntrC8NAv0Q" }, { id: "GRENzocBAeg" }, { id: "wAE8VXZq_fg" },
+      { id: "8zDhVkZgHvM" }, { id: "vgD4SlJ8MQQ" }, { id: "v0mVFec22W0" }, { id: "q5i-MSzlxzQ" }, { id: "oMnLMMAjMn4" },
+      { id: "zjBZGIaVYCg" }, { id: "28JFW1E4V4w" }, { id: "-cs_h1_kLNE" }, { id: "vNiCcHoNg-I" }, { id: "SqHmD-vUHWg" },
+      { id: "zHj52Oudtsg" }, { id: "0g8PHpI4dR4" }, { id: "u2bSLs400Aw" }, { id: "IWdqb4bqvEk" }, { id: "hvLLVEFKX88" },
+      { id: "GFO8zaowwkA" }, { id: "eWM02D0nMaw" }, { id: "kvXGVthS3s4" }, { id: "jpXQ_IChYnw" }, { id: "QiZrnujexw28EQZO" }
+    ];
+
+    // 1 SAATLİK KARIŞTIRMA FONKSİYONU
+    function shuffleByHour(array) {
+      const currentHourSeed = Math.floor(Date.now() / (1000 * 60 * 60));
+      let shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.abs((currentHourSeed * (i + 1)) % (i + 1));
+        const temp = shuffled[i];
+        shuffled[i] = shuffled[j];
+        shuffled[j] = temp;
+      }
+      return shuffled;
+    }
+
+    // UZUN VİDEO LİSTELEME
     function loadLongVideos() {
       const list = document.getElementById('longVideoList');
       list.innerHTML = '';
-      longVideos.forEach((v, idx) => {
+      const hourlyShuffledLong = shuffleByHour(longVideos);
+
+      hourlyShuffledLong.forEach((v, idx) => {
         const card = document.createElement('div');
         card.className = 'long-video-card';
         card.onclick = () => playVideo(v.id, 'فيديو ' + (idx + 1));
         card.innerHTML = `<div class="long-video-thumb" style="background-image:url('https://img.youtube.com/vi/${v.id}/hqdefault.jpg')"><div class="play-overlay">▶</div></div><div class="long-video-info"><div class="long-video-title">فيديو ${idx + 1}</div><div class="long-video-desc">اضغط للمشاهدة</div></div>`;
         list.appendChild(card);
       });
+    }
+
+    // TIKTOK TARZI TAM EKRAN SHORTS SİSTEMİ
+    function loadShortVideos() {
+      const list = document.getElementById('video-list');
+      list.innerHTML = '';
+      const hourlyShuffledShorts = shuffleByHour(shortVideos);
+
+      hourlyShuffledShorts.forEach((v, idx) => {
+        const container = document.createElement('div');
+        container.className = 'shorts-container';
+        
+        // YouTube Shorts player yapısı oluşturuluyor (Kullanıcı kaydırdıkça yüklenecek boş iframe)
+        container.innerHTML = `
+          <iframe class="shorts-frame" data-src="https://www.youtube.com/embed/${v.id}?enablejsapi=1&rel=0&autoplay=0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <div class="shorts-overlay-title">فيديو قصير ${idx + 1}</div>
+        `;
+        list.appendChild(container);
+      });
+
+      // Kaydırma (Scroll) takip mekanizması: Sadece ekranda duran videoyu oynatır
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          const iframe = entry.target.querySelector('iframe');
+          if (entry.isIntersecting) {
+            // Video ekrana tam oturduğunda çalıştır (Autoplay tetiklemesi)
+            if(!iframe.src) {
+              iframe.src = iframe.getAttribute('data-src').replace('autoplay=0', 'autoplay=1');
+            } else {
+              iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+            }
+          } else {
+            // Kullanıcı videoyu kaydırıp geçince otomatik durdur
+            if(iframe.src) {
+              iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+            }
+          }
+        });
+      }, { threshold: 0.6 }); // Ekranın %60'ı kaplandığında tetiklenir
+
+      document.querySelectorAll('.shorts-container').forEach(div => observer.observe(div));
+    }
+
+    // SHORTS BÖLÜMÜNDEN ÇIKARKEN TÜM VİDEOLARI DURDURMA FONKSİYONU
+    function stopAllShortsAndGoHome() {
+      document.querySelectorAll('.shorts-frame').forEach(iframe => { iframe.src = ''; });
+      goTo('home');
+    }
+    function stopAllShortsAndGoTo(page) {
+      document.querySelectorAll('.shorts-frame').forEach(iframe => { iframe.src = ''; });
+      goTo(page);
     }
 
     function playVideo(id, title) {
@@ -267,8 +361,13 @@
       if (t) t.classList.add('active');
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       if (page === 'home') document.getElementById('btn-home').classList.add('active');
+      
       if (page === 'longvideos') loadLongVideos();
-      window.scrollTo({top:0, behavior:'smooth'});
+      if (page === 'videos') loadShortVideos();
+      
+      if (page !== 'videos') {
+        window.scrollTo({top:0, behavior:'smooth'});
+      }
     }
 
     function openPDF(file, title) {
