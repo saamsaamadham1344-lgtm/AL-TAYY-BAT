@@ -79,6 +79,10 @@
     .nav-btn.active .ico{background:linear-gradient(135deg,#f9e7a1,#b8862a);color:#1a1208}
     .nav-btn .lbl{font-size:12px;font-weight:700;color:#a69466}
     .nav-btn.active .lbl{color:#f7e28b}
+
+    /* TAM EKRAN BUTONU */
+    .fullscreen-btn{position:absolute;bottom:20px;right:20px;z-index:100;background:rgba(0,0,0,0.8);color:#d4a24a;border:2px solid #d4a24a;padding:10px 16px;border-radius:999px;font-weight:bold;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:6px}
+    .fullscreen-btn:hover{background:rgba(212,162,74,0.2)}
   </style>
 </head>
 <body>
@@ -163,8 +167,9 @@
       <button class="vp-close" onclick="closeVideo()">X</button>
       <div class="vp-title" id="vpTitle">فيديو</div>
     </div>
-    <div class="vp-frame-wrap">
-      <iframe id="vpFrame" class="vp-frame" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <div class="vp-frame-wrap" id="vpFrameWrap">
+      <iframe id="vpFrame" class="vp-frame" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+      <button class="fullscreen-btn" onclick="goFullscreen()">⛶ ملء الشاشة</button>
     </div>
   </div>
 
@@ -193,7 +198,6 @@
   <script>
     const SITE_URL = "https://saamsaamadham1344-lgtm.github.io/AL-TAYY-BAT/";
 
-    // 📺 UZUN VİDEOLAR LİSTESİ
     const longVideos = [
       {
         id: "6T7S4CEKswY",
@@ -224,13 +228,53 @@
 
     function playVideo(videoId, title) {
       document.getElementById('vpTitle').innerText = title;
-      document.getElementById('vpFrame').src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+      document.getElementById('vpFrame').src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&fs=1&playsinline=1`;
       document.getElementById('videoPlayer').classList.add('active');
     }
 
     function closeVideo() {
+      // Önce fullscreen modundan çık (varsa)
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+      } else if (document.webkitFullscreenElement) {
+        document.webkitExitFullscreen();
+      }
+      // Ekranı dikey moda kilitle (varsa)
+      if (screen.orientation && screen.orientation.unlock) {
+        try { screen.orientation.unlock(); } catch(e) {}
+      }
       document.getElementById('videoPlayer').classList.remove('active');
       document.getElementById('vpFrame').src = '';
+    }
+
+    // TAM EKRAN + YATAY MOD
+    function goFullscreen() {
+      const iframe = document.getElementById('vpFrame');
+      const wrap = document.getElementById('vpFrameWrap');
+      
+      // iframe'i tam ekrana al
+      if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+      } else if (iframe.webkitRequestFullscreen) {
+        iframe.webkitRequestFullscreen();
+      } else if (iframe.webkitEnterFullscreen) {
+        iframe.webkitEnterFullscreen(); // iOS
+      } else if (iframe.mozRequestFullScreen) {
+        iframe.mozRequestFullScreen();
+      } else if (iframe.msRequestFullscreen) {
+        iframe.msRequestFullscreen();
+      } else if (wrap.requestFullscreen) {
+        wrap.requestFullscreen();
+      }
+      
+      // Ekranı yatay moda kilitle (Android Chrome)
+      setTimeout(() => {
+        if (screen.orientation && screen.orientation.lock) {
+          screen.orientation.lock('landscape').catch(err => {
+            console.log('Yatay mod kilitlenemedi:', err);
+          });
+        }
+      }, 500);
     }
 
     function goTo(pageName) {
@@ -281,4 +325,4 @@
   </script>
 
 </body>
-</html>
+              </html>
