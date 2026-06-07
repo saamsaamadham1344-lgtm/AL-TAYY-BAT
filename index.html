@@ -42,7 +42,6 @@
     .video-container iframe { width: 100%; height: 100%; border: none; }
     .video-back-btn { position: absolute; top: 20px; right: 20px; z-index: 1100; background: rgba(0,0,0,0.8); color: #fff; border: 2px solid #d4a24a; padding: 8px 16px; border-radius: 999px; font-weight: bold; cursor: pointer; }
 
-    /* UZUN VİDEOLAR SAYFASI */
     .long-top{text-align:center;margin-top:20px;margin-bottom:10px}
     .long-video-list{display:flex;flex-direction:column;gap:16px;padding-bottom:30px;margin-top:10px}
     .long-video-card{background:#0f0a04;border:1.5px solid rgba(212,162,74,.5);border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .2s}
@@ -53,7 +52,6 @@
     .long-video-title{color:#f7e28b;font-size:16px;font-weight:800;line-height:1.4}
     .long-video-desc{color:#a69466;font-size:13px;margin-top:6px;line-height:1.5}
 
-    /* UZUN VİDEO OYNATICI */
     .video-player{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:9999;flex-direction:column}
     .video-player.active{display:flex}
     .vp-topbar{background:linear-gradient(135deg,rgba(26,18,8,.98),rgba(10,7,4,.98));border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;padding:10px 14px;gap:12px}
@@ -96,7 +94,6 @@
       <div class="welcome">أهلا وسهلا</div>
     </div>
 
-    <!-- ANA SAYFA -->
     <main id="page-home" class="page active">
       <div class="cards">
         <section class="card">
@@ -108,7 +105,6 @@
           <div class="icon-visual">&#127916;</div>
         </section>
 
-        <!-- YENİ: UZUN VİDEOLAR KARTI -->
         <section class="card">
           <div class="card-body">
             <h2 class="gold-text">الفيديوهات الطويلة</h2>
@@ -129,7 +125,6 @@
       </div>
     </main>
 
-    <!-- KİTAPLAR SAYFASI -->
     <main id="page-books" class="page">
       <div class="books-top"><button class="gold-btn" onclick="goTo('home')">الرئيسية</button></div>
       <div class="book-grid">
@@ -152,12 +147,9 @@
       </div>
     </main>
 
-    <!-- YENİ: UZUN VİDEOLAR SAYFASI -->
     <main id="page-longvideos" class="page">
       <div class="long-top"><button class="gold-btn" onclick="goTo('home')">الرئيسية</button></div>
-      <div class="long-video-list" id="longVideoList">
-        <!-- Videolar buraya JavaScript ile otomatik eklenir -->
-      </div>
+      <div class="long-video-list" id="longVideoList"></div>
     </main>
   </div>
 
@@ -166,7 +158,6 @@
     <div id="video-list"></div>
   </main>
 
-  <!-- YENİ: UZUN VİDEO OYNATICI -->
   <div class="video-player" id="videoPlayer">
     <div class="vp-topbar">
       <button class="vp-close" onclick="closeVideo()">X</button>
@@ -202,30 +193,15 @@
   <script>
     const SITE_URL = "https://saamsaamadham1344-lgtm.github.io/AL-TAYY-BAT/";
 
-    // ============================================
     // 📺 UZUN VİDEOLAR LİSTESİ
-    // Yeni video eklemek için aşağıya yeni satır ekleyin
-    // YouTube linkindeki video ID'sini (v= sonrası) kopyalayın
-    // ============================================
     const longVideos = [
       {
-        id: "dQw4w9WgXcQ",  // YouTube video ID
-        title: "اسم الفيديو الأول",
-        description: "وصف قصير للفيديو"
-      },
-      {
-        id: "9bZkp7q19f0",
-        title: "اسم الفيديو الثاني",
-        description: "وصف قصير للفيديو"
-      },
-      {
-        id: "kJQP7kiw5Fk",
-        title: "اسم الفيديو الثالث",
-        description: "وصف قصير للفيديو"
+        id: "6T7S4CEKswY",
+        title: "فيديو",
+        description: "اضغط للمشاهدة"
       }
     ];
 
-    // UZUN VİDEOLARI EKRANA YAZDIR
     function loadLongVideos() {
       const list = document.getElementById('longVideoList');
       list.innerHTML = '';
@@ -246,20 +222,17 @@
       });
     }
 
-    // VİDEO OYNAT
     function playVideo(videoId, title) {
       document.getElementById('vpTitle').innerText = title;
       document.getElementById('vpFrame').src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
       document.getElementById('videoPlayer').classList.add('active');
     }
 
-    // VİDEO KAPAT
     function closeVideo() {
       document.getElementById('videoPlayer').classList.remove('active');
       document.getElementById('vpFrame').src = '';
     }
 
-    // SAYFA GEÇİŞ FONKSİYONU
     function goTo(pageName) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       const target = document.getElementById('page-' + pageName);
@@ -277,13 +250,11 @@
         document.getElementById('btn-home').classList.add('active');
       }
 
-      // Uzun videolar sayfasına geçince listeyi yükle
       if (pageName === 'longvideos') {
         loadLongVideos();
       }
     }
 
-    // PDF AÇMA (GOOGLE DOCS VIEWER İLE)
     function openPDF(file, title) {
       const fullPDFUrl = SITE_URL + file;
       const googleViewer = "https://docs.google.com/viewer?url=" + encodeURIComponent(fullPDFUrl) + "&embedded=true";
