@@ -37,8 +37,19 @@
     /* SHORTS SNAP SCROLL YAPISI */
     #page-videos{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:2000;display:none}
     #page-videos.active{display:block}
-    .shorts-container{width:100vw;height:100vh;scroll-snap-align:start;position:relative;background:#000;display:flex;align-items:center;justify-content:center}
-    .shorts-frame{width:100%;height:100%;border:none;object-fit:cover}
+    
+    /* Videoyu kırpıp yazılardan arındıran yeni kapsayıcı maske */
+    .shorts-container{width:100vw;height:100vh;scroll-snap-align:start;position:relative;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    
+    /* Gelişmiş Maskeleme: Yazıları ekran dışına taşırıp yok ediyoruz */
+    .shorts-frame{
+      width: 100%;
+      height: 100%;
+      border: none;
+      transform: scale(1.15); /* Videoyu hafif büyüterek logoları ve çubukları dışarı taşıyoruz */
+      transform-origin: center center;
+    }
+    
     .shorts-overlay-title{position:absolute;bottom:100px;right:20px;color:#fff;background:rgba(0,0,0,0.6);padding:6px 14px;border-radius:8px;font-size:14px;font-weight:bold;z-index:2100;pointer-events:none;border-right:3px solid #d4a24a}
     .video-back-btn{position:absolute;top:20px;right:20px;z-index:2200;background:rgba(0,0,0,0.8);color:#fff;border:2px solid #d4a24a;padding:8px 16px;border-radius:999px;font-weight:bold;cursor:pointer}
 
@@ -50,13 +61,16 @@
     .long-video-info{padding:14px}
     .long-video-title{color:#f7e28b;font-size:16px;font-weight:800}
     .long-video-desc{color:#a69466;font-size:13px;margin-top:6px}
+    
+    /* Uzun videolar için de temiz oynatıcı kutusu */
     .video-player{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:5000;flex-direction:column}
     .video-player.active{display:flex}
     .vp-topbar{background:#1a1208;border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;padding:10px 14px;gap:12px}
     .vp-close{height:42px;width:42px;border-radius:12px;border:1.5px solid #b91c1c;background:#7f1d1d;color:#fff;font-size:18px;font-weight:bold;cursor:pointer}
     .vp-title{color:#f7e28b;font-size:17px;font-weight:800;flex:1;text-align:center}
-    .vp-frame-wrap{flex:1;position:relative;background:#000;display:flex;align-items:center;justify-content:center}
+    .vp-frame-wrap{flex:1;position:relative;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden}
     .vp-frame{width:100%;height:100%;border:none}
+    
     .pdf-viewer{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0a0704;z-index:6000;flex-direction:column}
     .pdf-viewer.active{display:flex}
     .pdf-topbar{background:#1a1208;border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;padding:10px 14px;gap:12px}
@@ -281,7 +295,6 @@
       });
     }
 
-    // SES KARIŞMASI ENGELLENMİŞ SHORTS SİSTEMİ
     function loadShortVideos() {
       const list = document.getElementById('video-list');
       list.innerHTML = '';
@@ -291,41 +304,37 @@
         const container = document.createElement('div');
         container.className = 'shorts-container';
         
-        // src adresi boş bırakıldı, sadece ekrana gelince yüklenecek
+        // controls=0 ve rel=0 parametreleri eklendi, maskeleme ile birleştirildi
         container.innerHTML = `
-          <iframe class="shorts-frame" data-src="https://www.youtube.com/embed/${v.id}?enablejsapi=1&rel=0&autoplay=1" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <iframe class="shorts-frame" data-src="https://www.youtube.com/embed/${v.id}?enablejsapi=1&rel=0&autoplay=1&controls=0&showinfo=0&iv_load_policy=3" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           <div class="shorts-overlay-title">فيديو قصير ${idx + 1}</div>
         `;
         list.appendChild(container);
       });
 
-      // Gelişmiş Takip Mekanizması: Ekranda durmayan videonun bağlantısını kökten koparır!
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           const iframe = entry.target.querySelector('iframe');
           if (entry.isIntersecting) {
-            // Video tam ekrana oturduğunda adresi ver ve çalmasını sağla
             const targetSrc = iframe.getAttribute('data-src');
             if (iframe.src !== targetSrc) {
               iframe.src = targetSrc;
             }
           } else {
-            // Kullanıcı bu videoyu kaydırıp geçtiği an adresi sıfırla (Böylece arkada ses asla çalamaz!)
             iframe.src = '';
           }
         });
-      }, { threshold: 0.5 }); // Ekranın yarısından fazlası kayınca hemen devreye girer
+      }, { threshold: 0.5 });
 
       document.querySelectorAll('.shorts-container').forEach(div => observer.observe(div));
     }
 
-    // SHORTS BÖLÜMÜNDEN ÇIKARKEN TÜM OYNATICILARI TERTEMİZ ETME FONKSİYONU
     function clearAllShortsIframes() {
       document.querySelectorAll('.shorts-frame').forEach(iframe => { 
         iframe.src = ''; 
       });
       const list = document.getElementById('video-list');
-      if (list) list.innerHTML = ''; // İçeriği tamamen boşaltıp RAM'i de rahatlatıyoruz
+      if (list) list.innerHTML = '';
     }
 
     function stopAllShortsAndGoHome() {
@@ -339,8 +348,9 @@
     }
 
     function playVideo(id, title) {
+      window.history.pushState({view: 'player'}, '');
       document.getElementById('vpTitle').innerText = title;
-      document.getElementById('vpFrame').src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
+      document.getElementById('vpFrame').src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&controls=1`;
       document.getElementById('videoPlayer').classList.add('active');
     }
 
@@ -367,14 +377,37 @@
       if (page === 'home') document.getElementById('btn-home').classList.add('active');
       
       if (page === 'longvideos') loadLongVideos();
-      if (page === 'videos') loadShortVideos();
+      
+      if (page === 'videos') {
+        loadShortVideos();
+        window.history.pushState({view: 'shorts'}, '');
+      }
       
       if (page !== 'videos') {
         window.scrollTo({top:0, behavior:'smooth'});
       }
     }
 
+    window.addEventListener('popstate', function(event) {
+      if (document.getElementById('videoPlayer').classList.contains('active')) {
+        closeVideo();
+        return;
+      }
+      if (document.getElementById('pdfViewer').classList.contains('active')) {
+        closePDF();
+        return;
+      }
+      if (document.getElementById('page-videos').classList.contains('active')) {
+        clearAllShortsIframes();
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-home').classList.add('active');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-home').classList.add('active');
+      }
+    });
+
     function openPDF(file, title) {
+      window.history.pushState({view: 'pdf'}, '');
       const url = "https://saamsaamadham1344-lgtm.github.io/AL-TAYY-BAT/" + file;
       document.getElementById('pdfTitle').innerText = title;
       document.getElementById('pdfDownloadLink').href = url;
