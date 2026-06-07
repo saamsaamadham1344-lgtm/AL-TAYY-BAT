@@ -80,7 +80,6 @@
     .nav-btn .lbl{font-size:12px;font-weight:700;color:#a69466}
     .nav-btn.active .lbl{color:#f7e28b}
 
-    /* TAM EKRAN BUTONU */
     .fullscreen-btn{position:absolute;bottom:20px;right:20px;z-index:100;background:rgba(0,0,0,0.8);color:#d4a24a;border:2px solid #d4a24a;padding:10px 16px;border-radius:999px;font-weight:bold;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:6px}
     .fullscreen-btn:hover{background:rgba(212,162,74,0.2)}
   </style>
@@ -198,28 +197,95 @@
   <script>
     const SITE_URL = "https://saamsaamadham1344-lgtm.github.io/AL-TAYY-BAT/";
 
+    // 📺 UZUN VİDEOLAR LİSTESİ (69 video)
     const longVideos = [
-      {
-        id: "6T7S4CEKswY",
-        title: "فيديو",
-        description: "اضغط للمشاهدة"
-      }
+      { id: "6T7S4CEKswY" },
+      { id: "fO_n5pvVObw" },
+      { id: "ugTyZoIkIok" },
+      { id: "yCY2YRleR9w" },
+      { id: "UodEFXF_OSQ" },
+      { id: "6TBjQw3erno" },
+      { id: "w8D8Krripl0" },
+      { id: "7JAjy65mPDU" },
+      { id: "GpVyhh5xHKo" },
+      { id: "cwCIHyWOAac" },
+      { id: "WmAVlM-HBv4" },
+      { id: "8AYaSqh52XY" },
+      { id: "T4WGywcAR0A" },
+      { id: "2hH1BmmYF-c" },
+      { id: "d-YRDz7CDZ4" },
+      { id: "6daCdPenKTA" },
+      { id: "NrQ7mv5vo3U" },
+      { id: "Nr2bw50l2ic" },
+      { id: "_FV9KtyMIFA" },
+      { id: "xKYVV0c3gw8" },
+      { id: "w3rYgQKVbvE" },
+      { id: "KaM-hSDpcJI" },
+      { id: "Wn2ZmDoPku8" },
+      { id: "ZDN_NHo29Zs" },
+      { id: "RBuIoS1Q2XI" },
+      { id: "M5BLxxxGq1A" },
+      { id: "09D3e3kc13o" },
+      { id: "e3z71BwgAmA" },
+      { id: "c3Bird_-PZA" },
+      { id: "7E5REMptq5Q" },
+      { id: "OsKXunP1qA0" },
+      { id: "k6Uj9YdMP3g" },
+      { id: "hVwGz0ucKpw" },
+      { id: "a2ARWC973cM" },
+      { id: "8yWrnh6_HHw" },
+      { id: "8UOwIFc1ccU" },
+      { id: "_oq_8QNS-uI" },
+      { id: "5Pr4BCDlQeI" },
+      { id: "bmiYyChQ310" },
+      { id: "3j32fjfYRbU" },
+      { id: "OuyPh5firR4" },
+      { id: "vmPu_Slq3qM" },
+      { id: "BafvXAEfnQ8" },
+      { id: "E8MVNdW9_00" },
+      { id: "-k8h4991zos" },
+      { id: "2A5UXQz3Nr0" },
+      { id: "_2wCj8tzZq0" },
+      { id: "lN01JxYN2HA" },
+      { id: "FvU0rIaJd68" },
+      { id: "o8BWuF9wmoM" },
+      { id: "oeCecspxooI" },
+      { id: "ewomX3wxOXk" },
+      { id: "OfWv4ujloWY" },
+      { id: "qOlbkAR4H88" },
+      { id: "CMendNOuEAM" },
+      { id: "6VfNEdEKeDw" },
+      { id: "H2nB3GLrjec" },
+      { id: "OoCKygchTlY" },
+      { id: "GngANzznS5k" },
+      { id: "9E8mc4I9_DA" },
+      { id: "DrF9EwF-Y8w" },
+      { id: "vEbq_mOZNCI" },
+      { id: "Db35tNlDPes" },
+      { id: "xembettoZ-Q" },
+      { id: "XzOq37ZN1TM" },
+      { id: "_QryITtYfUI" },
+      { id: "qxTWRQ7RDnE" },
+      { id: "rzCkNA6txis" },
+      { id: "RZRjSZy5aS4" },
+      { id: "_A-6-7-NHOo" },
+      { id: "j4KdD0KTGyE" }
     ];
 
     function loadLongVideos() {
       const list = document.getElementById('longVideoList');
       list.innerHTML = '';
-      longVideos.forEach(v => {
+      longVideos.forEach((v, index) => {
         const card = document.createElement('div');
         card.className = 'long-video-card';
-        card.onclick = () => playVideo(v.id, v.title);
+        card.onclick = () => playVideo(v.id, 'فيديو ' + (index + 1));
         card.innerHTML = `
           <div class="long-video-thumb" style="background-image:url('https://img.youtube.com/vi/${v.id}/hqdefault.jpg')">
             <div class="play-overlay">▶</div>
           </div>
           <div class="long-video-info">
-            <div class="long-video-title">${v.title}</div>
-            <div class="long-video-desc">${v.description}</div>
+            <div class="long-video-title">فيديو ${index + 1}</div>
+            <div class="long-video-desc">اضغط للمشاهدة</div>
           </div>
         `;
         list.appendChild(card);
@@ -233,13 +299,11 @@
     }
 
     function closeVideo() {
-      // Önce fullscreen modundan çık (varsa)
       if (document.fullscreenElement) {
         document.exitFullscreen().catch(() => {});
       } else if (document.webkitFullscreenElement) {
         document.webkitExitFullscreen();
       }
-      // Ekranı dikey moda kilitle (varsa)
       if (screen.orientation && screen.orientation.unlock) {
         try { screen.orientation.unlock(); } catch(e) {}
       }
@@ -247,18 +311,16 @@
       document.getElementById('vpFrame').src = '';
     }
 
-    // TAM EKRAN + YATAY MOD
     function goFullscreen() {
       const iframe = document.getElementById('vpFrame');
       const wrap = document.getElementById('vpFrameWrap');
       
-      // iframe'i tam ekrana al
       if (iframe.requestFullscreen) {
         iframe.requestFullscreen();
       } else if (iframe.webkitRequestFullscreen) {
         iframe.webkitRequestFullscreen();
       } else if (iframe.webkitEnterFullscreen) {
-        iframe.webkitEnterFullscreen(); // iOS
+        iframe.webkitEnterFullscreen();
       } else if (iframe.mozRequestFullScreen) {
         iframe.mozRequestFullScreen();
       } else if (iframe.msRequestFullscreen) {
@@ -267,7 +329,6 @@
         wrap.requestFullscreen();
       }
       
-      // Ekranı yatay moda kilitle (Android Chrome)
       setTimeout(() => {
         if (screen.orientation && screen.orientation.lock) {
           screen.orientation.lock('landscape').catch(err => {
@@ -325,4 +386,4 @@
   </script>
 
 </body>
-              </html>
+</html>
