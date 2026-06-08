@@ -270,7 +270,7 @@
       { id: "2A5UXQz3Nr0" }, { id: "_2wCj8tzZq0" }, { id: "lN01JxYN2HA" }, { id: "FvU0rIaJd68" }, { id: "o8BWuF9wmoM" },
       { id: "oeCecspxooI" }, { id: "ewomX3wxOXk" }, { id: "OfWv4ujloWY" }, { id: "qOlbkAR4H88" }, { id: "CMendNOuEAM" },
       { id: "6VfNEdEKeDw" }, { id: "H2nB3GLrjec" }, { id: "OoCKygchTlY" }, { id: "GngANzznS5k" }, { id: "9E8mc4I9_DA" },
-      { id: "DrF9EwF-Y8w" }, { id: "vEbq_mOZNCI" }, { id: "Db35tNlDPes" }, { id: "xembettoZ-Q" }, { id: "XzOq37ZN1TM" },
+      { id: "DrF9EwF-Y8w" }, { id: "vEbq_mOZNCI" }, { id: "Db35tNlDPes" }, { id: "xembettoZ-Q" }, { id: XzOq37ZN1TM" },
       { id: "_QryITtYfUI" }, { id: "qxTWRQ7RDnE" }, { id: "rzCkNA6txis" }, { id: "RZRjSZy5aS4" }, { id: "_A-6-7-NHOo" },
       { id: "j4KdD0KTGyE" }, { id: "7So1qoMShcA" }, { id: "XIOrJAAtACc" }, { id: "g9CpntsLpt8" }, { id: "49nWEoUQzLI" },
       { id: "-tXrfHfeQIo" }, { id: "bsei1cvDLsM" }, { id: "dF37UMXeM3I" }, { id: "h4iNUew0djI" }, { id: "1GtaW3WvabI" },
@@ -305,7 +305,6 @@
       { id: "GFO8zaowwkA" }, { id: "eWM02D0nMaw" }, { id: "kvXGVthS3s4" }, { id: "jpXQ_IChYnw" }, { id: "QiZrnujexw28EQZO" }
     ];
 
-    /* Saat başı otomatik değişen benzersiz karıştırma algoritması */
     function shuffleByHour(array) {
       const currentHourSeed = Math.floor(Date.now() / (1000 * 60 * 60));
       let shuffled = [...array];
@@ -341,7 +340,7 @@
         const container = document.createElement('div');
         container.className = 'shorts-container';
         container.innerHTML = `
-          <iframe class="shorts-frame" data-src="https://www.youtube.com/embed/${v.id}?enablejsapi=1&rel=0&autoplay=1&controls=0&showinfo=0&iv_load_policy=3" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <iframe class="shorts-frame" data-src="https://www.youtube-nocookie.com/embed/${v.id}?enablejsapi=1&rel=0&autoplay=1&controls=0&showinfo=0&iv_load_policy=3" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           <div class="shorts-overlay-title">فيديو قصير ${idx + 1}</div>
         `;
         list.appendChild(container);
@@ -381,7 +380,7 @@
     function playVideo(id, title) {
       window.history.pushState({view: 'player'}, '');
       document.getElementById('vpTitle').innerText = title;
-      document.getElementById('vpFrame').src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&controls=1`;
+      document.getElementById('vpFrame').src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&controls=1`;
       document.getElementById('videoPlayer').classList.add('active');
     }
 
@@ -408,11 +407,10 @@
       if (page === 'home') document.getElementById('btn-home').classList.add('active');
       
       if (page === 'longvideos') loadLongVideos();
-      if (page === 'videos') {
-        loadShortVideos();
-        if(!skipPushState) window.history.pushState({view: 'shorts'}, '');
-      } else {
-        if(!skipPushState) window.history.pushState({view: page}, '');
+      
+      // Geçmiş koruma düzeltmesi: Sayfa geçişlerinde tarayıcı hafızasını zorla güncelliyoruz
+      if (!skipPushState) {
+        window.history.pushState({view: page}, '');
       }
       
       if (page !== 'videos') {
@@ -420,38 +418,36 @@
       }
     }
 
-    /* GELİŞMİŞ AKILLI GERİ TUŞU (POPSTATE) MANEVRALARI */
+    /* KUSURSUZLAŞTIRILMIŞ AKILLI GERİ TUŞU YÖNETİMİ */
     window.addEventListener('popstate', function(event) {
-      // 1. Kural: Uzun Video oynatıcı aktifken geri basılırsa -> Sadece uzun video listesine dön
+      // 1. Durum: Uzun video açıkken basılırsa -> Videoyu kapat ve sadece listeye dön (Asla dışarı atma)
       if (document.getElementById('videoPlayer').classList.contains('active')) {
         closeVideo();
+        // Tarayıcı geçmişine listenin yerini tekrar hatırlatıyoruz
+        window.history.replaceState({view: 'longvideos'}, '');
         goTo('longvideos', true); 
         return;
       }
       
-      // 2. Kural: PDF Kitap okuyucu aktifken geri basılırsa -> Sadece kitap listesine dön
+      // 2. Durum: PDF Kitap açıkken basılırsa -> PDF'i kapat ve sadece kitap listesine dön (Asla dışarı atma)
       if (document.getElementById('pdfViewer').classList.contains('active')) {
         closePDF();
+        // Tarayıcı geçmişine kitap listesinin yerini tekrar hatırlatıyoruz
+        window.history.replaceState({view: 'books'}, '');
         goTo('books', true); 
         return;
       }
       
-      // 3. Kural: Shorts/Kısa videolar ekranındayken geri basılırsa -> Doğrudan ana sayfaya at
+      // 3. Durum: Shorts/Kısa videolar ekranındayken basılırsa -> Doğrudan ana sayfaya güvenli dönüş
       if (document.getElementById('page-videos').classList.contains('active')) {
         clearAllShortsIframes();
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById('page-home').classList.add('active');
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-home').classList.add('active');
+        goTo('home', true);
         return;
       }
 
-      // 4. Kural: Uzun videolar veya Kitaplar listesindeyken geri basılırsa -> Ana Sayfaya dön
+      // 4. Durum: Alt listelerde (Kitaplar veya Uzun Videolar) iken üçgene basılırsa -> Kesinlikle Ana Sayfa
       if (!document.getElementById('page-home').classList.contains('active')) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById('page-home').classList.add('active');
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-home').classList.add('active');
+        goTo('home', true);
       }
     });
 
@@ -469,7 +465,11 @@
       document.getElementById('pdfFrame').src = '';
     }
 
-    window.onload = function() { goTo('home', true); };
+    // İlk açılışta ana sayfayı tarayıcı geçmişinin en başına kazıyoruz
+    window.onload = function() { 
+      window.history.replaceState({view: 'home'}, '');
+      goTo('home', true); 
+    };
   </script>
 </body>
 </html>
