@@ -1,37 +1,72 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>نظام الطيبات الذكي</title>
-  <style>
-    /* CSS kodlarını buraya ekleyerek uygulamanın tam halini oluşturabilirsin */
-    /* Tüm sayfa tasarımların ve navigasyon butonların burada tanımlı olmalı */
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام الطيبات الذكي</title>
+    <style>
+        /* CSS'in burada kalmalı, eksiksiz kopyaladığından emin ol */
+        body { background: #0a0704; color: #fff; margin: 0; padding: 0; font-family: sans-serif; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .shorts-container { width: 100vw; height: 100vh; scroll-snap-align: start; }
+        .shorts-frame { width: 100%; height: 100%; border: none; }
+        #page-videos { position: fixed; top: 0; width: 100%; height: 100%; z-index: 999; background: #000; overflow-y: scroll; scroll-snap-type: y mandatory; }
+    </style>
 </head>
 <body>
 
-  <script>
-    // TAM LİSTE VERİLERİN (Eksiksiz)
-    const longVideos = [...]; // Buraya daha önce verdiğin 100+ videoyu içeren tam listen gelecek
-    const shortVideos = [...]; // Buraya shorts videolarını içeren tam listen gelecek
+    <main id="page-home" class="page active">
+        <h1>الرئيسية</h1>
+        <button onclick="navTo('videos')">مشاهدة الفيديوهات القصيرة</button>
+        <button onclick="navTo('longvideos')">مشاهدة الفيديوهات الطويلة</button>
+        <button onclick="navTo('books')">الكتب</button>
+    </main>
 
-    // SAATLİK KARIŞTIRMA MANTIĞI
-    function shuffleByHour(arr) { /* ... */ }
+    <main id="page-videos" class="page">
+        <button onclick="navTo('home')" style="position:fixed; top:10px; right:10px; z-index:1000;">X</button>
+        <div id="video-list"></div>
+    </main>
 
-    // ÜÇGEN TUŞU VE NAVİGASYON (Geri tuşu ile tam uyumlu)
-    window.addEventListener('popstate', function(event) {
-        // Geri tuşuna basıldığında sesin kesilmesi ve doğru sayfaya dönülmesi için
-        stopAllVideos(); 
-        // ... sayfa geçiş mantığı ...
-    });
+    <script>
+        // 106 ADET UZUN VİDEO
+        const longVideos = [
+            {id: "6T7S4CEKswY"}, {id: "fO_n5pvVObw"}, {id: "ugTyZoIkIok"}, {id: "yCY2YRleR9w"}, {id: "UodEFXF_OSQ"}, {id: "6TBjQw3erno"}, {id: "w8D8Krripl0"}, {id: "7JAjy65mPDU"}, {id: "GpVyhh5xHKo"}, {id: "cwCIHyWOAac"},
+            {id: "WmAVlM-HBv4"}, {id: "8AYaSqh52XY"}, {id: "T4WGywcAR0A"}, {id: "2hH1BmmYF-c"}, {id: "d-YRDz7CDZ4"}, {id: "6daCdPenKTA"}, {id: "NrQ7mv5vo3U"}, {id: "Nr2bw50l2ic"}, {id: "_FV9KtyMIFA"}, {id: "xKYVV0c3gw8"},
+            {id: "w3rYgQKVbvE"}, {id: "KaM-hSDpcJI"}, {id: "Wn2ZmDoPku8"}, {id: "ZDN_NHo29Zs"}, {id: "RBuIoS1Q2XI"}, {id: "M5BLxxxGq1A"}, {id: "09D3e3kc13o"}, {id: "e3z71BwgAmA"}, {id: "c3Bird_-PZA"}, {id: "7E5REMptq5Q"},
+            {id: "OsKXunP1qA0"}, {id: "k6Uj9YdMP3g"}, {id: "hVwGz0ucKpw"}, {id: "a2ARWC973cM"}, {id: "8yWrnh6_HHw"}, {id: "8UOwIFc1ccU"}, {id: "_oq_8QNS-uI"}, {id: "5Pr4BCDlQeI"}, {id: "bmiYyChQ310"}, {id: "3j32fjfYRbU"},
+            {id: "OuyPh5firR4"}, {id: "vmPu_Slq3qM"}, {id: "BafvXAEfnQ8"}, {id: "E8MVNdW9_00"}, {id: "-k8h4991zos"}, {id: "2A5UXQz3Nr0"}, {id: "_2wCj8tzZq0"}, {id: "lN01JxYN2HA"}, {id: "FvU0rIaJd68"}, {id: "o8BWuF9wmoM"},
+            {id: "oeCecspxooI"}, {id: "ewomX3wxOXk"}, {id: "OfWv4ujloWY"}, {id: "qOlbkAR4H88"}, {id: "CMendNOuEAM"}, {id: "6VfNEdEKeDw"}, {id: "H2nB3GLrjec"}, {id: "OoCKygchTlY"}, {id: "GngANzznS5k"}, {id: "9E8mc4I9_DA"},
+            {id: "DrF9EwF-Y8w"}, {id: "vEbq_mOZNCI"}, {id: "Db35tNlDPes"}, {id: "xembettoZ-Q"}, {id: "XzOq37ZN1TM"}, {id: "_QryITtYfUI"}, {id: "qxTWRQ7RDnE"}, {id: "rzCkNA6txis"}, {id: "RZRjSZy5aS4"}, {id: "_A-6-7-NHOo"},
+            {id: "j4KdD0KTGyE"}, {id: "7So1qoMShcA"}, {id: "XIOrJAAtACc"}, {id: "g9CpntsLpt8"}, {id: "49nWEoUQzLI"}, {id: "-tXrfHfeQIo"}, {id: "bsei1cvDLsM"}, {id: "dF37UMXeM3I"}, {id: "h4iNUew0djI"}, {id: "1GtaW3WvabI"},
+            {id: "lSBvJKra-z0"}, {id: "YVOQHGTxmAw"}, {id: "E3jtLpbRgLg"}, {id: "pw405As_xZE"}, {id: "-3zhpJ5yNKs"}, {id: "jXijubcRnyo"}, {id: "_JtcBLLaDIs"}, {id: "F7GZGa0HFeI"}, {id: "wHKEeKwX2qU"}, {id: "5WWEe5O1uF8"},
+            {id: "zDwSm77014Q"}, {id: "b1HcCo9-RzY"}, {id: "2LMnRSPBOZk"}, {id: "0gGcO7Q0EV0"}, {id: "1ekb9913gNk"}, {id: "uCKlj9V7e4E"}, {id: "vd1oaXzNdTk"}, {id: "MjhLRgPpw9g"}, {id: "Nv2dtQ4X-ao"}, {id: "JtCExFozjDM"},
+            {id: "nFD98X3uZb4"}, {id: "OUsrF0A1nI0"}, {id: "DwFg_wlhZzQ"}, {id: "SVWkerA8bsk"}, {id: "1vmK7osxMKM"}, {id: "G11prrGf37o"}
+        ];
 
-    function stopAllVideos() {
-        // Sesi kesen ana komutlar
-        document.getElementById('vpFrame').src = '';
-        document.getElementById('pdfFrame').src = '';
-        document.querySelectorAll('iframe').forEach(f => f.src = '');
-    }
-  </script>
+        // 100 ADET SHORTS VİDEOSU
+        const shortVideos = [
+            {id: "yVCWJU7WDhg"}, {id: "RE8jOtqEf8A"}, {id: "QsRRmIWqZIE"}, {id: "FMnXxZxJo18"}, {id: "sZWaWWatB-k"}, {id: "fkepFka3--g"}, {id: "zePhKiayw3U"}, {id: "dM97YLX50os"}, {id: "GvwzqVCG8xE"}, {id: "AHJCR-HTRVk"},
+            {id: "nQvE3FXB8cc"}, {id: "JS2Os8pA0Sw"}, {id: "kkG-8gFoMt4"}, {id: "nJXrQk130Uk"}, {id: "5zaRSm7uBWs"}, {id: "pwxMhJbWUwQ"}, {id: "0my1ENmRBWU"}, {id: "wA-T2FXWrtA"}, {id: "u2jnx9owH7g"}, {id: "PHIhO2gmE2o"},
+            {id: "0IWPT3WfL8Q"}, {id: "Ka2PGQ6X7JI"}, {id: "ZyFK1_A-qDo"}, {id: "XtvSwHOZalQ"}, {id: "ePM3CnD0QuM"}, {id: "w2HDlriRuLk"}, {id: "Ts7qCplw_uQ"}, {id: "fLvtM3QYBFQ"}, {id: "zOMOGHHT0LQ"}, {id: "5wXOht6wnEk"},
+            {id: "jbeiHwVgT34"}, {id: "K1ErIZ214ck"}, {id: "xwhRcJ4AzEc"}, {id: "PGPQu1fRN9w"}, {id: "fJzp337K9d8"}, {id: "Y8HdLCaJ98c"}, {id: "yL5W4R6CqxY"}, {id: "KKTxZ-ScCvQ"}, {id: "5653h5hjK6s"}, {id: "YjZCX3sQa9M"},
+            {id: "hFmlc6OkY0o"}, {id: "Hluw9sxICtw"}, {id: "rCflorQa7yc"}, {id: "NFPdec8esVg"}, {id: "9egjEqy9ifc"}, {id: "ZzS6XhvCQ6I"}, {id: "--4LKMegTPs"}, {id: "dsF0tZdTto4"}, {id: "oCrXIlQDEeo"}, {id: "fP3LzNlcuhk"},
+            {id: "3Ejduzz2S3M"}, {id: "qx23GkJ1NUo"}, {id: "Uw0HyhNl0z0"}, {id: "od5PdFWtmW4"}, {id: "9HdC3UE4B7E"}, {id: "hBuc1CawnDA"}, {id: "6oRyA_GH_lM"}, {id: "Kk0UOhxvv10"}, {id: "R2YtxJuSiUI"}, {id: "wanGej60Rfs"},
+            {id: "i8FK176H-as"}, {id: "N_6mX2AfLOU"}, {id: "zg_i776o2m4"}, {id: "PXdF_9PMDFE"}, {id: "gxYblKHHis4"}, {id: "wpTS9l3L2Hg"}, {id: "zmRvrm7IkwE"}, {id: "1eyORjJ-IlI"}, {id: "Fdvc7WW9hEg"}, {id: "wBx21pBVZdI"},
+            {id: "6J7f60cs83A"}, {id: "krxsqszNwTI"}, {id: "5wnYzF71Hl4"}, {id: "5VCJoLMoJDw"}, {id: "UST-ca_Fv7E"}, {id: "s-tT3mad7pE"}, {id: "uNGR3CKU6OE"}, {id: "mntrC8NAv0Q"}, {id: "GRENzocBAeg"}, {id: "wAE8VXZq_fg"},
+            {id: "8zDhVkZgHvM"}, {id: "vgD4SlJ8MQQ"}, {id: "v0mVFec22W0"}, {id: "q5i-MSzlxzQ"}, {id: "oMnLMMAjMn4"}, {id: "zjBZGIaVYCg"}, {id: "28JFW1E4V4w"}, {id: "-cs_h1_kLNE"}, {id: "vNiCcHoNg-I"}, {id: "SqHmD-vUHWg"},
+            {id: "zHj52Oudtsg"}, {id: "0g8PHpI4dR4"}, {id: "u2bSLs400Aw"}, {id: "IWdqb4bqvEk"}, {id: "hvLLVEFKX88"}, {id: "GFO8zaowwkA"}, {id: "eWM02D0nMaw"}, {id: "kvXGVthS3s4"}, {id: "jpXQ_IChYnw"}, {id: "..."} 
+        ];
+
+        // NAVİGASYON VE GERİ TUŞU YÖNETİMİ
+        function navTo(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + page).classList.add('active');
+            // Buraya ses kesme ve sayfa yükleme mantığını ekle
+            window.history.pushState({page: page}, "");
+        }
+
+        window.addEventListener('popstate', () => navTo('home'));
+    </script>
 </body>
 </html>
