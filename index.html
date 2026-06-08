@@ -227,7 +227,7 @@
 
     <div class="video-player" id="videoPlayer">
       <div class="vp-topbar">
-        <button class="vp-close" onclick="closeVideo()">X</button>
+        <button class="vp-close" onclick="window.history.back()">X</button>
         <div class="vp-title" id="vpTitle">فيديو</div>
       </div>
       <div class="vp-frame-wrap" id="vpFrameWrap">
@@ -238,7 +238,7 @@
 
     <div class="pdf-viewer" id="pdfViewer">
       <div class="pdf-topbar">
-        <button class="tb-close" onclick="closePDF()">X</button>
+        <button class="tb-close" onclick="window.history.back()">X</button>
         <a id="pdfDownloadLink" class="pdf-download-btn" target="_blank" href="#">تحميل / فتح خارجي</a>
         <div class="pdf-title" id="pdfTitle">الكتاب</div>
       </div>
@@ -305,7 +305,7 @@
       { id: "GFO8zaowwkA" }, { id: "eWM02D0nMaw" }, { id: "kvXGVthS3s4" }, { id: "jpXQ_IChYnw" }, { id: "QiZrnujexw28EQZO" }
     ];
 
-    /* Saatlik Değişen Benzersiz Karıştırma Fonksiyonu */
+    /* Saat başı otomatik değişen benzersiz karıştırma algoritması */
     function shuffleByHour(array) {
       const currentHourSeed = Math.floor(Date.now() / (1000 * 60 * 60));
       let shuffled = [...array];
@@ -340,7 +340,6 @@
       hourlyShuffledShorts.forEach((v, idx) => {
         const container = document.createElement('div');
         container.className = 'shorts-container';
-        
         container.innerHTML = `
           <iframe class="shorts-frame" data-src="https://www.youtube.com/embed/${v.id}?enablejsapi=1&rel=0&autoplay=1&controls=0&showinfo=0&iv_load_policy=3" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           <div class="shorts-overlay-title">فيديو قصير ${idx + 1}</div>
@@ -353,9 +352,7 @@
           const iframe = entry.target.querySelector('iframe');
           if (entry.isIntersecting) {
             const targetSrc = iframe.getAttribute('data-src');
-            if (iframe.src !== targetSrc) {
-              iframe.src = targetSrc;
-            }
+            if (iframe.src !== targetSrc) iframe.src = targetSrc;
           } else {
             iframe.src = '';
           }
@@ -366,9 +363,7 @@
     }
 
     function clearAllShortsIframes() {
-      document.querySelectorAll('.shorts-frame').forEach(iframe => { 
-        iframe.src = ''; 
-      });
+      document.querySelectorAll('.shorts-frame').forEach(iframe => { iframe.src = ''; });
       const list = document.getElementById('video-list');
       if (list) list.innerHTML = '';
     }
@@ -405,7 +400,7 @@
     function closeWhatsAppModal() { document.getElementById('whatsappModal').classList.remove('active'); }
     function joinWhatsAppGroup() { window.open(WHATSAPP_GROUP_LINK, '_blank'); closeWhatsAppModal(); }
 
-    function goTo(page) {
+    function goTo(page, skipPushState = false) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       const t = document.getElementById('page-' + page);
       if (t) t.classList.add('active');
@@ -413,12 +408,11 @@
       if (page === 'home') document.getElementById('btn-home').classList.add('active');
       
       if (page === 'longvideos') loadLongVideos();
-      
       if (page === 'videos') {
         loadShortVideos();
-        window.history.pushState({view: 'shorts'}, '');
+        if(!skipPushState) window.history.pushState({view: 'shorts'}, '');
       } else {
-        window.history.pushState({view: page}, '');
+        if(!skipPushState) window.history.pushState({view: page}, '');
       }
       
       if (page !== 'videos') {
@@ -426,23 +420,23 @@
       }
     }
 
-    /* AKILLI GERİ TUŞU YÖNLENDİRME ALGORİTMASI (Üçgen Buton Mantığı) */
+    /* GELİŞMİŞ AKILLI GERİ TUŞU (POPSTATE) MANEVRALARI */
     window.addEventListener('popstate', function(event) {
-      // 1. Durum: Uzun video açıkken basılırsa -> Sadece uzun videolar listesine dön
+      // 1. Kural: Uzun Video oynatıcı aktifken geri basılırsa -> Sadece uzun video listesine dön
       if (document.getElementById('videoPlayer').classList.contains('active')) {
         closeVideo();
-        goTo('longvideos');
+        goTo('longvideos', true); 
         return;
       }
       
-      // 2. Durum: PDF Kitap açıkken basılırsa -> Sadece kitaplar listesine dön
+      // 2. Kural: PDF Kitap okuyucu aktifken geri basılırsa -> Sadece kitap listesine dön
       if (document.getElementById('pdfViewer').classList.contains('active')) {
         closePDF();
-        goTo('books');
+        goTo('books', true); 
         return;
       }
       
-      // 3. Durum: Kısa videolardayken (Shorts) basılırsa -> Doğrudan Ana Sayfa'ya dön
+      // 3. Kural: Shorts/Kısa videolar ekranındayken geri basılırsa -> Doğrudan ana sayfaya at
       if (document.getElementById('page-videos').classList.contains('active')) {
         clearAllShortsIframes();
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -452,9 +446,12 @@
         return;
       }
 
-      // Diğer alt sayfalardayken basılırsa ana sayfaya güvenli dönüş sağla
+      // 4. Kural: Uzun videolar veya Kitaplar listesindeyken geri basılırsa -> Ana Sayfaya dön
       if (!document.getElementById('page-home').classList.contains('active')) {
-        goTo('home');
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-home').classList.add('active');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-home').classList.add('active');
       }
     });
 
@@ -472,7 +469,7 @@
       document.getElementById('pdfFrame').src = '';
     }
 
-    window.onload = function() { goTo('home'); };
+    window.onload = function() { goTo('home', true); };
   </script>
 </body>
 </html>
