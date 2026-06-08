@@ -194,7 +194,7 @@
     </main>
 
     <main id="page-books" class="page">
-      <div class="books-top"><button class="gold-btn" onclick="goTo('home')">الرئيسية</button></div>
+      <div class="books-top"><button class="gold-btn" onclick="window.history.back()">الرئيسية</button></div>
       <div class="book-grid">
         <div class="book-card">
           <div class="book-cover" style="background-image:url('kapak1.jpg')"></div>
@@ -216,29 +216,29 @@
     </main>
 
     <main id="page-longvideos" class="page">
-      <div class="long-top"><button class="gold-btn" onclick="goTo('home')">الرئيسية</button></div>
+      <div class="long-top"><button class="gold-btn" onclick="window.history.back()">الرئيسية</button></div>
       <div class="long-video-list" id="longVideoList"></div>
     </main>
 
     <main id="page-videos" class="page">
-      <button class="video-back-btn" onclick="stopAllShortsAndGoHome()">X خروج</button>
+      <button class="video-back-btn" onclick="window.history.back()">X خروج</button>
       <div id="video-list"></div>
     </main>
 
     <div class="video-player" id="videoPlayer">
       <div class="vp-topbar">
-        <button class="vp-close" onclick="triggerAndroidBack()">X</button>
+        <button class="vp-close" onclick="window.history.back()">X</button>
         <div class="vp-title" id="vpTitle">فيديو</div>
       </div>
       <div class="vp-frame-wrap" id="vpFrameWrap">
         <iframe id="vpFrame" class="vp-frame" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>
-        <button class="fullscreen-btn" onclick="goFullscreen()">⛶ ملء Şaşة</button>
+        <button class="fullscreen-btn" onclick="goFullscreen()">⛶ ملء الشاشة</button>
       </div>
     </div>
 
     <div class="pdf-viewer" id="pdfViewer">
       <div class="pdf-topbar">
-        <button class="tb-close" onclick="triggerAndroidBack()">X</button>
+        <button class="tb-close" onclick="window.history.back()">X</button>
         <a id="pdfDownloadLink" class="pdf-download-btn" target="_blank" href="#">تحميل / فتح خارجي</a>
         <div class="pdf-title" id="pdfTitle">الكتاب</div>
       </div>
@@ -247,10 +247,10 @@
 
     <div class="bottom-nav-wrap">
       <nav class="bottom-nav">
-        <button class="nav-btn" onclick="stopAllShortsAndGoTo('books')"><div class="ico">📚</div><span class="lbl">الكتب</span></button>
-        <button class="nav-btn" onclick="stopAllShortsAndGoTo('longvideos')"><div class="ico">📺</div><span class="lbl">طويلة</span></button>
-        <button class="nav-btn" onclick="stopAllShortsAndGoTo('videos')"><div class="ico">🎥</div><span class="lbl">قصيرة</span></button>
-        <button class="nav-btn active" id="btn-home" onclick="stopAllShortsAndGoTo('home')"><div class="ico">🏠</div><span class="lbl">الرئيسية</span></button>
+        <button class="nav-btn" onclick="navTo('books')"><div class="ico">📚</div><span class="lbl">الكتب</span></button>
+        <button class="nav-btn" onclick="navTo('longvideos')"><div class="ico">📺</div><span class="lbl">طويلة</span></button>
+        <button class="nav-btn" onclick="navTo('videos')"><div class="ico">🎥</div><span class="lbl">قصيرة</span></button>
+        <button class="nav-btn active" id="btn-home" onclick="navTo('home')"><div class="ico">🏠</div><span class="lbl">الرئيسية</span></button>
       </nav>
     </div>
   </div>
@@ -302,16 +302,23 @@
       { id: "8zDhVkZgHvM" }, { id: "vgD4SlJ8MQQ" }, { id: "v0mVFec22W0" }, { id: "q5i-MSzlxzQ" }, { id: "oMnLMMAjMn4" },
       { id: "zjBZGIaVYCg" }, { id: "28JFW1E4V4w" }, { id: "-cs_h1_kLNE" }, { id: "vNiCcHoNg-I" }, { id: "SqHmD-vUHWg" },
       { id: "zHj52Oudtsg" }, { id: "0g8PHpI4dR4" }, { id: "u2bSLs400Aw" }, { id: "IWdqb4bqvEk" }, { id: "hvLLVEFKX88" },
-      { id: "GFO8zaowwkA" }, { id: "eWM02D0nMaw" }, { id: "kvXGVthS3s4" }, { id: "jpXQ_IChYnw" }, { id: "QiZrnujexw28EQZO" }
+      { id: "GFO8zaowwkA" }, { id: "eWM02D0nMaw" }, { id: "kvXGVthS3s4" }, { id: "jpXQ_IChYnw" }
     ];
 
-    let currentView = 'home';
-
+    /* TOHUMLU SAAT KARIŞTIRMA MOTORU (KUSURSUZLAŞTIRILDI) */
     function shuffleByHour(array) {
       const currentHourSeed = Math.floor(Date.now() / (1000 * 60 * 60));
       let shuffled = [...array];
+      
+      function seededRandom(seed) {
+        let x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+      }
+
       for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.abs((currentHourSeed * (i + 1)) % (i + 1));
+        const r = seededRandom(currentHourSeed + i);
+        const j = Math.floor(r * (i + 1));
+        
         const temp = shuffled[i];
         shuffled[i] = shuffled[j];
         shuffled[j] = temp;
@@ -369,30 +376,9 @@
       if (list) list.innerHTML = '';
     }
 
-    function stopAllShortsAndGoHome() {
-      clearAllShortsIframes();
-      goTo('home');
-    }
-    
-    function stopAllShortsAndGoTo(page) {
-      clearAllShortsIframes();
-      goTo(page);
-    }
-
-    function playVideo(id, title) {
-      currentView = 'player';
-      document.getElementById('vpTitle').innerText = title;
-      document.getElementById('vpFrame').src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&controls=1`;
-      document.getElementById('videoPlayer').classList.add('active');
-      pushLoopState();
-    }
-
-    function closeVideo() {
-      document.getElementById('videoPlayer').classList.remove('active');
-      document.getElementById('vpFrame').src = '';
-      currentView = 'longvideos';
-      goTo('longvideos');
-    }
+    function showWhatsAppModal() { document.getElementById('whatsappModal').classList.add('active'); }
+    function closeWhatsAppModal() { document.getElementById('whatsappModal').classList.remove('active'); }
+    function joinWhatsAppGroup() { window.open(WHATSAPP_GROUP_LINK, '_blank'); closeWhatsAppModal(); }
 
     function goFullscreen() {
       const f = document.getElementById('vpFrame');
@@ -400,79 +386,94 @@
       else if (f.webkitRequestFullscreen) f.webkitRequestFullscreen();
     }
 
-    function showWhatsAppModal() { document.getElementById('whatsappModal').classList.add('active'); }
-    function closeWhatsAppModal() { document.getElementById('whatsappModal').classList.remove('active'); }
-    function joinWhatsAppGroup() { window.open(WHATSAPP_GROUP_LINK, '_blank'); closeWhatsAppModal(); }
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
 
     function goTo(page) {
-      currentView = page;
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      const t = document.getElementById('page-' + page);
-      if (t) t.classList.add('active');
-      
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      if (page === 'home') document.getElementById('btn-home').classList.add('active');
-      
-      if (page === 'longvideos') loadLongVideos();
-      if (page === 'videos') loadShortVideos();
-      
-      if (page !== 'videos') {
-        window.scrollTo({top:0, behavior:'smooth'});
-      }
-      pushLoopState();
+      window.history.pushState({ activePage: page }, "");
+      renderPage(page);
+    }
+
+    function navTo(page) {
+      clearAllShortsIframes();
+      document.getElementById('videoPlayer').classList.remove('active');
+      document.getElementById('vpFrame').src = '';
+      document.getElementById('pdfViewer').classList.remove('active');
+      document.getElementById('pdfFrame').src = '';
+      goTo(page);
     }
 
     function openPDF(file, title) {
-      currentView = 'pdf';
+      window.history.pushState({ activePage: 'pdf' }, "");
       const url = "https://saamsaamadham1344-lgtm.github.io/AL-TAYY-BAT/" + file;
       document.getElementById('pdfTitle').innerText = title;
       document.getElementById('pdfDownloadLink').href = url;
       document.getElementById('pdfFrame').src = "https://docs.google.com/viewer?url=" + encodeURIComponent(url) + "&embedded=true";
       document.getElementById('pdfViewer').classList.add('active');
-      pushLoopState();
     }
 
-    function closePDF() {
+    function playVideo(id, title) {
+      window.history.pushState({ activePage: 'player' }, "");
+      document.getElementById('vpTitle').innerText = title;
+      document.getElementById('vpFrame').src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&controls=1`;
+      document.getElementById('videoPlayer').classList.add('active');
+    }
+
+    function renderPage(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('videoPlayer').classList.remove('active');
       document.getElementById('pdfViewer').classList.remove('active');
-      document.getElementById('pdfFrame').src = '';
-      currentView = 'books';
-      goTo('books');
-    }
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
 
-    function triggerAndroidBack() {
-      window.history.back();
-    }
+      if (page === 'home') {
+        document.getElementById('page-home').classList.add('active');
+        document.getElementById('btn-home').classList.add('active');
+        clearAllShortsIframes();
+      } else if (page === 'books') {
+        document.getElementById('page-books').classList.add('active');
+        clearAllShortsIframes();
+      } else if (page === 'longvideos') {
+        document.getElementById('page-longvideos').classList.add('active');
+        loadLongVideos();
+        clearAllShortsIframes();
+      } else if (page === 'videos') {
+        document.getElementById('page-videos').classList.add('active');
+        loadShortVideos();
+      } else if (page === 'pdf') {
+        document.getElementById('page-books').classList.add('active');
+        document.getElementById('pdfViewer').classList.add('active');
+      } else if (page === 'player') {
+        document.getElementById('page-longvideos').classList.add('active');
+        document.getElementById('videoPlayer').classList.add('active');
+      }
 
-    /* KÖKTEN ÇÖZÜM: GEÇMİŞ DÖNGÜSÜ (LOOP) MEKANİZMASI */
-    function pushLoopState() {
-      // Tarayıcı geçmişine sanal bir ileri işareti bırakıp kilitleme yapıyoruz
-      if (window.history.state !== 'loop') {
-        window.history.pushState('loop', null, window.location.pathname + '#forward');
+      if (page !== 'videos' && page !== 'pdf' && page !== 'player') {
+        window.scrollTo({top: 0, behavior: 'smooth'});
       }
     }
 
-    // Telefonun üçgen tuşuna basıldığında tetiklenen ana kontrolör
     window.addEventListener('popstate', function(event) {
-      // Kullanıcı her geri tuşuna bastığında onu sitenin dışına atmak yerine buradaki mantığa zorluyoruz
-      if (currentView === 'player') {
-        closeVideo();
-      } else if (currentView === 'pdf') {
-        closePDF();
-      } else if (currentView === 'videos') {
-        stopAllShortsAndGoHome();
-      } else if (currentView === 'books' || currentView === 'longvideos') {
-        goTo('home');
-      } else if (currentView === 'home') {
-        // Eğer zaten ana sayfadaysa ve geri basıyorsa, dışarı kaçmasını engellemek için döngüyü yeniliyoruz
-        pushLoopState();
+      if (event.state && event.state.activePage) {
+        if (event.state.activePage === 'pdf') {
+          document.getElementById('pdfFrame').src = '';
+        }
+        if (event.state.activePage === 'player') {
+          document.getElementById('vpFrame').src = '';
+        }
+        renderPage(event.state.activePage);
+      } else {
+        window.history.pushState({ activePage: 'home' }, "");
+        renderPage('home');
       }
     });
 
     window.onload = function() {
-      // Sitenin ilk yüklendiği milisaniyede döngüyü başlatıyoruz
-      window.history.replaceState('loop', null, window.location.pathname);
-      pushLoopState();
-      goTo('home');
+      window.history.replaceState({ activePage: 'home' }, "");
+      renderPage('home');
     };
   </script>
 </body>
