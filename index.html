@@ -270,7 +270,7 @@
       { id: "2A5UXQz3Nr0" }, { id: "_2wCj8tzZq0" }, { id: "lN01JxYN2HA" }, { id: "FvU0rIaJd68" }, { id: "o8BWuF9wmoM" },
       { id: "oeCecspxooI" }, { id: "ewomX3wxOXk" }, { id: "OfWv4ujloWY" }, { id: "qOlbkAR4H88" }, { id: "CMendNOuEAM" },
       { id: "6VfNEdEKeDw" }, { id: "H2nB3GLrjec" }, { id: "OoCKygchTlY" }, { id: "GngANzznS5k" }, { id: "9E8mc4I9_DA" },
-      { id: "DrF9EwF-Y8w" }, { id: "vEbq_mOZNCI" }, { id: "Db35tNlDPes" }, { id: "xembettoZ-Q" }, { id: XzOq37ZN1TM },
+      { id: "DrF9EwF-Y8w" }, { id: "vEbq_mOZNCI" }, { id: "Db35tNlDPes" }, { id: "xembettoZ-Q" }, { id: "XzOq37ZN1TM" },
       { id: "_QryITtYfUI" }, { id: "qxTWRQ7RDnE" }, { id: "rzCkNA6txis" }, { id: "RZRjSZy5aS4" }, { id: "_A-6-7-NHOo" },
       { id: "j4KdD0KTGyE" }, { id: "7So1qoMShcA" }, { id: "XIOrJAAtACc" }, { id: "g9CpntsLpt8" }, { id: "49nWEoUQzLI" },
       { id: "-tXrfHfeQIo" }, { id: "bsei1cvDLsM" }, { id: "dF37UMXeM3I" }, { id: "h4iNUew0djI" }, { id: "1GtaW3WvabI" },
@@ -317,6 +317,7 @@
       for (let i = shuffled.length - 1; i > 0; i--) {
         const r = seededRandom(currentHourSeed + i);
         const j = Math.floor(r * (i + 1));
+        
         const temp = shuffled[i];
         shuffled[i] = shuffled[j];
         shuffled[j] = temp;
@@ -411,8 +412,6 @@
       document.getElementById('pdfTitle').innerText = title;
       document.getElementById('pdfDownloadLink').href = url;
       document.getElementById('pdfFrame').src = "https://docs.google.com/viewer?url=" + encodeURIComponent(url) + "&embedded=true";
-      
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById('pdfViewer').classList.add('active');
     }
 
@@ -420,8 +419,6 @@
       window.history.pushState({ activePage: 'player' }, "");
       document.getElementById('vpTitle').innerText = title;
       document.getElementById('vpFrame').src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&controls=1`;
-      
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById('videoPlayer').classList.add('active');
     }
 
@@ -446,8 +443,10 @@
         document.getElementById('page-videos').classList.add('active');
         loadShortVideos();
       } else if (page === 'pdf') {
+        document.getElementById('page-books').classList.add('active');
         document.getElementById('pdfViewer').classList.add('active');
       } else if (page === 'player') {
+        document.getElementById('page-longvideos').classList.add('active');
         document.getElementById('videoPlayer').classList.add('active');
       }
 
