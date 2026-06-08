@@ -51,12 +51,11 @@
     }
     #page-videos.active{display:block}
     
-    /* Doğru Kaydırma Alanı Yönetimi */
     .shorts-container{
       width:100vw;
       height:100vh;
       scroll-snap-align:start;
-      scroll-snap-stop:always; /* Tek seferde sadece 1 video atlamasını zorunlu kılar */
+      scroll-snap-stop:always;
       position:relative;
       background:#000;
       display:flex;
@@ -65,24 +64,22 @@
       overflow:hidden;
     }
     
-    /* Videoyu kırparak yazıları dışarı fırlatma maskesi */
     .shorts-frame{
       width: 100%;
       height: 100%;
       border: none;
       pointer-events: auto;
-      transform: scale(1.16); /* Yazıları gizlemek için hassas büyütme oranı */
+      transform: scale(1.16);
       transform-origin: center center;
     }
     
     .shorts-overlay-title{position:absolute;bottom:100px;right:20px;color:#fff;background:rgba(0,0,0,0.6);padding:6px 14px;border-radius:8px;font-size:14px;font-weight:bold;z-index:2100;pointer-events:none;border-right:3px solid #d4a24a}
     
-    /* HER ZAMAN EN ÜSTTE KALAN ÇIKIŞ BUTONU */
     .video-back-btn{
       position:fixed;
       top:20px;
       right:20px;
-      z-index:99999; /* En üst katmana taşındı */
+      z-index:99999;
       background:rgba(0,0,0,0.85);
       color:#fff;
       border:2px solid #d4a24a;
@@ -308,6 +305,7 @@
       { id: "GFO8zaowwkA" }, { id: "eWM02D0nMaw" }, { id: "kvXGVthS3s4" }, { id: "jpXQ_IChYnw" }, { id: "QiZrnujexw28EQZO" }
     ];
 
+    /* Saatlik Değişen Benzersiz Karıştırma Fonksiyonu */
     function shuffleByHour(array) {
       const currentHourSeed = Math.floor(Date.now() / (1000 * 60 * 60));
       let shuffled = [...array];
@@ -419,6 +417,8 @@
       if (page === 'videos') {
         loadShortVideos();
         window.history.pushState({view: 'shorts'}, '');
+      } else {
+        window.history.pushState({view: page}, '');
       }
       
       if (page !== 'videos') {
@@ -426,21 +426,35 @@
       }
     }
 
+    /* AKILLI GERİ TUŞU YÖNLENDİRME ALGORİTMASI (Üçgen Buton Mantığı) */
     window.addEventListener('popstate', function(event) {
+      // 1. Durum: Uzun video açıkken basılırsa -> Sadece uzun videolar listesine dön
       if (document.getElementById('videoPlayer').classList.contains('active')) {
         closeVideo();
+        goTo('longvideos');
         return;
       }
+      
+      // 2. Durum: PDF Kitap açıkken basılırsa -> Sadece kitaplar listesine dön
       if (document.getElementById('pdfViewer').classList.contains('active')) {
         closePDF();
+        goTo('books');
         return;
       }
+      
+      // 3. Durum: Kısa videolardayken (Shorts) basılırsa -> Doğrudan Ana Sayfa'ya dön
       if (document.getElementById('page-videos').classList.contains('active')) {
         clearAllShortsIframes();
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById('page-home').classList.add('active');
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('btn-home').classList.add('active');
+        return;
+      }
+
+      // Diğer alt sayfalardayken basılırsa ana sayfaya güvenli dönüş sağla
+      if (!document.getElementById('page-home').classList.contains('active')) {
+        goTo('home');
       }
     });
 
