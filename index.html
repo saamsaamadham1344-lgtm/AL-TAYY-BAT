@@ -113,9 +113,8 @@
     .nav-btn.active .ico{background:linear-gradient(135deg,#f9e7a1,#b8862a);color:#1a1208}
     .nav-btn .lbl{font-size:12px;font-weight:700;color:#a69466}
     .nav-btn.active .lbl{color:#f7e28b}
-    .fullscreen-btn{position:absolute;bottom:20px;right:20px;background:rgba(212,162,74,0.9);color:#1a1208;border:none;padding:8px 16px;border-radius:999px;font-weight:bold;cursor:pointer;z-index:5500}
 
-    /* BÜYÜK GERİ BUTONU - HER YERDE GÖRÜNÜR */
+    /* BÜYÜK GERİ BUTONU */
     .big-back-btn{
       position:fixed;
       top:18px;
@@ -258,7 +257,6 @@
       </div>
       <div class="vp-frame-wrap" id="vpFrameWrap">
         <iframe id="vpFrame" class="vp-frame" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>
-        <button class="fullscreen-btn" onclick="goFullscreen()">⛶ ملء الشاشة</button>
       </div>
     </div>
 
@@ -398,12 +396,6 @@
     function closeWhatsAppModal() { document.getElementById('whatsappModal').classList.remove('active'); }
     function joinWhatsAppGroup() { window.open(WHATSAPP_GROUP_LINK, '_blank'); closeWhatsAppModal(); }
 
-    function goFullscreen() {
-      const f = document.getElementById('vpFrame');
-      if (f.requestFullscreen) f.requestFullscreen();
-      else if (f.webkitRequestFullscreen) f.webkitRequestFullscreen();
-    }
-
     document.querySelectorAll('.nav-btn').forEach(btn => {
       btn.addEventListener('click', function() {
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -411,7 +403,6 @@
       });
     });
 
-    /* ===== GERİ BUTONU GÖSTER/GİZLE ===== */
     function updateBackButton() {
       const btn = document.getElementById('bigBackBtn');
       if (currentPage === 'home') {
@@ -421,10 +412,8 @@
       }
     }
 
-    /* ===== BÜYÜK GERİ BUTONUNA BASILINCA ===== */
     function handleBigBack() {
       if (currentPage === 'player') {
-        // Video player → uzun videolar listesine
         document.getElementById('vpFrame').src = '';
         document.getElementById('videoPlayer').classList.remove('active');
         currentPage = 'longvideos';
@@ -433,7 +422,6 @@
       }
 
       if (currentPage === 'pdf') {
-        // PDF → kitaplar bölümüne
         document.getElementById('pdfFrame').src = '';
         document.getElementById('pdfViewer').classList.remove('active');
         currentPage = 'books';
@@ -442,13 +430,11 @@
       }
 
       if (currentPage === 'videos') {
-        // Shorts → sayfayı yenile + ana sayfaya
         clearAllShortsIframes();
         window.location.href = window.location.pathname;
         return;
       }
 
-      // books, longvideos, whatsapp → ana sayfaya
       if (currentPage !== 'home') {
         clearAllShortsIframes();
         document.getElementById('vpFrame').src = '';
@@ -459,7 +445,6 @@
       }
     }
 
-    /* ===== SAYFA RENDER ===== */
     function renderPage(page) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById('videoPlayer').classList.remove('active');
@@ -498,10 +483,7 @@
       }
     }
 
-    function goTo(page) {
-      renderPage(page);
-    }
-
+    function goTo(page) { renderPage(page); }
     function navTo(page) {
       clearAllShortsIframes();
       document.getElementById('vpFrame').src = '';
@@ -529,9 +511,7 @@
       updateBackButton();
     }
 
-    /* ===== TELEFON ÜÇGEN TUŞU = SAYFA YENİLE ===== */
-    window.addEventListener('popstate', function(event) {
-      // Telefon üçgen tuşuna basılınca her zaman sayfayı yenile
+    window.addEventListener('popstate', function() {
       clearAllShortsIframes();
       document.getElementById('vpFrame').src = '';
       document.getElementById('pdfFrame').src = '';
