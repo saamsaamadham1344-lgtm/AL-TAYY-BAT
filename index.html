@@ -455,23 +455,44 @@
       }
     }
 
-    window.addEventListener('popstate', function(event) {
-      document.getElementById('vpFrame').src = '';
-      document.getElementById('pdfFrame').src = '';
-      clearAllShortsIframes();
+  window.addEventListener('popstate', function(event) {
 
-      if (event.state && event.state.activePage) {
-        renderPage(event.state.activePage);
-      } else {
-        window.history.pushState({ activePage: 'home' }, "");
-        renderPage('home');
-      }
-    });
+  document.getElementById('vpFrame').src = '';
+  document.getElementById('pdfFrame').src = '';
 
-    window.onload = function() {
-      window.history.replaceState({ activePage: 'home' }, "");
-      renderPage('home');
-    };
+  document.getElementById('videoPlayer').classList.remove('active');
+  document.getElementById('pdfViewer').classList.remove('active');
+
+  if (event.state && event.state.activePage) {
+
+    if(event.state.activePage === "videos"){
+      renderPage("home");
+      return;
+    }
+
+    if(event.state.activePage === "player"){
+      renderPage("longvideos");
+      return;
+    }
+
+    if(event.state.activePage === "pdf"){
+      renderPage("books");
+      return;
+    }
+
+    renderPage(event.state.activePage);
+
+  } else {
+
+    renderPage("home");
+
+  }
+});
+
+window.onload = function() {
+  window.history.replaceState({ activePage: 'home' }, "");
+  renderPage('home');
+};  
   </script>
 </body>
 </html>
