@@ -393,8 +393,14 @@
     });
 
     function goTo(page) {
-      window.history.pushState({ activePage: page }, "");
-      renderPage(page);
+
+  if(page === "videos"){
+    renderPage(page);
+    return;
+  }
+
+  window.history.pushState({ activePage: page }, "");
+  renderPage(page);
     }
 
     function navTo(page) {
