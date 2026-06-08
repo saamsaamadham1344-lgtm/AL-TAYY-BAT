@@ -409,6 +409,7 @@
       if (page === 'longvideos') loadLongVideos();
       if (page === 'videos') loadShortVideos();
       
+      // ÇÖZÜMÜN ANAHTARI: Her sayfa değişiminde tarayıcı geçmişine o sayfanın kaydını kesin olarak atıyoruz!
       if (!skipPushState) {
         window.history.pushState({view: page}, '');
       }
@@ -418,7 +419,9 @@
       }
     }
 
+    /* KESİN ÇÖZÜMLÜ YENİ GERİ TUŞU YÖNETİCİSİ */
     window.addEventListener('popstate', function(event) {
+      // 1. Eğer Video Player açıksa kapat ve Uzun Videolar listesine odaklan
       if (document.getElementById('videoPlayer').classList.contains('active')) {
         closeVideo();
         window.history.replaceState({view: 'longvideos'}, '');
@@ -426,6 +429,7 @@
         return;
       }
       
+      // 2. Eğer PDF Viewer açıksa kapat ve Kitaplar listesine odaklan
       if (document.getElementById('pdfViewer').classList.contains('active')) {
         closePDF();
         window.history.replaceState({view: 'books'}, '');
@@ -433,13 +437,17 @@
         return;
       }
       
+      // 3. Eğer Shorts/Videolar ekranındaysan kapat ve Ana Sayfa'ya al
       if (document.getElementById('page-videos').classList.contains('active')) {
         clearAllShortsIframes();
+        window.history.replaceState({view: 'home'}, '');
         goTo('home', true);
         return;
       }
 
+      // 4. Kitaplar veya Uzun Videolar listesindeyken üçgene basılırsa ASLA DIŞARI ATMA, Ana Sayfaya al
       if (!document.getElementById('page-home').classList.contains('active')) {
+        window.history.replaceState({view: 'home'}, '');
         goTo('home', true);
       }
     });
@@ -459,6 +467,7 @@
     }
 
     window.onload = function() { 
+      // İlk açılışta ana sayfayı tarayıcı hafızasına çiviliyoruz ki geri basınca arkada gidecek site kalmasın
       window.history.replaceState({view: 'home'}, '');
       goTo('home', true); 
     };
