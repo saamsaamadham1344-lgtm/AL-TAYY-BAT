@@ -64,34 +64,15 @@
     }
 
     .shorts-frame{
-      width: 100%;
-      height: 100%;
-      border: none;
-      pointer-events: auto;
-      transform: scale(1.16);
-      transform-origin: center center;
+      width:100%;
+      height:100%;
+      border:none;
+      pointer-events:auto;
+      transform:scale(1.16);
+      transform-origin:center center;
     }
 
     .shorts-overlay-title{position:absolute;bottom:100px;right:20px;color:#fff;background:rgba(0,0,0,0.6);padding:6px 14px;border-radius:8px;font-size:14px;font-weight:bold;z-index:2100;pointer-events:none;border-right:3px solid #d4a24a}
-
-    .video-back-btn{
-      position:fixed;
-      top:20px;
-      left:20px;
-      z-index:99999;
-      background:rgba(0,0,0,0.85);
-      color:#fff;
-      border:2px solid #d4a24a;
-      padding:10px 20px;
-      border-radius:999px;
-      font-weight:bold;
-      cursor:pointer;
-      box-shadow:0 4px 15px rgba(0,0,0,0.5);
-      display:flex;
-      align-items:center;
-      gap:6px;
-      font-size:16px;
-    }
 
     .long-top{text-align:center;margin-top:20px;margin-bottom:10px}
     .long-video-list{display:flex;flex-direction:column;gap:16px;padding-bottom:30px;margin-top:10px}
@@ -105,7 +86,6 @@
     .video-player{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:5000;flex-direction:column}
     .video-player.active{display:flex}
     .vp-topbar{background:#1a1208;border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;padding:10px 14px;gap:12px}
-    .vp-close{height:42px;width:42px;border-radius:12px;border:1.5px solid rgba(212,162,74,.5);background:#14100a;color:#f7e28b;font-size:20px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center}
     .vp-title{color:#f7e28b;font-size:17px;font-weight:800;flex:1;text-align:center}
     .vp-frame-wrap{flex:1;position:relative;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden}
     .vp-frame{width:100%;height:100%;border:none}
@@ -113,7 +93,6 @@
     .pdf-viewer{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0a0704;z-index:6000;flex-direction:column}
     .pdf-viewer.active{display:flex}
     .pdf-topbar{background:#1a1208;border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;padding:10px 14px;gap:12px}
-    .tb-close{height:42px;width:42px;border-radius:12px;border:1.5px solid rgba(212,162,74,.5);background:#14100a;color:#f7e28b;font-size:20px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center}
     .pdf-download-btn{height:42px;padding:0 15px;border-radius:12px;border:1.5px solid rgba(212,162,74,.5);background:#14100a;color:#f7e28b;font-size:13px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none}
     .pdf-title{color:#f7e28b;font-size:17px;font-weight:800;flex:1;text-align:center}
     .pdf-frame-wrap{flex:1;position:relative;background:#1a1a1a}
@@ -135,9 +114,55 @@
     .nav-btn .lbl{font-size:12px;font-weight:700;color:#a69466}
     .nav-btn.active .lbl{color:#f7e28b}
     .fullscreen-btn{position:absolute;bottom:20px;right:20px;background:rgba(212,162,74,0.9);color:#1a1208;border:none;padding:8px 16px;border-radius:999px;font-weight:bold;cursor:pointer;z-index:5500}
+
+    /* BÜYÜK GERİ BUTONU - HER YERDE GÖRÜNÜR */
+    .big-back-btn{
+      position:fixed;
+      top:18px;
+      left:18px;
+      z-index:99999;
+      background:rgba(0,0,0,0.9);
+      color:#f7e28b;
+      border:2px solid #d4a24a;
+      padding:14px 28px;
+      border-radius:999px;
+      font-weight:900;
+      cursor:pointer;
+      box-shadow:0 4px 20px rgba(0,0,0,0.7);
+      display:none;
+      align-items:center;
+      gap:10px;
+      font-size:18px;
+      font-family:'Cairo',sans-serif;
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      transition:transform 0.2s ease, background 0.2s ease;
+    }
+    .big-back-btn:active{
+      transform:scale(0.95);
+      background:rgba(212,162,74,0.3);
+    }
+    .big-back-btn.visible{
+      display:flex;
+    }
+    .big-back-btn .back-x{
+      font-size:22px;
+      font-weight:900;
+      color:#ff6b6b;
+    }
+    .big-back-btn .back-text{
+      font-size:18px;
+      font-weight:900;
+    }
   </style>
 </head>
 <body>
+
+  <!-- BÜYÜK GERİ BUTONU -->
+  <button class="big-back-btn" id="bigBackBtn" onclick="handleBigBack()">
+    <span class="back-x">✕</span>
+    <span class="back-text">رجوع</span>
+  </button>
 
   <div class="modal" id="whatsappModal">
     <div class="modal-content">
@@ -197,7 +222,7 @@
     </main>
 
     <main id="page-books" class="page">
-      <div class="books-top"><button class="gold-btn" onclick="directGo('home')">← الرئيسية</button></div>
+      <div class="books-top"></div>
       <div class="book-grid">
         <div class="book-card">
           <div class="book-cover" style="background-image:url('kapak1.jpg')"></div>
@@ -219,18 +244,16 @@
     </main>
 
     <main id="page-longvideos" class="page">
-      <div class="long-top"><button class="gold-btn" onclick="directGo('home')">← الرئيسية</button></div>
+      <div class="long-top"></div>
       <div class="long-video-list" id="longVideoList"></div>
     </main>
 
     <main id="page-videos" class="page">
-      <button class="video-back-btn" onclick="exitShorts()">← خروج</button>
       <div id="video-list"></div>
     </main>
 
     <div class="video-player" id="videoPlayer">
       <div class="vp-topbar">
-        <button class="vp-close" onclick="closePlayer()">←</button>
         <div class="vp-title" id="vpTitle">فيديو</div>
       </div>
       <div class="vp-frame-wrap" id="vpFrameWrap">
@@ -241,7 +264,6 @@
 
     <div class="pdf-viewer" id="pdfViewer">
       <div class="pdf-topbar">
-        <button class="tb-close" onclick="closePDF()">←</button>
         <a id="pdfDownloadLink" class="pdf-download-btn" target="_blank" href="#">تحميل / فتح خارجي</a>
         <div class="pdf-title" id="pdfTitle">الكتاب</div>
       </div>
@@ -308,8 +330,6 @@
       { id: "GFO8zaowwkA" }, { id: "eWM02D0nMaw" }, { id: "kvXGVthS3s4" }, { id: "jpXQ_IChYnw" }
     ];
 
-    /* ===== YARDIMCI FONKSİYONLAR ===== */
-
     let currentPage = 'home';
 
     function shuffleByHour(array) {
@@ -337,7 +357,7 @@
         const card = document.createElement('div');
         card.className = 'long-video-card';
         card.onclick = () => playVideo(v.id, 'فيديو ' + (idx + 1));
-        card.innerHTML = `<div class="long-video-thumb" style="background-image:url('https://img.youtube.com/vi/${v.id}/hqdefault.jpg')"><div class="play-overlay">▶</div></div><div class="long-video-info"><div class="long-video-title">فيديو ${idx + 1}</div><div class="long-video-desc">اضغط للمشاهدة</div></div>`;
+        card.innerHTML = '<div class="long-video-thumb" style="background-image:url(\'https://img.youtube.com/vi/' + v.id + '/hqdefault.jpg\')"><div class="play-overlay">▶</div></div><div class="long-video-info"><div class="long-video-title">فيديو ' + (idx + 1) + '</div><div class="long-video-desc">اضغط للمشاهدة</div></div>';
         list.appendChild(card);
       });
     }
@@ -349,10 +369,7 @@
       hourlyShuffledShorts.forEach((v, idx) => {
         const container = document.createElement('div');
         container.className = 'shorts-container';
-        container.innerHTML = `
-          <iframe class="shorts-frame" data-src="https://www.youtube-nocookie.com/embed/${v.id}?enablejsapi=1&rel=0&autoplay=1&controls=0&showinfo=0&iv_load_policy=3" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          <div class="shorts-overlay-title">فيديو قصير ${idx + 1}</div>
-        `;
+        container.innerHTML = '<iframe class="shorts-frame" data-src="https://www.youtube-nocookie.com/embed/' + v.id + '?enablejsapi=1&rel=0&autoplay=1&controls=0&showinfo=0&iv_load_policy=3" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><div class="shorts-overlay-title">فيديو قصير ' + (idx + 1) + '</div>';
         list.appendChild(container);
       });
 
@@ -394,9 +411,55 @@
       });
     });
 
-    /* ===== ANA NAVİGASYON SİSTEMİ ===== */
+    /* ===== GERİ BUTONU GÖSTER/GİZLE ===== */
+    function updateBackButton() {
+      const btn = document.getElementById('bigBackBtn');
+      if (currentPage === 'home') {
+        btn.classList.remove('visible');
+      } else {
+        btn.classList.add('visible');
+      }
+    }
 
-    // Sayfayı renderle (görsel değişiklik)
+    /* ===== BÜYÜK GERİ BUTONUNA BASILINCA ===== */
+    function handleBigBack() {
+      if (currentPage === 'player') {
+        // Video player → uzun videolar listesine
+        document.getElementById('vpFrame').src = '';
+        document.getElementById('videoPlayer').classList.remove('active');
+        currentPage = 'longvideos';
+        updateBackButton();
+        return;
+      }
+
+      if (currentPage === 'pdf') {
+        // PDF → kitaplar bölümüne
+        document.getElementById('pdfFrame').src = '';
+        document.getElementById('pdfViewer').classList.remove('active');
+        currentPage = 'books';
+        updateBackButton();
+        return;
+      }
+
+      if (currentPage === 'videos') {
+        // Shorts → sayfayı yenile + ana sayfaya
+        clearAllShortsIframes();
+        window.location.href = window.location.pathname;
+        return;
+      }
+
+      // books, longvideos, whatsapp → ana sayfaya
+      if (currentPage !== 'home') {
+        clearAllShortsIframes();
+        document.getElementById('vpFrame').src = '';
+        document.getElementById('pdfFrame').src = '';
+        document.getElementById('videoPlayer').classList.remove('active');
+        document.getElementById('pdfViewer').classList.remove('active');
+        renderPage('home');
+      }
+    }
+
+    /* ===== SAYFA RENDER ===== */
     function renderPage(page) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById('videoPlayer').classList.remove('active');
@@ -428,128 +491,58 @@
       }
 
       currentPage = page;
+      updateBackButton();
 
       if (page !== 'videos') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
 
-    // Ana sayfadan bir bölüme git
     function goTo(page) {
-      window.history.pushState({ activePage: page }, "");
       renderPage(page);
     }
 
-    // Alt navigasyon ile git
     function navTo(page) {
       clearAllShortsIframes();
       document.getElementById('vpFrame').src = '';
       document.getElementById('pdfFrame').src = '';
       document.getElementById('videoPlayer').classList.remove('active');
       document.getElementById('pdfViewer').classList.remove('active');
-      // History'yi temizle ve sadece home + hedef sayfa olsun
-      window.history.replaceState({ activePage: 'home' }, "");
-      if (page !== 'home') {
-        window.history.pushState({ activePage: page }, "");
-      }
       renderPage(page);
     }
 
-    // Direkt bir sayfaya git (buton ile)
-    function directGo(page) {
-      clearAllShortsIframes();
-      document.getElementById('vpFrame').src = '';
-      document.getElementById('pdfFrame').src = '';
-      document.getElementById('videoPlayer').classList.remove('active');
-      document.getElementById('pdfViewer').classList.remove('active');
-      window.history.replaceState({ activePage: page }, "");
-      renderPage(page);
-    }
-
-    // PDF aç: books sayfasının üstüne 1 katman ekle
     function openPDF(file, title) {
-      window.history.pushState({ activePage: 'pdf', fromPage: 'books' }, "");
       currentPage = 'pdf';
       const url = "https://saamsaamadham1344-lgtm.github.io/AL-TAYY-BAT/" + file;
       document.getElementById('pdfTitle').innerText = title;
       document.getElementById('pdfDownloadLink').href = url;
       document.getElementById('pdfFrame').src = "https://docs.google.com/viewer?url=" + encodeURIComponent(url) + "&embedded=true";
       document.getElementById('pdfViewer').classList.add('active');
+      updateBackButton();
     }
 
-    // PDF kapat → kitaplar bölümüne dön (tek basış)
-    function closePDF() {
-      document.getElementById('pdfFrame').src = '';
-      document.getElementById('pdfViewer').classList.remove('active');
-      currentPage = 'books';
-      // History'den pdf katmanını çıkar
-      window.history.back();
-    }
-
-    // Video player aç: longvideos sayfasının üstüne 1 katman ekle
     function playVideo(id, title) {
-      window.history.pushState({ activePage: 'player', fromPage: 'longvideos' }, "");
       currentPage = 'player';
       document.getElementById('vpTitle').innerText = title;
-      document.getElementById('vpFrame').src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&controls=1`;
+      document.getElementById('vpFrame').src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&controls=1';
       document.getElementById('videoPlayer').classList.add('active');
+      updateBackButton();
     }
 
-    // Video player kapat → uzun videolar listesine dön (tek basış)
-    function closePlayer() {
-      document.getElementById('vpFrame').src = '';
-      document.getElementById('videoPlayer').classList.remove('active');
-      currentPage = 'longvideos';
-      window.history.back();
-    }
-
-    // Shorts'tan çık → sayfayı yenile + ana sayfaya dön
-    function exitShorts() {
-      clearAllShortsIframes();
-      // Sayfayı tamamen yenile ve ana sayfaya dön
-      window.location.href = window.location.pathname;
-    }
-
-    // Telefon geri tuşu (popstate)
+    /* ===== TELEFON ÜÇGEN TUŞU = SAYFA YENİLE ===== */
     window.addEventListener('popstate', function(event) {
-      // Şu an shorts açıksa → sayfayı yenile
-      if (currentPage === 'videos') {
-        clearAllShortsIframes();
-        window.location.href = window.location.pathname;
-        return;
-      }
-
-      // Şu an video player açıksa → kapat, longvideos'a dön
-      if (currentPage === 'player') {
-        document.getElementById('vpFrame').src = '';
-        document.getElementById('videoPlayer').classList.remove('active');
-        currentPage = 'longvideos';
-        // longvideos zaten arkada açık, sadece player'ı kapattık
-        return;
-      }
-
-      // Şu an PDF açıksa → kapat, books'a dön
-      if (currentPage === 'pdf') {
-        document.getElementById('pdfFrame').src = '';
-        document.getElementById('pdfViewer').classList.remove('active');
-        currentPage = 'books';
-        // books zaten arkada açık, sadece pdf'i kapattık
-        return;
-      }
-
-      // Diğer durumlar: state'e göre renderle
-      if (event.state && event.state.activePage) {
-        renderPage(event.state.activePage);
-      } else {
-        renderPage('home');
-      }
+      // Telefon üçgen tuşuna basılınca her zaman sayfayı yenile
+      clearAllShortsIframes();
+      document.getElementById('vpFrame').src = '';
+      document.getElementById('pdfFrame').src = '';
+      window.location.href = window.location.pathname;
     });
 
-    // Sayfa ilk yüklendiğinde
     window.onload = function() {
       window.history.replaceState({ activePage: 'home' }, "");
       currentPage = 'home';
       renderPage('home');
+      updateBackButton();
     };
   </script>
 </body>
