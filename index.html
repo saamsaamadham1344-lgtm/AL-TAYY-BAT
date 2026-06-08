@@ -421,7 +421,6 @@
     }
 
     function playVideo(id, title) {
-      window.history.pushState({ activePage: 'player' }, "");
       document.getElementById('vpTitle').innerText = title;
       document.getElementById('vpFrame').src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&controls=1`;
       document.getElementById('videoPlayer').classList.add('active');
