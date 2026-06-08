@@ -227,18 +227,18 @@
 
     <div class="video-player" id="videoPlayer">
       <div class="vp-topbar">
-        <button class="vp-close" onclick="window.history.back()">X</button>
+        <button class="vp-close" onclick="triggerAndroidBack()">X</button>
         <div class="vp-title" id="vpTitle">فيديو</div>
       </div>
       <div class="vp-frame-wrap" id="vpFrameWrap">
         <iframe id="vpFrame" class="vp-frame" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>
-        <button class="fullscreen-btn" onclick="goFullscreen()">⛶ ملء الشاشة</button>
+        <button class="fullscreen-btn" onclick="goFullscreen()">⛶ ملء Şaşة</button>
       </div>
     </div>
 
     <div class="pdf-viewer" id="pdfViewer">
       <div class="pdf-topbar">
-        <button class="tb-close" onclick="window.history.back()">X</button>
+        <button class="tb-close" onclick="triggerAndroidBack()">X</button>
         <a id="pdfDownloadLink" class="pdf-download-btn" target="_blank" href="#">تحميل / فتح خارجي</a>
         <div class="pdf-title" id="pdfTitle">الكتاب</div>
       </div>
@@ -304,6 +304,8 @@
       { id: "zHj52Oudtsg" }, { id: "0g8PHpI4dR4" }, { id: "u2bSLs400Aw" }, { id: "IWdqb4bqvEk" }, { id: "hvLLVEFKX88" },
       { id: "GFO8zaowwkA" }, { id: "eWM02D0nMaw" }, { id: "kvXGVthS3s4" }, { id: "jpXQ_IChYnw" }, { id: "QiZrnujexw28EQZO" }
     ];
+
+    let currentView = 'home';
 
     function shuffleByHour(array) {
       const currentHourSeed = Math.floor(Date.now() / (1000 * 60 * 60));
@@ -378,15 +380,18 @@
     }
 
     function playVideo(id, title) {
-      window.history.pushState({view: 'player'}, '');
+      currentView = 'player';
       document.getElementById('vpTitle').innerText = title;
       document.getElementById('vpFrame').src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&controls=1`;
       document.getElementById('videoPlayer').classList.add('active');
+      pushLoopState();
     }
 
     function closeVideo() {
       document.getElementById('videoPlayer').classList.remove('active');
       document.getElementById('vpFrame').src = '';
+      currentView = 'longvideos';
+      goTo('longvideos');
     }
 
     function goFullscreen() {
@@ -399,77 +404,75 @@
     function closeWhatsAppModal() { document.getElementById('whatsappModal').classList.remove('active'); }
     function joinWhatsAppGroup() { window.open(WHATSAPP_GROUP_LINK, '_blank'); closeWhatsAppModal(); }
 
-    function goTo(page, skipPushState = false) {
+    function goTo(page) {
+      currentView = page;
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       const t = document.getElementById('page-' + page);
       if (t) t.classList.add('active');
+      
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       if (page === 'home') document.getElementById('btn-home').classList.add('active');
       
       if (page === 'longvideos') loadLongVideos();
       if (page === 'videos') loadShortVideos();
       
-      // ÇÖZÜMÜN ANAHTARI: Her sayfa değişiminde tarayıcı geçmişine o sayfanın kaydını kesin olarak atıyoruz!
-      if (!skipPushState) {
-        window.history.pushState({view: page}, '');
-      }
-      
       if (page !== 'videos') {
         window.scrollTo({top:0, behavior:'smooth'});
       }
+      pushLoopState();
     }
 
-    /* KESİN ÇÖZÜMLÜ YENİ GERİ TUŞU YÖNETİCİSİ */
-    window.addEventListener('popstate', function(event) {
-      // 1. Eğer Video Player açıksa kapat ve Uzun Videolar listesine odaklan
-      if (document.getElementById('videoPlayer').classList.contains('active')) {
-        closeVideo();
-        window.history.replaceState({view: 'longvideos'}, '');
-        goTo('longvideos', true); 
-        return;
-      }
-      
-      // 2. Eğer PDF Viewer açıksa kapat ve Kitaplar listesine odaklan
-      if (document.getElementById('pdfViewer').classList.contains('active')) {
-        closePDF();
-        window.history.replaceState({view: 'books'}, '');
-        goTo('books', true); 
-        return;
-      }
-      
-      // 3. Eğer Shorts/Videolar ekranındaysan kapat ve Ana Sayfa'ya al
-      if (document.getElementById('page-videos').classList.contains('active')) {
-        clearAllShortsIframes();
-        window.history.replaceState({view: 'home'}, '');
-        goTo('home', true);
-        return;
-      }
-
-      // 4. Kitaplar veya Uzun Videolar listesindeyken üçgene basılırsa ASLA DIŞARI ATMA, Ana Sayfaya al
-      if (!document.getElementById('page-home').classList.contains('active')) {
-        window.history.replaceState({view: 'home'}, '');
-        goTo('home', true);
-      }
-    });
-
     function openPDF(file, title) {
-      window.history.pushState({view: 'pdf'}, '');
+      currentView = 'pdf';
       const url = "https://saamsaamadham1344-lgtm.github.io/AL-TAYY-BAT/" + file;
       document.getElementById('pdfTitle').innerText = title;
       document.getElementById('pdfDownloadLink').href = url;
       document.getElementById('pdfFrame').src = "https://docs.google.com/viewer?url=" + encodeURIComponent(url) + "&embedded=true";
       document.getElementById('pdfViewer').classList.add('active');
+      pushLoopState();
     }
 
     function closePDF() {
       document.getElementById('pdfViewer').classList.remove('active');
       document.getElementById('pdfFrame').src = '';
+      currentView = 'books';
+      goTo('books');
     }
 
-    window.onload = function() { 
-      // İlk açılışta ana sayfayı tarayıcı hafızasına çiviliyoruz ki geri basınca arkada gidecek site kalmasın
-      window.history.replaceState({view: 'home'}, '');
-      goTo('home', true); 
+    function triggerAndroidBack() {
+      window.history.back();
+    }
+
+    /* KÖKTEN ÇÖZÜM: GEÇMİŞ DÖNGÜSÜ (LOOP) MEKANİZMASI */
+    function pushLoopState() {
+      // Tarayıcı geçmişine sanal bir ileri işareti bırakıp kilitleme yapıyoruz
+      if (window.history.state !== 'loop') {
+        window.history.pushState('loop', null, window.location.pathname + '#forward');
+      }
+    }
+
+    // Telefonun üçgen tuşuna basıldığında tetiklenen ana kontrolör
+    window.addEventListener('popstate', function(event) {
+      // Kullanıcı her geri tuşuna bastığında onu sitenin dışına atmak yerine buradaki mantığa zorluyoruz
+      if (currentView === 'player') {
+        closeVideo();
+      } else if (currentView === 'pdf') {
+        closePDF();
+      } else if (currentView === 'videos') {
+        stopAllShortsAndGoHome();
+      } else if (currentView === 'books' || currentView === 'longvideos') {
+        goTo('home');
+      } else if (currentView === 'home') {
+        // Eğer zaten ana sayfadaysa ve geri basıyorsa, dışarı kaçmasını engellemek için döngüyü yeniliyoruz
+        pushLoopState();
+      }
+    });
+
+    window.onload = function() {
+      // Sitenin ilk yüklendiği milisaniyede döngüyü başlatıyoruz
+      window.history.replaceState('loop', null, window.location.pathname);
+      pushLoopState();
+      goTo('home');
     };
   </script>
 </body>
