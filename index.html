@@ -135,21 +135,6 @@
     .nav-btn .lbl{font-size:12px;font-weight:700;color:#a69466}
     .nav-btn.active .lbl{color:#f7e28b}
     .fullscreen-btn{position:absolute;bottom:20px;right:20px;background:rgba(212,162,74,0.9);color:#1a1208;border:none;padding:8px 16px;border-radius:999px;font-weight:bold;cursor:pointer;z-index:5500}
-
-    .back-arrow-btn{
-      height:42px;
-      width:42px;
-      border-radius:12px;
-      border:1.5px solid rgba(212,162,74,.5);
-      background:#14100a;
-      color:#f7e28b;
-      font-size:22px;
-      font-weight:bold;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
   </style>
 </head>
 <body>
@@ -212,7 +197,7 @@
     </main>
 
     <main id="page-books" class="page">
-      <div class="books-top"><button class="gold-btn" onclick="goBack()">← الرئيسية</button></div>
+      <div class="books-top"><button class="gold-btn" onclick="directGo('home')">← الرئيسية</button></div>
       <div class="book-grid">
         <div class="book-card">
           <div class="book-cover" style="background-image:url('kapak1.jpg')"></div>
@@ -234,18 +219,18 @@
     </main>
 
     <main id="page-longvideos" class="page">
-      <div class="long-top"><button class="gold-btn" onclick="goBack()">← الرئيسية</button></div>
+      <div class="long-top"><button class="gold-btn" onclick="directGo('home')">← الرئيسية</button></div>
       <div class="long-video-list" id="longVideoList"></div>
     </main>
 
     <main id="page-videos" class="page">
-      <button class="video-back-btn" onclick="goBack()">← خروج</button>
+      <button class="video-back-btn" onclick="exitShorts()">← خروج</button>
       <div id="video-list"></div>
     </main>
 
     <div class="video-player" id="videoPlayer">
       <div class="vp-topbar">
-        <button class="vp-close" onclick="goBack()">←</button>
+        <button class="vp-close" onclick="closePlayer()">←</button>
         <div class="vp-title" id="vpTitle">فيديو</div>
       </div>
       <div class="vp-frame-wrap" id="vpFrameWrap">
@@ -256,7 +241,7 @@
 
     <div class="pdf-viewer" id="pdfViewer">
       <div class="pdf-topbar">
-        <button class="tb-close" onclick="goBack()">←</button>
+        <button class="tb-close" onclick="closePDF()">←</button>
         <a id="pdfDownloadLink" class="pdf-download-btn" target="_blank" href="#">تحميل / فتح خارجي</a>
         <div class="pdf-title" id="pdfTitle">الكتاب</div>
       </div>
@@ -322,6 +307,10 @@
       { id: "zHj52Oudtsg" }, { id: "0g8PHpI4dR4" }, { id: "u2bSLs400Aw" }, { id: "IWdqb4bqvEk" }, { id: "hvLLVEFKX88" },
       { id: "GFO8zaowwkA" }, { id: "eWM02D0nMaw" }, { id: "kvXGVthS3s4" }, { id: "jpXQ_IChYnw" }
     ];
+
+    /* ===== YARDIMCI FONKSİYONLAR ===== */
+
+    let currentPage = 'home';
 
     function shuffleByHour(array) {
       const currentHourSeed = Math.floor(Date.now() / (1000 * 60 * 60));
@@ -405,52 +394,9 @@
       });
     });
 
-    /* ===== YENİ NAVİGASYON SİSTEMİ ===== */
+    /* ===== ANA NAVİGASYON SİSTEMİ ===== */
 
-    // Mevcut aktif sayfayı takip et
-    let currentPage = 'home';
-
-    function goTo(page) {
-      // Her zaman önceki sayfayı history'ye kaydet
-      window.history.pushState({ activePage: page, prevPage: currentPage }, "");
-      currentPage = page;
-      renderPage(page);
-    }
-
-    function navTo(page) {
-      clearAllShortsIframes();
-      document.getElementById('vpFrame').src = '';
-      document.getElementById('pdfFrame').src = '';
-      document.getElementById('videoPlayer').classList.remove('active');
-      document.getElementById('pdfViewer').classList.remove('active');
-      goTo(page);
-    }
-
-    function openPDF(file, title) {
-      // PDF açılırken önceki sayfa books olarak kaydet
-      window.history.pushState({ activePage: 'pdf', prevPage: 'books' }, "");
-      currentPage = 'pdf';
-      const url = "https://saamsaamadham1344-lgtm.github.io/AL-TAYY-BAT/" + file;
-      document.getElementById('pdfTitle').innerText = title;
-      document.getElementById('pdfDownloadLink').href = url;
-      document.getElementById('pdfFrame').src = "https://docs.google.com/viewer?url=" + encodeURIComponent(url) + "&embedded=true";
-      document.getElementById('pdfViewer').classList.add('active');
-    }
-
-    function playVideo(id, title) {
-      // Video player açılırken önceki sayfa longvideos olarak kaydet
-      window.history.pushState({ activePage: 'player', prevPage: 'longvideos' }, "");
-      currentPage = 'player';
-      document.getElementById('vpTitle').innerText = title;
-      document.getElementById('vpFrame').src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&controls=1`;
-      document.getElementById('videoPlayer').classList.add('active');
-    }
-
-    // Geri gitme fonksiyonu - tüm butonlar ve telefon geri tuşu bunu kullanır
-    function goBack() {
-      window.history.back();
-    }
-
+    // Sayfayı renderle (görsel değişiklik)
     function renderPage(page) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById('videoPlayer').classList.remove('active');
@@ -479,45 +425,128 @@
         loadShortVideos();
         document.getElementById('vpFrame').src = '';
         document.getElementById('pdfFrame').src = '';
-      } else if (page === 'pdf') {
-        document.getElementById('page-books').classList.add('active');
-        document.getElementById('pdfViewer').classList.add('active');
-      } else if (page === 'player') {
-        document.getElementById('page-longvideos').classList.add('active');
-        document.getElementById('videoPlayer').classList.add('active');
       }
 
       currentPage = page;
 
-      if (page !== 'videos' && page !== 'pdf' && page !== 'player') {
+      if (page !== 'videos') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
 
-    // Telefon geri tuşu ve tarayıcı geri tuşu
+    // Ana sayfadan bir bölüme git
+    function goTo(page) {
+      window.history.pushState({ activePage: page }, "");
+      renderPage(page);
+    }
+
+    // Alt navigasyon ile git
+    function navTo(page) {
+      clearAllShortsIframes();
+      document.getElementById('vpFrame').src = '';
+      document.getElementById('pdfFrame').src = '';
+      document.getElementById('videoPlayer').classList.remove('active');
+      document.getElementById('pdfViewer').classList.remove('active');
+      // History'yi temizle ve sadece home + hedef sayfa olsun
+      window.history.replaceState({ activePage: 'home' }, "");
+      if (page !== 'home') {
+        window.history.pushState({ activePage: page }, "");
+      }
+      renderPage(page);
+    }
+
+    // Direkt bir sayfaya git (buton ile)
+    function directGo(page) {
+      clearAllShortsIframes();
+      document.getElementById('vpFrame').src = '';
+      document.getElementById('pdfFrame').src = '';
+      document.getElementById('videoPlayer').classList.remove('active');
+      document.getElementById('pdfViewer').classList.remove('active');
+      window.history.replaceState({ activePage: page }, "");
+      renderPage(page);
+    }
+
+    // PDF aç: books sayfasının üstüne 1 katman ekle
+    function openPDF(file, title) {
+      window.history.pushState({ activePage: 'pdf', fromPage: 'books' }, "");
+      currentPage = 'pdf';
+      const url = "https://saamsaamadham1344-lgtm.github.io/AL-TAYY-BAT/" + file;
+      document.getElementById('pdfTitle').innerText = title;
+      document.getElementById('pdfDownloadLink').href = url;
+      document.getElementById('pdfFrame').src = "https://docs.google.com/viewer?url=" + encodeURIComponent(url) + "&embedded=true";
+      document.getElementById('pdfViewer').classList.add('active');
+    }
+
+    // PDF kapat → kitaplar bölümüne dön (tek basış)
+    function closePDF() {
+      document.getElementById('pdfFrame').src = '';
+      document.getElementById('pdfViewer').classList.remove('active');
+      currentPage = 'books';
+      // History'den pdf katmanını çıkar
+      window.history.back();
+    }
+
+    // Video player aç: longvideos sayfasının üstüne 1 katman ekle
+    function playVideo(id, title) {
+      window.history.pushState({ activePage: 'player', fromPage: 'longvideos' }, "");
+      currentPage = 'player';
+      document.getElementById('vpTitle').innerText = title;
+      document.getElementById('vpFrame').src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&controls=1`;
+      document.getElementById('videoPlayer').classList.add('active');
+    }
+
+    // Video player kapat → uzun videolar listesine dön (tek basış)
+    function closePlayer() {
+      document.getElementById('vpFrame').src = '';
+      document.getElementById('videoPlayer').classList.remove('active');
+      currentPage = 'longvideos';
+      window.history.back();
+    }
+
+    // Shorts'tan çık → sayfayı yenile + ana sayfaya dön
+    function exitShorts() {
+      clearAllShortsIframes();
+      // Sayfayı tamamen yenile ve ana sayfaya dön
+      window.location.href = window.location.pathname;
+    }
+
+    // Telefon geri tuşu (popstate)
     window.addEventListener('popstate', function(event) {
-      // Önce açık olan player/viewer'ları temizle
-      if (currentPage === 'player') {
-        document.getElementById('vpFrame').src = '';
-      }
-      if (currentPage === 'pdf') {
-        document.getElementById('pdfFrame').src = '';
-      }
+      // Şu an shorts açıksa → sayfayı yenile
       if (currentPage === 'videos') {
         clearAllShortsIframes();
+        window.location.href = window.location.pathname;
+        return;
       }
 
+      // Şu an video player açıksa → kapat, longvideos'a dön
+      if (currentPage === 'player') {
+        document.getElementById('vpFrame').src = '';
+        document.getElementById('videoPlayer').classList.remove('active');
+        currentPage = 'longvideos';
+        // longvideos zaten arkada açık, sadece player'ı kapattık
+        return;
+      }
+
+      // Şu an PDF açıksa → kapat, books'a dön
+      if (currentPage === 'pdf') {
+        document.getElementById('pdfFrame').src = '';
+        document.getElementById('pdfViewer').classList.remove('active');
+        currentPage = 'books';
+        // books zaten arkada açık, sadece pdf'i kapattık
+        return;
+      }
+
+      // Diğer durumlar: state'e göre renderle
       if (event.state && event.state.activePage) {
-        // State varsa o sayfaya git
         renderPage(event.state.activePage);
       } else {
-        // State yoksa ana sayfaya git
         renderPage('home');
       }
     });
 
+    // Sayfa ilk yüklendiğinde
     window.onload = function() {
-      // Ana sayfa: home
       window.history.replaceState({ activePage: 'home' }, "");
       currentPage = 'home';
       renderPage('home');
