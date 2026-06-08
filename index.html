@@ -305,7 +305,6 @@
       { id: "GFO8zaowwkA" }, { id: "eWM02D0nMaw" }, { id: "kvXGVthS3s4" }, { id: "jpXQ_IChYnw" }
     ];
 
-    /* TOHUMLU SAAT KARIŞTIRMA MOTORU (KUSURSUZLAŞTIRILDI) */
     function shuffleByHour(array) {
       const currentHourSeed = Math.floor(Date.now() / (1000 * 60 * 60));
       let shuffled = [...array];
@@ -400,10 +399,10 @@
 
     function navTo(page) {
       clearAllShortsIframes();
-      document.getElementById('videoPlayer').classList.remove('active');
-      document.getElementById('vpFrame').src = '';
-      document.getElementById('pdfViewer').classList.remove('active');
+      document.getElementById('vpFrame').src = ''; 
       document.getElementById('pdfFrame').src = '';
+      document.getElementById('videoPlayer').classList.remove('active');
+      document.getElementById('pdfViewer').classList.remove('active');
       goTo(page);
     }
 
@@ -457,13 +456,11 @@
     }
 
     window.addEventListener('popstate', function(event) {
+      document.getElementById('vpFrame').src = '';
+      document.getElementById('pdfFrame').src = '';
+      clearAllShortsIframes();
+
       if (event.state && event.state.activePage) {
-        if (event.state.activePage === 'pdf') {
-          document.getElementById('pdfFrame').src = '';
-        }
-        if (event.state.activePage === 'player') {
-          document.getElementById('vpFrame').src = '';
-        }
         renderPage(event.state.activePage);
       } else {
         window.history.pushState({ activePage: 'home' }, "");
