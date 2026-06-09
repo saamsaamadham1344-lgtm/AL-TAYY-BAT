@@ -87,6 +87,7 @@
     .video-player.active{display:flex}
     .vp-topbar{background:#1a1208;border-bottom:1.5px solid rgba(212,162,74,.35);display:flex;align-items:center;padding:10px 14px;gap:12px}
     .vp-title{color:#f7e28b;font-size:17px;font-weight:800;flex:1;text-align:center}
+    .vp-back-btn{height:40px;padding:0 16px;border-radius:999px;border:1.5px solid rgba(212,162,74,.5);background:#14100a;color:#f7e28b;font-size:14px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif}
     .vp-frame-wrap{flex:1;position:relative;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden}
     .vp-frame{width:100%;height:100%;border:none}
 
@@ -253,6 +254,7 @@
 
     <div class="video-player" id="videoPlayer">
       <div class="vp-topbar">
+        <button class="vp-back-btn" onclick="handleBigBack()">✕ رجوع</button>
         <div class="vp-title" id="vpTitle">فيديو</div>
       </div>
       <div class="vp-frame-wrap" id="vpFrameWrap">
@@ -512,7 +514,7 @@
       const url = "https://saamsaamadham1344-lgtm.github.io/AL-TAYY-BAT/" + file;
       document.getElementById('pdfTitle').innerText = title;
       document.getElementById('pdfDownloadLink').href = url;
-      document.getElementById('pdfFrame').src = "https://docs.google.com/viewer?url=" + encodeURIComponent(url) + "&embedded=true";
+      document.getElementById('pdfFrame').src = url + "#toolbar=0&view=FitH";
       document.getElementById('pdfViewer').classList.add('active');
       updateBackButton();
     }
